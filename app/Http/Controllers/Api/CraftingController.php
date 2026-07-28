@@ -23,11 +23,7 @@ class CraftingController extends Controller
      */
     public function craft(Request $request, Recipe $recipe): JsonResponse
     {
-        $request->validate([
-            'player_id' => 'required|integer|exists:players,id',
-        ]);
-
-        $player = Player::findOrFail($request->input('player_id'));
+        $player = $this->player($request);
         $result = $this->craftingService->craftItem($player, $recipe);
 
         $statusCode = $result['success'] ? 200 : 422;
@@ -40,11 +36,7 @@ class CraftingController extends Controller
      */
     public function learn(Request $request, Recipe $recipe): JsonResponse
     {
-        $request->validate([
-            'player_id' => 'required|integer|exists:players,id',
-        ]);
-
-        $player = Player::findOrFail($request->input('player_id'));
+        $player = $this->player($request);
         $learned = $this->craftingService->learnRecipe($player, $recipe);
 
         if ($learned) {
@@ -66,11 +58,19 @@ class CraftingController extends Controller
      */
     public function playerRecipes(Request $request, Player $player): JsonResponse
     {
+        abort_unless($player->is($this->player($request)), 403);
         $recipes = $player->recipes()->with(['materials.item', 'resultItem'])->get();
 
         return response()->json([
             'success' => true,
             'data' => $recipes,
         ]);
+    }
+
+    private function player(Request $request): Player
+    {
+        abort_unless($request->user() instanceof Player, 403, 'Player authentication required.');
+
+        return $request->user();
     }
 }

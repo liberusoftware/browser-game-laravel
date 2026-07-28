@@ -1,14 +1,15 @@
 <?php
 
 namespace Tests\Feature;
-use PHPUnit\Framework\Attributes\Test;
 
 use App\Models\Item;
 use App\Models\Player;
+use App\Models\Player_Item;
 use App\Models\Recipe;
 use App\Models\RecipeMaterial;
-use App\Models\Player_Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CraftingSystemTest extends TestCase
@@ -16,8 +17,11 @@ class CraftingSystemTest extends TestCase
     use RefreshDatabase;
 
     protected Player $player;
+
     protected Recipe $recipe;
+
     protected Item $material;
+
     protected Item $resultItem;
 
     protected function setUp(): void
@@ -25,6 +29,7 @@ class CraftingSystemTest extends TestCase
         parent::setUp();
 
         $this->player = Player::factory()->create(['level' => 5]);
+        Sanctum::actingAs($this->player);
 
         $this->material = Item::factory()->create(['name' => 'Iron Ore']);
         $this->resultItem = Item::factory()->create(['name' => 'Iron Sword']);
@@ -86,6 +91,7 @@ class CraftingSystemTest extends TestCase
     public function player_cannot_craft_unknown_recipe(): void
     {
         $otherPlayer = Player::factory()->create(['level' => 5]);
+        Sanctum::actingAs($otherPlayer);
 
         $response = $this->postJson("/api/crafting/recipes/{$this->recipe->id}/craft", [
             'player_id' => $otherPlayer->id,

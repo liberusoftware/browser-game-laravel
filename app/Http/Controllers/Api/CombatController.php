@@ -23,12 +23,11 @@ class CombatController extends Controller
     public function pve(Request $request): JsonResponse
     {
         $request->validate([
-            'player_id' => 'required|integer|exists:players,id',
             'opponent_name' => 'required|string|max:100',
             'opponent_level' => 'required|integer|min:1|max:100',
         ]);
 
-        $player = Player::findOrFail($request->input('player_id'));
+        $player = $this->player($request);
         $battle = $this->combatService->initiatePvEBattle(
             $player,
             $request->input('opponent_name'),
@@ -47,12 +46,12 @@ class CombatController extends Controller
     public function pvp(Request $request): JsonResponse
     {
         $request->validate([
-            'attacker_id' => 'required|integer|exists:players,id',
             'defender_id' => 'required|integer|exists:players,id|different:attacker_id',
         ]);
 
-        $attacker = Player::findOrFail($request->input('attacker_id'));
+        $attacker = $this->player($request);
         $defender = Player::findOrFail($request->input('defender_id'));
+        abort_if($attacker->is($defender), 422, 'The defender must be a different player.');
         $battle = $this->combatService->initiatePvPBattle($attacker, $defender);
 
         return response()->json([
@@ -66,11 +65,7 @@ class CombatController extends Controller
      */
     public function heal(Request $request): JsonResponse
     {
-        $request->validate([
-            'player_id' => 'required|integer|exists:players,id',
-        ]);
-
-        $player = Player::findOrFail($request->input('player_id'));
+        $player = $this->player($request);
         $this->combatService->healPlayer($player);
 
         return response()->json([
@@ -78,5 +73,12 @@ class CombatController extends Controller
             'message' => 'Player healed successfully',
             'data' => $player->fresh(['equipment']),
         ]);
+    }
+
+    private function player(Request $request): Player
+    {
+        abort_unless($request->user() instanceof Player, 403, 'Player authentication required.');
+
+        return $request->user();
     }
 }

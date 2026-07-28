@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Achievement;
 use App\Models\Player;
-use App\Models\Player_Item;
 use App\Models\Player_Quest;
 use App\Models\Quest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class PlayerStatisticsApiTest extends TestCase
@@ -20,6 +19,7 @@ class PlayerStatisticsApiTest extends TestCase
             'level' => 10,
             'experience' => 1000,
         ]);
+        Sanctum::actingAs($player);
 
         $player->statistics()->create([
             'total_quests_completed' => 5,
@@ -47,6 +47,7 @@ class PlayerStatisticsApiTest extends TestCase
             'level' => 5,
             'experience' => 500,
         ]);
+        Sanctum::actingAs($player);
 
         $this->assertDatabaseMissing('player_statistics', [
             'player_id' => $player->id,
@@ -69,9 +70,10 @@ class PlayerStatisticsApiTest extends TestCase
             'level' => 15,
             'experience' => 2000,
         ]);
+        Sanctum::actingAs($player);
 
         $quest = Quest::factory()->create();
-        
+
         Player_Quest::create([
             'player_id' => $player->id,
             'quest_id' => $quest->id,

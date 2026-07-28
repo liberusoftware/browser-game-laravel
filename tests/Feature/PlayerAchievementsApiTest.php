@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Achievement;
 use App\Models\Player;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class PlayerAchievementsApiTest extends TestCase
@@ -13,6 +14,7 @@ class PlayerAchievementsApiTest extends TestCase
 
     public function test_can_get_all_achievements(): void
     {
+        Sanctum::actingAs(Player::factory()->create());
         Achievement::factory()->count(3)->create();
 
         $response = $this->getJson('/api/achievements');
@@ -36,6 +38,7 @@ class PlayerAchievementsApiTest extends TestCase
     public function test_can_get_player_achievements(): void
     {
         $player = Player::factory()->create();
+        Sanctum::actingAs($player);
         $achievement = Achievement::factory()->create();
 
         $player->achievements()->attach($achievement->id, [
@@ -67,6 +70,7 @@ class PlayerAchievementsApiTest extends TestCase
     public function test_can_get_player_unlocked_achievements(): void
     {
         $player = Player::factory()->create();
+        Sanctum::actingAs($player);
         $unlockedAchievement = Achievement::factory()->create(['name' => 'Unlocked Achievement']);
         $lockedAchievement = Achievement::factory()->create(['name' => 'Locked Achievement']);
 

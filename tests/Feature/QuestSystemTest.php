@@ -1,29 +1,32 @@
 <?php
 
 namespace Tests\Feature;
-use PHPUnit\Framework\Attributes\Test;
 
-use App\Models\Player;
-use App\Models\Quest;
 use App\Models\Item;
+use App\Models\Player;
 use App\Models\Player_Quest;
+use App\Models\Quest;
 use App\Services\QuestService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Exception;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class QuestSystemTest extends TestCase
 {
     use RefreshDatabase;
 
     protected QuestService $questService;
+
     protected Player $player;
+
     protected Quest $quest;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->questService = new QuestService();
+        $this->questService = new QuestService;
 
         // Create test player
         $this->player = Player::create([
@@ -33,6 +36,7 @@ class QuestSystemTest extends TestCase
             'level' => 1,
             'experience' => 0,
         ]);
+        Sanctum::actingAs($this->player);
 
         // Create test item for rewards
         $item = Item::factory()->create([
@@ -238,7 +242,7 @@ class QuestSystemTest extends TestCase
     #[Test]
     public function quest_api_returns_available_quests()
     {
-        $response = $this->getJson('/api/quests/available?player_id=' . $this->player->id);
+        $response = $this->getJson('/api/quests/available?player_id='.$this->player->id);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -255,7 +259,7 @@ class QuestSystemTest extends TestCase
     #[Test]
     public function quest_api_can_accept_quest()
     {
-        $response = $this->postJson('/api/quests/' . $this->quest->id . '/accept', [
+        $response = $this->postJson('/api/quests/'.$this->quest->id.'/accept', [
             'player_id' => $this->player->id,
         ]);
 
@@ -272,7 +276,7 @@ class QuestSystemTest extends TestCase
         // Accept quest first
         $this->questService->acceptQuest($this->player, $this->quest);
 
-        $response = $this->postJson('/api/quests/' . $this->quest->id . '/complete', [
+        $response = $this->postJson('/api/quests/'.$this->quest->id.'/complete', [
             'player_id' => $this->player->id,
         ]);
 
@@ -297,7 +301,7 @@ class QuestSystemTest extends TestCase
         // Accept quest first
         $this->questService->acceptQuest($this->player, $this->quest);
 
-        $response = $this->deleteJson('/api/quests/' . $this->quest->id . '/abandon', [
+        $response = $this->deleteJson('/api/quests/'.$this->quest->id.'/abandon', [
             'player_id' => $this->player->id,
         ]);
 
@@ -313,7 +317,7 @@ class QuestSystemTest extends TestCase
     {
         // Test Player -> Quest relationship
         $this->questService->acceptQuest($this->player, $this->quest);
-        
+
         $playerQuests = $this->player->quests;
         $this->assertCount(1, $playerQuests);
         $this->assertEquals('Test Quest', $playerQuests->first()->name);

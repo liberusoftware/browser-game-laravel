@@ -1,12 +1,13 @@
 <?php
 
 namespace Tests\Feature;
-use PHPUnit\Framework\Attributes\Test;
 
 use App\Models\DailyReward;
 use App\Models\Player;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class DailyRewardSystemTest extends TestCase
@@ -22,6 +23,7 @@ class DailyRewardSystemTest extends TestCase
         $this->player = Player::factory()->create([
             'experience' => 0,
         ]);
+        Sanctum::actingAs($this->player);
 
         // Ensure player has a gold resource
         $this->player->resources()->create([

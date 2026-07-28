@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Player;
 use App\Models\Quest;
 use App\Services\QuestService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Exception;
 
 class QuestController extends Controller
 {
@@ -134,11 +134,9 @@ class QuestController extends Controller
      */
     protected function getPlayer(Request $request): Player
     {
-        // If player_id is provided in the request, use it
-        $playerId = $request->input('player_id') ?? $request->user()?->id ?? 1;
-        
-        $player = Player::findOrFail($playerId);
-        
+        $player = $request->user();
+        abort_unless($player instanceof Player, 403, 'Player authentication required.');
+
         return $player;
     }
 }

@@ -22,6 +22,7 @@ class DailyRewardController extends Controller
      */
     public function status(Request $request, Player $player): JsonResponse
     {
+        abort_unless($player->is($request->user()), 403);
         $canClaim = $this->dailyRewardService->canClaimReward($player);
         $streak = $this->dailyRewardService->getCurrentStreak($player);
 
@@ -39,9 +40,10 @@ class DailyRewardController extends Controller
      */
     public function claim(Request $request, Player $player): JsonResponse
     {
+        abort_unless($player->is($request->user()), 403);
         $reward = $this->dailyRewardService->claimDailyReward($player);
 
-        if (!$reward) {
+        if (! $reward) {
             return response()->json([
                 'success' => false,
                 'message' => 'Daily reward already claimed today.',

@@ -37,47 +37,49 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-// Player statistics routes
-Route::prefix('players/{player}')->group(function () {
-    Route::get('/statistics', [PlayerStatisticsController::class, 'show']);
-    Route::get('/progression', [PlayerStatisticsController::class, 'progression']);
-    Route::get('/achievements', [PlayerAchievementsController::class, 'index']);
-    Route::get('/achievements/unlocked', [PlayerAchievementsController::class, 'unlocked']);
-    Route::get('/daily-reward/status', [DailyRewardController::class, 'status']);
-    Route::post('/daily-reward/claim', [DailyRewardController::class, 'claim']);
-    Route::get('/recipes', [CraftingController::class, 'playerRecipes']);
-});
+Route::middleware('auth:sanctum')->group(function () {
+    // Player statistics routes
+    Route::prefix('players/{player}')->scopeBindings()->group(function () {
+        Route::get('/statistics', [PlayerStatisticsController::class, 'show']);
+        Route::get('/progression', [PlayerStatisticsController::class, 'progression']);
+        Route::get('/achievements', [PlayerAchievementsController::class, 'index']);
+        Route::get('/achievements/unlocked', [PlayerAchievementsController::class, 'unlocked']);
+        Route::get('/daily-reward/status', [DailyRewardController::class, 'status']);
+        Route::post('/daily-reward/claim', [DailyRewardController::class, 'claim']);
+        Route::get('/recipes', [CraftingController::class, 'playerRecipes']);
+    });
 
-// Achievement routes
-Route::get('/achievements', [PlayerAchievementsController::class, 'available']);
+    // Achievement routes
+    Route::get('/achievements', [PlayerAchievementsController::class, 'available']);
 
-// Quest API routes
-Route::prefix('quests')->group(function () {
-    Route::get('/available', [QuestController::class, 'available']);
-    Route::get('/active', [QuestController::class, 'active']);
-    Route::get('/completed', [QuestController::class, 'completed']);
-    Route::post('/{quest}/accept', [QuestController::class, 'accept']);
-    Route::post('/{quest}/complete', [QuestController::class, 'complete']);
-    Route::delete('/{quest}/abandon', [QuestController::class, 'abandon']);
-});
+    // Quest API routes
+    Route::prefix('quests')->group(function () {
+        Route::get('/available', [QuestController::class, 'available']);
+        Route::get('/active', [QuestController::class, 'active']);
+        Route::get('/completed', [QuestController::class, 'completed']);
+        Route::post('/{quest}/accept', [QuestController::class, 'accept']);
+        Route::post('/{quest}/complete', [QuestController::class, 'complete']);
+        Route::delete('/{quest}/abandon', [QuestController::class, 'abandon']);
+    });
 
-// Combat routes
-Route::prefix('combat')->group(function () {
-    Route::post('/pve', [CombatController::class, 'pve']);
-    Route::post('/pvp', [CombatController::class, 'pvp']);
-    Route::post('/heal', [CombatController::class, 'heal']);
-});
+    // Combat routes
+    Route::prefix('combat')->group(function () {
+        Route::post('/pve', [CombatController::class, 'pve']);
+        Route::post('/pvp', [CombatController::class, 'pvp']);
+        Route::post('/heal', [CombatController::class, 'heal']);
+    });
 
-// Crafting routes
-Route::prefix('crafting')->group(function () {
-    Route::post('/recipes/{recipe}/craft', [CraftingController::class, 'craft']);
-    Route::post('/recipes/{recipe}/learn', [CraftingController::class, 'learn']);
-});
+    // Crafting routes
+    Route::prefix('crafting')->group(function () {
+        Route::post('/recipes/{recipe}/craft', [CraftingController::class, 'craft']);
+        Route::post('/recipes/{recipe}/learn', [CraftingController::class, 'learn']);
+    });
 
-// Marketplace routes
-Route::prefix('marketplace')->group(function () {
-    Route::get('/', [MarketplaceController::class, 'index']);
-    Route::post('/', [MarketplaceController::class, 'store']);
-    Route::post('/{listing}/purchase', [MarketplaceController::class, 'purchase']);
-    Route::delete('/{listing}/cancel', [MarketplaceController::class, 'cancel']);
+    // Marketplace routes
+    Route::prefix('marketplace')->group(function () {
+        Route::get('/', [MarketplaceController::class, 'index']);
+        Route::post('/', [MarketplaceController::class, 'store']);
+        Route::post('/{listing}/purchase', [MarketplaceController::class, 'purchase']);
+        Route::delete('/{listing}/cancel', [MarketplaceController::class, 'cancel']);
+    });
 });

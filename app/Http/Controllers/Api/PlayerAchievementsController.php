@@ -12,8 +12,9 @@ class PlayerAchievementsController extends Controller
     /**
      * Get all achievements for a player
      */
-    public function index(Player $player)
+    public function index(Request $request, Player $player)
     {
+        abort_unless($player->is($request->user()), 403);
         $achievements = $player->achievements()
             ->withPivot('unlocked_at', 'progress')
             ->get();
@@ -38,8 +39,9 @@ class PlayerAchievementsController extends Controller
     /**
      * Get player's unlocked achievements
      */
-    public function unlocked(Player $player)
+    public function unlocked(Request $request, Player $player)
     {
+        abort_unless($player->is($request->user()), 403);
         $achievements = $player->achievements()
             ->whereNotNull('player_achievements.unlocked_at')
             ->withPivot('unlocked_at', 'progress')

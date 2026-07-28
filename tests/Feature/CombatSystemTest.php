@@ -1,13 +1,13 @@
 <?php
 
 namespace Tests\Feature;
-use PHPUnit\Framework\Attributes\Test;
 
 use App\Models\Battle;
-use App\Models\Item;
 use App\Models\Player;
 use App\Models\Resource;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CombatSystemTest extends TestCase
@@ -15,6 +15,7 @@ class CombatSystemTest extends TestCase
     use RefreshDatabase;
 
     protected Player $attacker;
+
     protected Player $defender;
 
     protected function setUp(): void
@@ -44,6 +45,7 @@ class CombatSystemTest extends TestCase
             'agility' => 8,
             'intelligence' => 8,
         ]);
+        Sanctum::actingAs($this->attacker);
     }
 
     #[Test]
@@ -86,7 +88,7 @@ class CombatSystemTest extends TestCase
     }
 
     #[Test]
-    public function pve_battle_requires_valid_player(): void
+    public function supplied_player_id_cannot_impersonate_another_player(): void
     {
         $response = $this->postJson('/api/combat/pve', [
             'player_id' => 99999,
@@ -94,7 +96,8 @@ class CombatSystemTest extends TestCase
             'opponent_level' => 3,
         ]);
 
-        $response->assertStatus(422);
+        $response->assertOk();
+        $this->assertDatabaseHas('battles', ['attacker_id' => $this->attacker->id]);
     }
 
     #[Test]

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use JoelButcher\Socialstream\HasConnectedAccounts;
@@ -21,20 +20,20 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasDefaultTenant, HasTenants, FilamentUser
+class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
 {
     use HasApiTokens;
     use HasConnectedAccounts;
-    use SetsProfilePhotoFromUrl;
-    use HasRoles, HasTeams {
-        HasTeams::teams insteadof HasRoles;
-        HasRoles::teams as permissionTeams;
-    }
     use HasFactory;
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
+    use HasRoles, HasTeams {
+        HasTeams::teams insteadof HasRoles;
+        HasRoles::teams as permissionTeams;
+    }
     use Notifiable;
+    use SetsProfilePhotoFromUrl;
     use TwoFactorAuthenticatable;
 
     /**
@@ -101,24 +100,27 @@ class User extends Authenticatable implements HasDefaultTenant, HasTenants, Fila
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return true; //$this->ownedTeams->contains($tenant);
+        return $tenant instanceof Team && $this->allTeams()->contains(
+            fn (Team $team) => $team->is($tenant)
+        );
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        //        return $this->hasVerifiedEmail();
-        return true;
+        if (! $this->hasVerifiedEmail()) {
+            return false;
+        }
+
+        return $panel->getId() !== 'admin' || $this->hasRole('super_admin');
     }
 
     public function canAccessFilament(): bool
     {
-        //        return $this->hasVerifiedEmail();
-        return true;
+        return $this->hasVerifiedEmail();
     }
 
     public function getDefaultTenant(Panel $panel): ?Model
     {
         return $this->currentTeam;
     }
-
 }

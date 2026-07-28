@@ -41,13 +41,12 @@ class MarketplaceController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'seller_id' => 'required|integer|exists:players,id',
             'item_id' => 'required|integer|exists:items,id',
             'quantity' => 'required|integer|min:1',
             'price_per_unit' => 'required|integer|min:1',
         ]);
 
-        $seller = Player::findOrFail($request->input('seller_id'));
+        $seller = $this->player($request);
         $item = Item::findOrFail($request->input('item_id'));
         $listing = $this->marketplaceService->createListing(
             $seller,
@@ -56,7 +55,7 @@ class MarketplaceController extends Controller
             (int) $request->input('price_per_unit')
         );
 
-        if (!$listing) {
+        if (! $listing) {
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have enough of this item to list.',
@@ -75,12 +74,7 @@ class MarketplaceController extends Controller
      */
     public function purchase(Request $request, MarketplaceListing $listing): JsonResponse
     {
-        $request->validate([
-            'buyer_id' => 'required|integer|exists:players,id',
-        ]);
-
-        $buyer = Player::findOrFail($request->input('buyer_id'));
-        $result = $this->marketplaceService->purchaseListing($buyer, $listing);
+        $result = $this->marketplaceService->purchaseListing($this->player($request), $listing);
 
         $statusCode = $result['success'] ? 200 : 422;
 
@@ -92,11 +86,7 @@ class MarketplaceController extends Controller
      */
     public function cancel(Request $request, MarketplaceListing $listing): JsonResponse
     {
-        $request->validate([
-            'seller_id' => 'required|integer|exists:players,id',
-        ]);
-
-        $seller = Player::findOrFail($request->input('seller_id'));
+        $seller = $this->player($request);
         $cancelled = $this->marketplaceService->cancelListing($seller, $listing);
 
         if ($cancelled) {
@@ -110,5 +100,12 @@ class MarketplaceController extends Controller
             'success' => false,
             'message' => 'Unable to cancel listing.',
         ], 422);
+    }
+
+    private function player(Request $request): Player
+    {
+        abort_unless($request->user() instanceof Player, 403, 'Player authentication required.');
+
+        return $request->user();
     }
 }

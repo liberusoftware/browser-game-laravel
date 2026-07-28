@@ -11,11 +11,12 @@ class PlayerStatisticsController extends Controller
     /**
      * Get statistics for a specific player
      */
-    public function show(Player $player)
+    public function show(Request $request, Player $player)
     {
+        abort_unless($player->is($request->user()), 403);
         $statistics = $player->statistics;
-        
-        if (!$statistics) {
+
+        if (! $statistics) {
             $statistics = $player->statistics()->create([
                 'highest_level_achieved' => $player->level,
                 'total_experience_earned' => $player->experience,
@@ -30,13 +31,14 @@ class PlayerStatisticsController extends Controller
     /**
      * Get player progression summary
      */
-    public function progression(Player $player)
+    public function progression(Request $request, Player $player)
     {
+        abort_unless($player->is($request->user()), 403);
         $questsCompleted = $player->quests()->where('status', 'completed')->count();
         $questsInProgress = $player->quests()->where('status', 'in-progress')->count();
         $totalItems = $player->items()->sum('quantity');
         $achievementsUnlocked = $player->achievements()->whereNotNull('player_achievements.unlocked_at')->count();
-        
+
         return response()->json([
             'data' => [
                 'level' => $player->level,

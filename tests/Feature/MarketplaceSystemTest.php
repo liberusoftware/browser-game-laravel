@@ -1,14 +1,14 @@
 <?php
 
 namespace Tests\Feature;
-use PHPUnit\Framework\Attributes\Test;
 
 use App\Models\Item;
 use App\Models\MarketplaceListing;
 use App\Models\Player;
 use App\Models\Player_Item;
-use App\Models\Resource;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MarketplaceSystemTest extends TestCase
@@ -16,7 +16,9 @@ class MarketplaceSystemTest extends TestCase
     use RefreshDatabase;
 
     protected Player $seller;
+
     protected Player $buyer;
+
     protected Item $item;
 
     protected function setUp(): void
@@ -25,6 +27,7 @@ class MarketplaceSystemTest extends TestCase
 
         $this->seller = Player::factory()->create();
         $this->buyer = Player::factory()->create();
+        Sanctum::actingAs($this->seller);
         $this->item = Item::factory()->create(['name' => 'Magic Staff']);
 
         // Give seller some items
@@ -112,6 +115,7 @@ class MarketplaceSystemTest extends TestCase
     #[Test]
     public function buyer_can_purchase_a_listing(): void
     {
+        Sanctum::actingAs($this->buyer);
         $listing = MarketplaceListing::create([
             'seller_id' => $this->seller->id,
             'item_id' => $this->item->id,
@@ -200,6 +204,7 @@ class MarketplaceSystemTest extends TestCase
     #[Test]
     public function buyer_without_gold_cannot_purchase(): void
     {
+        Sanctum::actingAs($this->buyer);
         // Remove buyer's gold
         $this->buyer->resources()->where('resource_type', 'gold')->update(['quantity' => 0]);
 
