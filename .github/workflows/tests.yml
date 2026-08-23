@@ -59,10 +59,10 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      # The threshold measures app/ alone — the host's five composition classes. Package
-      # coverage is each package's own gate, against its own phpunit.xml (§3.10).
+      # Keep the release-scope gate in the command that actually runs Pest. The Laravel
+      # test wrapper accepts this option but does not enforce Pest's minimum threshold.
       - name: Run tests
-        run: php artisan test --coverage-clover=coverage.xml --min=99
+        run: XDEBUG_MODE=coverage vendor/bin/pest --coverage-clover=coverage.xml --min=99
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
