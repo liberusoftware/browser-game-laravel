@@ -1,11 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: browser-game-storage
-  namespace: browser-game
+  name: boilerplate-storage
+  namespace: boilerplate-laravel
+  labels:
+    app: boilerplate-laravel
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  storageClassName: standard

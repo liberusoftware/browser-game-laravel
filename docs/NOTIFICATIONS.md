@@ -1,399 +1,350 @@
-# Notification System Documentation
-
-This document describes the notification system implemented for the Browser Game Laravel application.
+# Real-Time Notifications Documentation
 
 ## Overview
 
-The notification system provides both **email notifications** and **in-game notifications** to alert players about important events, achievements, and updates.
+This Laravel boilerplate includes a comprehensive real-time notification system using Laravel's broadcasting features with Pusher (or compatible services).
 
 ## Features
 
-- **Email Notifications**: Players receive email notifications for important events
-- **In-game Notifications**: Real-time notifications displayed within the game interface
-- **Event-Driven Architecture**: Notifications are triggered by game events
-- **RESTful API**: Complete API for managing notifications
-- **Mark as Read**: Track which notifications have been viewed
-- **Notification Service**: Centralized service for managing all notification operations
+- ✅ Real-time notification delivery via websockets
+- ✅ Database-backed notification history
+- ✅ Browser push notifications support
+- ✅ Multiple notification types (messages, friend requests, activities)
+- ✅ Optimized delivery mechanism with queued processing
+- ✅ Private user channels for security
 
-## Database Tables
+## Setup Instructions
 
-### `notifications` Table
-Standard Laravel notifications table for email and database notifications.
+### 1. Install Pusher PHP SDK
 
-### `game_notifications` Table
-Custom table for in-game notifications with the following fields:
-- `id`: Primary key
-- `player_id`: Foreign key to players table
-- `type`: Type of notification (quest_completed, level_up, achievement_unlocked, etc.)
-- `title`: Notification title
-- `message`: Notification message
-- `data`: JSON field for additional data
-- `is_read`: Boolean flag
-- `read_at`: Timestamp when marked as read
-- `created_at`, `updated_at`: Standard timestamps
-
-## Notification Types
-
-### 1. Quest Completed
-Triggered when a player completes a quest.
-
-```php
-use App\Services\NotificationService;
-
-$notificationService = new NotificationService();
-$notificationService->notifyQuestCompleted($player, $quest, $reward);
-```
-
-### 2. Level Up
-Triggered when a player gains a level.
-
-```php
-$notificationService->notifyLevelUp($player, $newLevel, $oldLevel);
-```
-
-### 3. Achievement Unlocked
-Triggered when a player unlocks an achievement.
-
-```php
-$notificationService->notifyAchievementUnlocked($player, $achievementName, $achievementDescription);
-```
-
-### 4. Guild Invitation
-Triggered when a player is invited to join a guild.
-
-```php
-$notificationService->notifyGuildInvitation($player, $guild, $inviter);
-```
-
-## API Endpoints
-
-All endpoints require authentication via Sanctum.
-
-### Get All Notifications
-```
-GET /api/notifications
-```
-
-Query Parameters:
-- `limit` (optional): Number of notifications to return (default: 50)
-
-Response:
-```json
-{
-  "notifications": [...],
-  "unread_count": 5
-}
-```
-
-### Get Unread Notifications
-```
-GET /api/notifications/unread
-```
-
-Response:
-```json
-{
-  "notifications": [...],
-  "count": 3
-}
-```
-
-### Get Unread Count
-```
-GET /api/notifications/count
-```
-
-Response:
-```json
-{
-  "unread_count": 5
-}
-```
-
-### Mark Notification as Read
-```
-POST /api/notifications/{id}/read
-```
-
-Response:
-```json
-{
-  "message": "Notification marked as read",
-  "notification": {...}
-}
-```
-
-### Mark All Notifications as Read
-```
-POST /api/notifications/read-all
-```
-
-Response:
-```json
-{
-  "message": "All notifications marked as read"
-}
-```
-
-## Events and Listeners
-
-The notification system uses Laravel's event system:
-
-### Events
-- `QuestCompleted`: Dispatched when a quest is completed
-- `PlayerLeveledUp`: Dispatched when a player levels up
-- `AchievementUnlocked`: Dispatched when an achievement is unlocked
-- `GuildInvitationSent`: Dispatched when a guild invitation is sent
-
-### Listeners
-Each event has a corresponding listener that:
-1. Sends an email notification
-2. Creates an in-game notification
-
-Example:
-- `SendQuestCompletedNotification`
-- `SendLevelUpNotification`
-- `SendAchievementNotification`
-- `SendGuildInvitationNotification`
-
-## Using the Notification Service
-
-The `NotificationService` provides a convenient API for creating notifications:
-
-```php
-use App\Services\NotificationService;
-
-$service = app(NotificationService::class);
-
-// Create a quest completion notification
-$service->notifyQuestCompleted($player, $quest, 'Epic Sword');
-
-// Create a level up notification
-$service->notifyLevelUp($player, 10, 9);
-
-// Create an achievement notification
-$service->notifyAchievementUnlocked($player, 'Dragon Slayer', 'Defeated 100 dragons');
-
-// Create a guild invitation notification
-$service->notifyGuildInvitation($player, $guild, $inviter);
-
-// Get unread notifications
-$unreadNotifications = $service->getUnreadNotifications($player);
-
-// Get all notifications (with limit)
-$allNotifications = $service->getAllNotifications($player, 100);
-
-// Get unread count
-$count = $service->getUnreadCount($player);
-
-// Mark a notification as read
-$service->markAsRead($notification);
-
-// Mark all notifications as read
-$service->markAllAsRead($player);
-```
-
-## Email Templates
-
-Email notifications use Laravel's Mailable system with customizable templates. Each notification type has:
-- Subject line
-- Greeting
-- Body text
-- Call-to-action button
-- Signature
-
-You can customize email templates in `resources/views/vendor/mail`.
-
-## Testing
-
-The notification system includes comprehensive tests:
-
-### Unit Tests
-- Event dispatching
-- Notification creation
-- Email sending (mocked)
-- Service methods
-
-### Feature Tests
-- API endpoint authentication
-- API endpoint responses
-- Notification CRUD operations
-- Mark as read functionality
-
-Run tests:
 ```bash
-php artisan test --filter NotificationTest
-php artisan test --filter NotificationApiTest
+composer require pusher/pusher-php-server
 ```
 
-## Integration Examples
+### 2. Install Frontend Dependencies
 
-### In a Quest Controller
-
-```php
-use App\Services\NotificationService;
-
-class QuestController extends Controller
-{
-    protected $notificationService;
-
-    public function __construct(NotificationService $notificationService)
-    {
-        $this->notificationService = $notificationService;
-    }
-
-    public function complete(Request $request, Quest $quest)
-    {
-        $player = $request->user()->player;
-        
-        // Mark quest as complete
-        $playerQuest = PlayerQuest::where('player_id', $player->id)
-            ->where('quest_id', $quest->id)
-            ->first();
-            
-        $playerQuest->update(['status' => 'completed']);
-        
-        // Give rewards
-        $reward = $this->giveQuestReward($player, $quest);
-        
-        // Send notification
-        $this->notificationService->notifyQuestCompleted($player, $quest, $reward);
-        
-        return response()->json(['message' => 'Quest completed!']);
-    }
-}
+```bash
+npm install
 ```
 
-### In a Player Model Observer
+This will install:
+- `laravel-echo` - Laravel's broadcasting client
+- `pusher-js` - Pusher JavaScript SDK
 
-```php
-use App\Services\NotificationService;
+### 3. Configure Environment Variables
 
-class PlayerObserver
-{
-    public function updated(Player $player)
-    {
-        if ($player->wasChanged('level')) {
-            $notificationService = app(NotificationService::class);
-            $notificationService->notifyLevelUp(
-                $player, 
-                $player->level, 
-                $player->getOriginal('level')
-            );
-        }
-    }
-}
-```
-
-## Frontend Integration
-
-### Fetching Notifications (JavaScript Example)
-
-```javascript
-// Get all notifications
-fetch('/api/notifications', {
-    headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-    }
-})
-.then(response => response.json())
-.then(data => {
-    console.log('Notifications:', data.notifications);
-    console.log('Unread count:', data.unread_count);
-});
-
-// Mark notification as read
-fetch(`/api/notifications/${notificationId}/read`, {
-    method: 'POST',
-    headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-    }
-})
-.then(response => response.json())
-.then(data => console.log(data.message));
-
-// Mark all as read
-fetch('/api/notifications/read-all', {
-    method: 'POST',
-    headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-    }
-})
-.then(response => response.json())
-.then(data => console.log(data.message));
-```
-
-## Configuration
-
-### Email Configuration
-
-Configure email settings in `.env`:
+Update your `.env` file with Pusher credentials:
 
 ```env
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=your_username
-MAIL_PASSWORD=your_password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@browsergame.com
-MAIL_FROM_NAME="${APP_NAME}"
+BROADCAST_DRIVER=pusher
+QUEUE_CONNECTION=database  # or redis for better performance
+
+PUSHER_APP_ID=your-app-id
+PUSHER_APP_KEY=your-app-key
+PUSHER_APP_SECRET=your-app-secret
+PUSHER_APP_CLUSTER=mt1
+
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 ```
 
-### Queue Configuration (Optional)
+**Alternative Broadcasting Services:**
+- Ably: Set `BROADCAST_DRIVER=ably` and configure Ably credentials
+- Laravel Reverb: Use Laravel's first-party WebSocket server
+- Soketi: Self-hosted Pusher alternative
 
-For better performance, queue email notifications:
+### 4. Run Migrations
 
-```env
-QUEUE_CONNECTION=database
+```bash
+php artisan migrate
 ```
 
-Then run the queue worker:
+This creates the `notifications` table for persisting notifications.
+
+### 5. Build Frontend Assets
+
+```bash
+npm run build
+# or for development
+npm run dev
+```
+
+### 6. Add User ID Meta Tag
+
+In your main layout file (e.g., `resources/views/layouts/app.blade.php`), add:
+
+```blade
+<head>
+    <!-- ... other meta tags ... -->
+    @auth
+        <meta name="user-id" content="{{ auth()->id() }}">
+    @endauth
+</head>
+```
+
+### 7. Start Queue Worker (Production)
+
+For production environments, run a queue worker to process notifications:
+
 ```bash
 php artisan queue:work
 ```
 
-## Security Considerations
+Use a process manager like Supervisor to keep the queue worker running.
 
-1. **Authentication**: All API endpoints require Sanctum authentication
-2. **Authorization**: Players can only access their own notifications
-3. **Input Validation**: All notification data is validated before storage
-4. **XSS Protection**: Notification messages are escaped in frontend display
+## Usage
 
-## Future Enhancements
+### Sending Notifications
 
-Potential improvements to the notification system:
-- Push notifications for mobile devices
-- WebSocket support for real-time notifications
-- Notification preferences (allow players to customize what they receive)
-- Notification categories and filtering
-- Batch notifications for similar events
-- Notification templates with localization support
+#### New Message Notification
+
+```php
+use App\Notifications\NewMessageNotification;
+
+$user->notify(new NewMessageNotification(
+    messageContent: 'Hello! How are you?',
+    senderId: auth()->id(),
+    senderName: auth()->user()->name
+));
+```
+
+#### Friend Request Notification
+
+```php
+use App\Notifications\FriendRequestNotification;
+
+$user->notify(new FriendRequestNotification(
+    requesterId: auth()->id(),
+    requesterName: auth()->user()->name,
+    requesterAvatar: auth()->user()->profile_photo_url
+));
+```
+
+#### Activity Notification
+
+```php
+use App\Notifications\ActivityNotification;
+
+$user->notify(new ActivityNotification(
+    activityType: 'Post Liked',
+    activityMessage: 'John Doe liked your post',
+    actorId: $actor->id,
+    actorName: $actor->name,
+    metadata: ['post_id' => $post->id]
+));
+```
+
+### Listening to Notifications on Frontend
+
+The notification system automatically handles incoming notifications through `resources/js/app.js`.
+
+You can listen to the `notification-received` custom event:
+
+```javascript
+window.addEventListener('notification-received', (event) => {
+    const notification = event.detail;
+    console.log('New notification:', notification);
+    
+    // Update your UI
+    showNotificationToast(notification);
+});
+```
+
+### Retrieving User Notifications
+
+```php
+// Get all notifications
+$notifications = auth()->user()->notifications;
+
+// Get unread notifications
+$unread = auth()->user()->unreadNotifications;
+
+// Mark notification as read
+$notification->markAsRead();
+
+// Mark all as read
+auth()->user()->unreadNotifications->markAsRead();
+```
+
+## Notification Types
+
+### 1. NewMessageNotification
+- **Purpose**: Notify users of new messages
+- **Channels**: database, broadcast
+- **Data**: message content, sender ID, sender name
+
+### 2. FriendRequestNotification
+- **Purpose**: Notify users of friend requests
+- **Channels**: database, broadcast
+- **Data**: requester ID, name, avatar
+
+### 3. ActivityNotification
+- **Purpose**: Generic notification for various activities
+- **Channels**: database, broadcast
+- **Data**: activity type, message, actor info, metadata
+
+## Creating Custom Notifications
+
+Generate a new notification class:
+
+```bash
+php artisan make:notification YourCustomNotification
+```
+
+Implement `ShouldBroadcast` for real-time delivery:
+
+```php
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
+
+class YourCustomNotification extends Notification implements ShouldQueue
+{
+    public function via($notifiable): array
+    {
+        return ['database', 'broadcast'];
+    }
+
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'data' => 'your notification data',
+            'type' => 'custom_type',
+        ]);
+    }
+
+    public function toArray($notifiable): array
+    {
+        return [
+            'data' => 'your notification data',
+            'type' => 'custom_type',
+        ];
+    }
+}
+```
+
+## Broadcasting Channels
+
+The following private channels are configured in `routes/channels.php`:
+
+- `App.Models.User.{id}` - Default user channel
+- `user.{userId}` - General user updates
+- `notifications.{userId}` - User-specific notifications
+
+## Testing Notifications
+
+### Test Notification Delivery
+
+```php
+use Illuminate\Support\Facades\Notification;
+
+/** @test */
+public function it_sends_new_message_notification()
+{
+    $user = User::factory()->create();
+    $sender = User::factory()->create();
+
+    Notification::fake();
+
+    $user->notify(new NewMessageNotification(
+        messageContent: 'Test message',
+        senderId: $sender->id,
+        senderName: $sender->name
+    ));
+
+    Notification::assertSentTo(
+        $user,
+        NewMessageNotification::class
+    );
+}
+```
+
+### Test Broadcasting
+
+```php
+use Illuminate\Support\Facades\Event;
+
+/** @test */
+public function it_broadcasts_notification()
+{
+    Event::fake([
+        \Illuminate\Notifications\Events\BroadcastNotificationCreated::class,
+    ]);
+
+    $user = User::factory()->create();
+    $user->notify(new NewMessageNotification(
+        messageContent: 'Test',
+        senderId: 1,
+        senderName: 'Test User'
+    ));
+
+    Event::assertDispatched(
+        \Illuminate\Notifications\Events\BroadcastNotificationCreated::class
+    );
+}
+```
+
+## Performance Optimization
+
+1. **Use Queue Workers**: All notifications implement `ShouldQueue` for background processing
+2. **Optimize Broadcasting**: Use Redis queue driver for better performance
+3. **Rate Limiting**: Consider implementing rate limiting for notification-heavy features
+4. **Batch Notifications**: Group similar notifications to reduce overhead
+5. **Notification Preferences**: Allow users to customize notification settings
+
+## Browser Notifications
+
+The system automatically requests browser notification permission. Users will see a prompt on first visit. Notifications will be displayed even when the tab is not active.
 
 ## Troubleshooting
 
-### Emails not being sent
-1. Check `.env` mail configuration
-2. Verify MAIL_MAILER is set correctly
-3. Check Laravel logs: `storage/logs/laravel.log`
-4. Test mail configuration: `php artisan tinker` then `Mail::raw('Test', function($msg) { $msg->to('test@example.com'); });`
+### Notifications Not Broadcasting
 
-### Notifications not appearing in database
-1. Ensure migrations have been run: `php artisan migrate`
-2. Check event listeners are registered in `EventServiceProvider`
-3. Verify events are being dispatched correctly
+1. Check `BROADCAST_DRIVER` is set to `pusher` (or your chosen driver)
+2. Verify Pusher credentials in `.env`
+3. Ensure BroadcastServiceProvider is enabled in `bootstrap/providers.php`
+4. Run `php artisan queue:work` if using queued notifications
+5. Check browser console for JavaScript errors
 
-### API endpoints returning 401
-1. Ensure user is authenticated with Sanctum
-2. Check API token is being sent in Authorization header
-3. Verify token hasn't expired
+### Frontend Not Receiving Notifications
+
+1. Verify the user-id meta tag is present in your layout
+2. Check browser console for Echo connection errors
+3. Ensure Vite environment variables are properly set
+4. Rebuild frontend assets: `npm run build`
+
+### Debugging
+
+Enable broadcasting event logging:
+
+```php
+// In config/logging.php
+'channels' => [
+    'broadcasting' => [
+        'driver' => 'single',
+        'path' => storage_path('logs/broadcasting.log'),
+        'level' => 'debug',
+    ],
+],
+```
+
+## Security Considerations
+
+1. **Channel Authorization**: All notification channels are private and require authentication
+2. **CSRF Protection**: Laravel Echo automatically includes CSRF tokens
+3. **SSL/TLS**: Always use HTTPS in production (`PUSHER_SCHEME=https`)
+4. **Input Validation**: Sanitize notification data before sending
+5. **Rate Limiting**: Implement rate limits on notification endpoints
+
+## Additional Resources
+
+- [Laravel Broadcasting Documentation](https://laravel.com/docs/broadcasting)
+- [Laravel Notifications Documentation](https://laravel.com/docs/notifications)
+- [Pusher Documentation](https://pusher.com/docs)
+- [Laravel Echo Documentation](https://laravel.com/docs/broadcasting#client-side-installation)
 
 ## Support
 
-For issues or questions about the notification system, please refer to:
-- Laravel Notifications Documentation: https://laravel.com/docs/notifications
-- Laravel Events Documentation: https://laravel.com/docs/events
-- Project Repository Issues
+For issues or questions about the notification system, please create an issue in the repository.

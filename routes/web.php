@@ -1,49 +1,24 @@
 <?php
 
-use Illuminate\Session\Middleware\AuthenticateSession;
+use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Route;
-use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-Route::get('/', fn () => view('welcome'));
-
-// Kubernetes health check endpoints
-Route::prefix('health')->group(function () {
-    Route::get('/startup', fn () => response()->json(['status' => 'ok']));
-    Route::get('/live',    fn () => response()->json(['status' => 'ok']));
-    Route::get('/ready',   function () {
-        try {
-            \Illuminate\Support\Facades\DB::connection()->getPdo();
-        } catch (\Throwable) {
-            return response()->json(['status' => 'unavailable', 'reason' => 'database'], 503);
-        }
-        return response()->json(['status' => 'ok']);
-    });
+Route::get('/', function () {
+    return view('welcome');
 });
 
-// Route::redirect('/login', '/app/login')->name('login');
+// Authenticated home — super admins land in the "admin" panel, everyone else in
+// the user-facing "app" panel.
+Route::get('/dashboard', function () {
+    $user = auth()->user();
 
-// Route::redirect('/register', '/app/register')->name('register');
+    if ($user instanceof User && $user->isSuperAdmin()) {
+        $panel = Filament::getPanel('admin');
+        $tenant = $user->getDefaultTenant($panel);
 
-Route::redirect('/dashboard', '/app')->name('dashboard');
+        return redirect($tenant !== null ? $panel->getUrl($tenant) : '/'.$panel->getPath());
+    }
 
-// Game Routes
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/game', function () {
-        return view('game.dashboard');
-    })->name('game.dashboard');
-});
-
-Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
-    ->middleware(['signed', 'verified', 'auth', AuthenticateSession::class])
-    ->name('team-invitations.accept');
+    return redirect()->route('filament.app.pages.dashboard');
+})->middleware(['auth:sanctum', config('jetstream.auth_session')])->name('dashboard');

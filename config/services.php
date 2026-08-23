@@ -2,15 +2,24 @@
 
 return [
 
-    'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
-        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-        'scheme' => 'https',
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Third Party Services
+    |--------------------------------------------------------------------------
+    |
+    | This file is for storing the credentials for third party services such
+    | as Resend, Postmark, AWS, and more. This file provides the de facto
+    | location for this type of information, allowing packages to have
+    | a conventional file to locate the various service credentials.
+    |
+    */
 
     'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
+        'key' => env('POSTMARK_API_KEY'),
+    ],
+
+    'resend' => [
+        'key' => env('RESEND_API_KEY'),
     ],
 
     'ses' => [
@@ -19,16 +28,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'bitbucket' => [
-        'client_id' => env('BITBUCKET_CLIENT_ID'),
-        'client_secret' => env('BITBUCKET_CLIENT_SECRET'),
-        'redirect' => env('BITBUCKET_REDIRECT_URI', '/oauth/bitbucket/callback'),
-    ],
-
-    'facebook' => [
-        'client_id' => env('FACEBOOK_CLIENT_ID'),
-        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => env('FACEBOOK_REDIRECT_URI', '/oauth/facebook/callback'),
+    'slack' => [
+        'notifications' => [
+            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+        ],
     ],
 
     'github' => [
@@ -37,34 +41,16 @@ return [
         'redirect' => env('GITHUB_REDIRECT_URI', '/oauth/github/callback'),
     ],
 
-    'gitlab' => [
-        'client_id' => env('GITLAB_CLIENT_ID'),
-        'client_secret' => env('GITLAB_CLIENT_SECRET'),
-        'redirect' => env('GITLAB_REDIRECT_URI', '/oauth/gitlab/callback'),
-    ],
-
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI', '/oauth/google/callback'),
     ],
 
-    'linkedin' => [
-        'client_id' => env('LINKEDIN_CLIENT_ID'),
-        'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
-        'redirect' => env('LINKEDIN_REDIRECT_URI', '/oauth/linkedin/callback'),
-    ],
-
-    'linkedin-openid' => [
-        'client_id' => env('LINKEDIN_CLIENT_ID'),
-        'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
-        'redirect' => env('LINKEDIN_REDIRECT_URI', '/oauth/linkedin-openid/callback'),
-    ],
-
-    'slack' => [
-        'client_id' => env('SLACK_CLIENT_ID'),
-        'client_secret' => env('SLACK_CLIENT_SECRET'),
-        'redirect' => env('SLACK_REDIRECT_URI', '/oauth/slack/callback'),
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI', '/oauth/facebook/callback'),
     ],
 
     'twitter-oauth-2' => [

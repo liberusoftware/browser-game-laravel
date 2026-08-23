@@ -1,56 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: browser-game-dev
-
-namePrefix: dev-
-
 resources:
-  - ../../base
+- ../../base
+
+namespace: boilerplate-dev
 
 patches:
-  - patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 1
-    target:
-      kind: Deployment
-      name: browser-game
-  - patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 1
-    target:
-      kind: Deployment
-      name: queue-worker
-  - patch: |-
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: browser-game
-      spec:
-        template:
-          spec:
-            containers:
-              - name: php-fpm
-                resources:
-                  requests:
-                    memory: "128Mi"
-                    cpu: "100m"
-                  limits:
-                    memory: "512Mi"
-                    cpu: "500m"
+- patch: |-
+    - op: replace
+      path: /spec/replicas
+      value: 1
+  target:
+    kind: Deployment
+    name: boilerplate-laravel
 
 configMapGenerator:
-  - name: browser-game-config
-    behavior: merge
-    literals:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - APP_URL=http://browser-game.local
-      - LOG_LEVEL=debug
-      - MODULES_CACHE=false
+- name: boilerplate-config
+  behavior: merge
+  literals:
+  - APP_ENV=development
+  - APP_DEBUG=true
+  - LOG_LEVEL=debug
 
 images:
-  - name: ghcr.io/liberu-browser-game/browser-game-laravel
-    newTag: develop
+- name: ghcr.io/liberusoftware/boilerplate-laravel
+  newTag: develop

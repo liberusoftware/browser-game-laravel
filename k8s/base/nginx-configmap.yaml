@@ -1,28 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: browser-game-nginx-config
-  namespace: browser-game
+  name: boilerplate-nginx-config
+  namespace: boilerplate-laravel
+  labels:
+    app: boilerplate-laravel
 data:
-  nginx.conf: |
+  default.conf: |
     server {
         listen 80;
         server_name _;
         root /var/www/html/public;
-        index index.php;
-
-        add_header X-Frame-Options "SAMEORIGIN";
-        add_header X-Content-Type-Options "nosniff";
-        add_header X-XSS-Protection "1; mode=block";
+        index index.php index.html;
 
         charset utf-8;
-
-        # Kubernetes health probe endpoint (served by Nginx directly)
-        location = /health {
-            access_log off;
-            return 200 'ok';
-            add_header Content-Type text/plain;
-        }
 
         location / {
             try_files $uri $uri/ /index.php?$query_string;
@@ -31,17 +22,35 @@ data:
         location = /favicon.ico { access_log off; log_not_found off; }
         location = /robots.txt  { access_log off; log_not_found off; }
 
-        error_page 404 /index.php;
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log error;
+
+        sendfile off;
+
+        client_max_body_size 100m;
 
         location ~ \.php$ {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
             fastcgi_pass 127.0.0.1:9000;
-            fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+            fastcgi_index index.php;
             include fastcgi_params;
-            fastcgi_hide_header X-Powered-By;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_intercept_errors off;
+            fastcgi_buffer_size 16k;
+            fastcgi_buffers 4 16k;
+            fastcgi_connect_timeout 300;
+            fastcgi_send_timeout 300;
             fastcgi_read_timeout 300;
         }
 
-        location ~ /\.(?!well-known).* {
+        location ~ /\.ht {
             deny all;
+        }
+
+        location /health {
+            access_log off;
+            return 200 "healthy\n";
+            add_header Content-Type text/plain;
         }
     }
