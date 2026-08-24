@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17fb26657576e46b8bd98054314fac95",
+    "content-hash": "f234db329ed177f33b24a1592e5fb9ba",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6672,6 +6672,186 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Game Core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-world",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-world",
+                "reference": "7863221b4c7da38d34498e49dd3b75d8cc02d9ec"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-world"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\World\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\World\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Browser Game world catalog, travel, weather, encounters, resources, NPCs, and unlocks.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-world-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-world-api",
+                "reference": "3bd275ea925271df48c7211f2338353541c8d925"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-world": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-world-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\WorldApi\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\WorldApi\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game World.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-world-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-world-filament",
+                "reference": "93dea9616a17f3d998f0c5713673882da5cac601"
+            },
+            "require": {
+                "filament/filament": "^5.1",
+                "liberusoftware/module-browser-game-world": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-world-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\WorldFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game World.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-world-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-world-livewire",
+                "reference": "c57338c7d26537e9eccc301da9725fc191ff95fe"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-world": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-world-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\WorldLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game World.",
             "transport-options": {
                 "symlink": false,
                 "relative": true

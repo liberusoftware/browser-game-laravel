@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-world-api",
+  "display_name": "Browser Game World API",
+  "description": "Versioned authenticated world catalog and travel API.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\WorldApi\\WorldApiServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-world": "^1.0"}},
+  "capabilities": ["browser-game.world.api"],
+  "default_enabled": false,
+  "features": ["Scoped world catalog", "Travel actions", "OpenAPI 3.1 contract"]
+}

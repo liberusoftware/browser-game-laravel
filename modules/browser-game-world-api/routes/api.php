@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Support\Facades\Route;
+use Liberu\BrowserGame\WorldApi\Http\Controllers\WorldController;
+
+Route::prefix('api/v1/browser-game/world')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
+    Route::get('/', [WorldController::class, 'index'])->name('browser-game.world.index');
+    Route::get('/{entity}', [WorldController::class, 'show'])->name('browser-game.world.show');
+});
