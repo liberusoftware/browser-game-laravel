@@ -92,6 +92,26 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/crafting/professions:
+    get:
+      operationId: browser.game.crafting.professions
+      summary: List authenticated crafting professions
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/crafting/queue/{queue}/cancel:
+    post:
+      operationId: browser.game.crafting.queue.cancel
+      summary: Cancel a queued craft and refund materials
+      security: [{ sanctum: [] }]
+      parameters: [{ name: queue, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/crafting/queue/{queue}/salvage:
+    post:
+      operationId: browser.game.crafting.queue.salvage
+      summary: Salvage a completed craft output
+      security: [{ sanctum: [] }]
+      parameters: [{ name: queue, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
 components:
   parameters:
     Id:

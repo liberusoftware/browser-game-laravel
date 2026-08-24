@@ -68,6 +68,17 @@ paths:
       responses:
         '200': { description: Listing purchased }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/listings/{listing}/cancel:
+    post:
+      operationId: browser.game.economy.listings.cancel
+      summary: Cancel an owned marketplace listing
+      security:
+        - sanctum: []
+      parameters:
+        - { name: listing, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
   /api/v1/browser-game/economy/{id}:
     get:
       operationId: browser.game.economy.get
