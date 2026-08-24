@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\Economy\Events\EconomyDefined;
+use Liberu\BrowserGame\Economy\Events\EconomyFeeCharged;
 use Liberu\BrowserGame\Economy\Events\EconomyListingSold;
 use Liberu\BrowserGame\Economy\Events\EconomyTransactionRecorded;
 use Liberu\BrowserGame\Economy\Models\EconomyLedgerEntry;
@@ -46,6 +47,10 @@ final class EconomyManager
 
     public function credit(string $actorId, string $currencyCode, int $amount, string $source = 'faucet', ?string $idempotencyKey = null, array $metadata = []): EconomyLedgerEntry
     {
+        if ($amount < 1) {
+            throw ValidationException::withMessages(['amount' => 'Amount must be positive.']);
+        }
+
         return $this->adjust($actorId, $currencyCode, $amount, 'credit', $source, $idempotencyKey, $metadata);
     }
 
@@ -89,7 +94,7 @@ final class EconomyManager
 
         return $vendor->offers()->updateOrCreate(
             ['item_key' => $itemKey],
-            ['currency_code' => $currencyCode, 'unit_price' => $unitPrice, 'stock' => $stock, 'max_per_actor' => $maxPerActor],
+            ['currency_code' => strtolower(trim($currencyCode)), 'unit_price' => $unitPrice, 'stock' => $stock, 'max_per_actor' => $maxPerActor],
         );
     }
 
@@ -101,10 +106,21 @@ final class EconomyManager
 
         return DB::transaction(function () use ($actorId, $offer, $quantity): EconomyVendorOffer {
             $offer = EconomyVendorOffer::query()->lockForUpdate()->findOrFail($offer->getKey());
+            if ($quantity < 1 || ($offer->stock !== null && $offer->stock < $quantity)) {
+                throw ValidationException::withMessages(['quantity' => 'The requested vendor quantity is unavailable.']);
+            }
+            $purchases = (array) ($offer->data['purchases'] ?? []);
+            $purchased = (int) ($purchases[$actorId] ?? 0);
+            if ($offer->max_per_actor !== null && $purchased + $quantity > (int) $offer->max_per_actor) {
+                throw ValidationException::withMessages(['quantity' => 'The actor purchase limit for this offer has been reached.']);
+            }
             $this->debit($actorId, $offer->currency_code, $offer->unit_price * $quantity, 'vendor');
             if ($offer->stock !== null) {
                 $offer->decrement('stock', $quantity);
             }
+            $purchases[$actorId] = $purchased + $quantity;
+            $offer->data = array_merge((array) $offer->data, ['purchases' => $purchases]);
+            $offer->save();
 
             return $offer->refresh();
         });
@@ -127,7 +143,7 @@ final class EconomyManager
         $fee = intdiv($total * (int) $currency->fee_basis_points, 10000);
 
         return EconomyListing::query()->create([
-            'seller_id' => $sellerId, 'item_key' => $itemKey, 'currency_code' => $currencyCode,
+            'seller_id' => $sellerId, 'item_key' => $itemKey, 'currency_code' => strtolower(trim($currencyCode)),
             'quantity' => $quantity, 'unit_price' => $unitPrice, 'fee' => $fee,
             'asset_reference' => $assetReference, 'idempotency_key' => $idempotencyKey, 'status' => 'active',
         ]);
@@ -148,6 +164,9 @@ final class EconomyManager
             $this->credit($listing->seller_id, $listing->currency_code, $total - (int) $listing->fee, 'auction', $idempotencyKey === null ? null : $idempotencyKey.':seller');
             $listing->update(['buyer_id' => $buyerId, 'status' => 'sold', 'sold_at' => now()]);
             EconomyListingSold::dispatch((int) $listing->getKey(), $buyerId, $listing->seller_id, $total);
+            if ((int) $listing->fee > 0) {
+                EconomyFeeCharged::dispatch((int) $listing->getKey(), $listing->currency_code, (int) $listing->fee, 'auction');
+            }
 
             return $listing->refresh();
         });
@@ -167,6 +186,7 @@ final class EconomyManager
     private function adjust(string $actorId, string $currencyCode, int $amount, string $entryType, string $source, ?string $idempotencyKey, array $metadata): EconomyLedgerEntry
     {
         $this->required($actorId, 'actor_id');
+        $currencyCode = strtolower(trim($currencyCode));
         $this->currency($currencyCode);
         $this->assertAmount(abs($amount));
 
