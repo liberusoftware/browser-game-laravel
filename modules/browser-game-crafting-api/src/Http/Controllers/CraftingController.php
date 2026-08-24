@@ -21,8 +21,15 @@ final class CraftingController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(CraftingRecord $crafting): JsonResponse
+    public function show(Request $request, CraftingRecord $crafting): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $crafting = app(CraftingQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($crafting->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($crafting)]);
     }
 

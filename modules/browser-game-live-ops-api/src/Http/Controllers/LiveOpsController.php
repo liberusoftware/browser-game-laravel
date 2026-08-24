@@ -21,8 +21,15 @@ final class LiveOpsController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(LiveOpsRecord $liveOps): JsonResponse
+    public function show(Request $request, LiveOpsRecord $liveOps): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $liveOps = app(LiveOpsQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($liveOps->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($liveOps)]);
     }
 

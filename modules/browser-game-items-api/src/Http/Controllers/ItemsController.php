@@ -21,8 +21,15 @@ final class ItemsController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(ItemsRecord $items): JsonResponse
+    public function show(Request $request, ItemsRecord $items): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $items = app(ItemsQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($items->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($items)]);
     }
 

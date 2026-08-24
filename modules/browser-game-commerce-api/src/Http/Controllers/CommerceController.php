@@ -21,8 +21,15 @@ final class CommerceController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(CommerceRecord $commerce): JsonResponse
+    public function show(Request $request, CommerceRecord $commerce): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $commerce = app(CommerceQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($commerce->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($commerce)]);
     }
 

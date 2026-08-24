@@ -21,8 +21,15 @@ final class CompetitionController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(CompetitionRecord $competition): JsonResponse
+    public function show(Request $request, CompetitionRecord $competition): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $competition = app(CompetitionQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($competition->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($competition)]);
     }
 

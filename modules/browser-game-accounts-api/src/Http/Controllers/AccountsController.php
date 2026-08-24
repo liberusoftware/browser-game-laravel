@@ -21,8 +21,15 @@ final class AccountsController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(AccountsRecord $account): JsonResponse
+    public function show(Request $request, AccountsRecord $account): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $account = app(AccountsQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($account->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($account)]);
     }
 

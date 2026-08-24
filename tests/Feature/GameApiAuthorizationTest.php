@@ -4,8 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Item;
 use App\Models\Player;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Liberu\BrowserGame\Accounts\AccountsServiceProvider;
+use Liberu\BrowserGame\Accounts\Support\AccountsManager;
+use Liberu\BrowserGame\AccountsApi\AccountsApiServiceProvider;
 use Tests\TestCase;
 
 class GameApiAuthorizationTest extends TestCase
@@ -62,5 +67,29 @@ class GameApiAuthorizationTest extends TestCase
         $this->assertDatabaseMissing('marketplace_listings', [
             'seller_id' => $victim->id,
         ]);
+    }
+
+    public function test_browser_game_account_reads_are_scoped_to_the_current_team(): void
+    {
+        $this->app->register(AccountsServiceProvider::class);
+        $this->app->register(AccountsApiServiceProvider::class);
+        $this->artisan('migrate');
+
+        $user = User::factory()->create();
+        $team = Team::factory()->create(['user_id' => $user->id]);
+        $otherTeam = Team::factory()->create();
+        $user->forceFill(['current_team_id' => $team->getKey()])->save();
+
+        $manager = app(AccountsManager::class);
+        $visible = $manager->define('Visible account', teamId: (string) $team->getKey());
+        $hidden = $manager->define('Hidden account', teamId: (string) $otherTeam->getKey());
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/v1/browser-game/accounts/'.$visible->getKey())
+            ->assertOk()
+            ->assertJsonPath('data.id', (string) $visible->getKey());
+
+        $this->getJson('/api/v1/browser-game/accounts/'.$hidden->getKey())
+            ->assertNotFound();
     }
 }

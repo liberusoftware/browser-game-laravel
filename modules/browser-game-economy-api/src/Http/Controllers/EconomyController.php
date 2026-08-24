@@ -21,8 +21,15 @@ final class EconomyController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(EconomyRecord $economy): JsonResponse
+    public function show(Request $request, EconomyRecord $economy): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $economy = app(EconomyQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($economy->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($economy)]);
     }
 

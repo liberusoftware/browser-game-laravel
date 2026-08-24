@@ -21,8 +21,15 @@ final class ModerationAndAnalyticsController extends Controller
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
-    public function show(ModerationAndAnalyticsRecord $moderationAndAnalytics): JsonResponse
+    public function show(Request $request, ModerationAndAnalyticsRecord $moderationAndAnalytics): JsonResponse
     {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        $moderationAndAnalytics = app(ModerationAndAnalyticsQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($moderationAndAnalytics->getKey())
+            ->firstOrFail();
+
         return response()->json(['data' => $this->resource($moderationAndAnalytics)]);
     }
 
