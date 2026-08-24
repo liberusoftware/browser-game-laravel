@@ -2,41 +2,56 @@ openapi: 3.1.0
 info:
   title: Browser Game Game Core API
   version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
 paths:
   /api/v1/browser-game/game-core:
     get:
       operationId: browser.game.game.core.list
+      summary: List authorized game worlds
       security: [{ sanctum: [] }]
-      parameters:
-        - { name: page_size, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
+      parameters: [{ name: page_size, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }]
       responses:
         '200': { description: Authorized world collection }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
     post:
       operationId: browser.game.game.core.create
+      summary: Create a game world
       security: [{ sanctum: [] }]
       requestBody:
         required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/WorldRequest' }
+        content: { application/json: { schema: { $ref: '#/components/schemas/WorldRequest' } } }
       responses:
         '201': { description: World created }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/game-core/{world}:
     get:
       operationId: browser.game.game.core.get
+      summary: Retrieve an authorized world overview
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
-      responses: { '200': { description: Authorized world overview } }
+      responses:
+        '200': { description: Authorized world overview }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
     patch:
       operationId: browser.game.game.core.update
+      summary: Update an authorized game world
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
       requestBody:
         required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/WorldUpdateRequest' }
-      responses: { '200': { description: World updated } }
+        content: { application/json: { schema: { $ref: '#/components/schemas/WorldUpdateRequest' } } }
+      responses:
+        '200': { description: World updated }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 components:
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
@@ -57,3 +72,23 @@ components:
           required: [status]
           properties:
             status: { type: string, enum: [draft, active, archived] }
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+  responses:
+    Unauthorized:
+      description: Authentication is required.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    NotFound:
+      description: Resource unavailable in the current authorization context.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    ValidationError:
+      description: Request validation failed.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    TooManyRequests:
+      description: Request rate limit exceeded.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }

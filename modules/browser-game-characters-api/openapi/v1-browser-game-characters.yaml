@@ -1,29 +1,82 @@
 openapi: 3.1.0
-info: {title: Browser Game Characters API, version: 1.0.0}
+info:
+  title: Browser Game Characters API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
 paths:
   /api/v1/browser-game/characters:
-    get: {operationId: browser.game.characters.list, security: [{sanctum: []}], responses: {'200': {description: Authorized character collection}}}
+    get:
+      operationId: browser.game.characters.list
+      summary: List authorized browser-game characters
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { description: Authorized character collection }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
     post:
       operationId: browser.game.characters.create
-      security: [{sanctum: []}]
-      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CharacterRequest'}}}}
-      responses: {'201': {description: Character created}}
+      summary: Create a browser-game character
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CharacterRequest' }
+      responses:
+        '201': { description: Character created }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}/respec:
     post:
       operationId: browser.game.characters.respec
-      security: [{sanctum: []}]
-      parameters: [{name: character, in: path, required: true, schema: {type: string, format: uuid}}]
-      responses: {'200': {description: Character respecified}}
+      summary: Respec an authorized character
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Character respecified }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 components:
-  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  securitySchemes:
+    sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
   schemas:
     CharacterRequest:
       type: object
       required: [name, race, class]
       properties:
-        name: {type: string, maxLength: 120}
-        race: {type: string, maxLength: 80}
-        class: {type: string, maxLength: 80}
-        background: {type: string, nullable: true}
-        statistics: {type: object, additionalProperties: {type: integer}}
-        skills: {type: object, additionalProperties: {type: integer}}
+        name: { type: string, maxLength: 120 }
+        race: { type: string, maxLength: 80 }
+        class: { type: string, maxLength: 80 }
+        background: { type: [string, 'null'] }
+        statistics: { type: object, additionalProperties: { type: integer } }
+        skills: { type: object, additionalProperties: { type: integer } }
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+  responses:
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }
+    NotFound:
+      description: Resource unavailable in the current authorization context.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }
+    ValidationError:
+      description: Request validation failed.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }
+    TooManyRequests:
+      description: Request rate limit exceeded.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }

@@ -1,14 +1,87 @@
 openapi: 3.1.0
-info: {title: browser game quests API, version: 1.0.0}
+info:
+  title: Browser Game Quests API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
 paths:
   /api/v1/browser-game/quests:
-    get: {operationId: browser.game.quests.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/ResourceCollection'}}}
+    get:
+      operationId: browser.game.quests.list
+      summary: List authorized quests
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /api/v1/browser-game/quests/{id}:
-    get: {operationId: browser.game.quests.get, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/Id'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    get:
+      operationId: browser.game.quests.get
+      summary: Retrieve an authorized quest
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
   /api/v1/browser-game/quests/{id}/progress:
-    post: {operationId: browser.game.quests.progress, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+    post:
+      operationId: browser.game.quests.progress
+      summary: Progress an authorized quest
+      security: [{ sanctum: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/Id' }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 components:
-  parameters: {Id: {name: id, in: path, required: true, schema: {type: string}}, IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 128}}}
-  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
-  schemas: {BrowserGameQuestsResource: {type: object, required: [id, type, attributes], properties: {id: {type: string}, type: {type: string, const: browser-game-quest}, attributes: {type: object, additionalProperties: true}}}, ResourceCollection: {type: object, required: [data], properties: {data: {type: array, items: {$ref: '#/components/schemas/BrowserGameQuestsResource'}}}}}
-  responses: {Resource: {description: Quest resource, content: {application/json: {schema: {$ref: '#/components/schemas/BrowserGameQuestsResource'}}}}, ResourceCollection: {description: Quest resources, content: {application/json: {schema: {$ref: '#/components/schemas/ResourceCollection'}}}}}
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    IdempotencyKey: { name: Idempotency-Key, in: header, required: false, schema: { type: string, maxLength: 128 } }
+  securitySchemes:
+    sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
+  schemas:
+    BrowserGameQuestsResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, const: browser-game-quest }
+        attributes: { type: object, additionalProperties: true }
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data: { type: array, items: { $ref: '#/components/schemas/BrowserGameQuestsResource' } }
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+  responses:
+    Resource:
+      description: Authorized quest resource.
+      content: { application/json: { schema: { $ref: '#/components/schemas/BrowserGameQuestsResource' } } }
+    ResourceCollection:
+      description: Authorized quest resources.
+      content: { application/json: { schema: { $ref: '#/components/schemas/ResourceCollection' } } }
+    Unauthorized:
+      description: Authentication is required.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    NotFound:
+      description: Resource unavailable in the current authorization context.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    ValidationError:
+      description: Request validation failed.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    TooManyRequests:
+      description: Request rate limit exceeded.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
