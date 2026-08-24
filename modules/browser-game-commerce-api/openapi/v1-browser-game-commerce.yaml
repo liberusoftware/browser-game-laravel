@@ -41,6 +41,33 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/commerce/products:
+    get:
+      operationId: browser.game.commerce.products
+      summary: List active game-store products
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/commerce/checkout:
+    post:
+      operationId: browser.game.commerce.checkout
+      summary: Create a retry-safe game-store order
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [lines], properties: { lines: { type: array } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/commerce/orders/{order}/complete:
+    post:
+      operationId: browser.game.commerce.orders.complete
+      summary: Complete a pending order
+      security: [{ sanctum: [] }]
+      parameters: [{ name: order, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/commerce/orders/{order}/refund:
+    post:
+      operationId: browser.game.commerce.orders.refund
+      summary: Refund a completed order and revoke entitlements
+      security: [{ sanctum: [] }]
+      parameters: [{ name: order, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
 components:
   parameters:
     Id:

@@ -41,6 +41,29 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/competition/{competition}/queue:
+    post:
+      operationId: browser.game.competition.queue
+      summary: Enter the authenticated player into matchmaking
+      security: [{ sanctum: [] }]
+      parameters: [{ name: competition, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/competition/{competition}/matches:
+    post:
+      operationId: browser.game.competition.match
+      summary: Create an anti-collusion tracked competition match
+      security: [{ sanctum: [] }]
+      parameters: [{ name: competition, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [player_a, player_b], properties: { player_a: { type: string }, player_b: { type: string } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/competition/matches/{match}/resolve:
+    post:
+      operationId: browser.game.competition.resolve
+      summary: Resolve a competition match and update rankings
+      security: [{ sanctum: [] }]
+      parameters: [{ name: match, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [winner_id], properties: { winner_id: { type: string }, evidence: { type: object, additionalProperties: true } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
 components:
   parameters:
     Id:

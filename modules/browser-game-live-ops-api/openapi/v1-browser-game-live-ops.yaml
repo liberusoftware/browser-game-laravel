@@ -41,6 +41,29 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/live-ops/{liveOps}/publish:
+    post:
+      operationId: browser.game.live_ops.publish
+      summary: Publish a Live Ops record
+      security: [{ sanctum: [] }]
+      parameters: [{ name: liveOps, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/live-ops/{liveOps}/claim:
+    post:
+      operationId: browser.game.live_ops.claim
+      summary: Claim a published activity or grant
+      security: [{ sanctum: [] }]
+      parameters: [{ name: liveOps, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { content: { application/json: { schema: { type: object, properties: { claim_key: { type: string } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/live-ops/{liveOps}/rollback:
+    post:
+      operationId: browser.game.live_ops.rollback
+      summary: Roll back a Live Ops version with evidence
+      security: [{ sanctum: [] }]
+      parameters: [{ name: liveOps, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [reason], properties: { reason: { type: string, maxLength: 1000 } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
 components:
   parameters:
     Id:

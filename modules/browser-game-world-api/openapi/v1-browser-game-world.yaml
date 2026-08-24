@@ -20,6 +20,13 @@ paths:
         '200': { description: Authorized world catalog }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
+  /api/v1/browser-game/world/travel:
+    post:
+      operationId: browser.game.world.travel
+      summary: Record idempotent actor travel
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [destination_id], properties: { origin_id: { type: string, format: uuid }, destination_id: { type: string, format: uuid }, idempotency_key: { type: string }, metadata: { type: object, additionalProperties: true } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }

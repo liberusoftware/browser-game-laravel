@@ -49,6 +49,20 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/combat/definitions:
+    post:
+      operationId: browser.game.combat.definition
+      summary: Define an ability, effect, enemy, boss, or loot entry
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [kind, slug, name], properties: { kind: { type: string, enum: [ability, effect, enemy, boss, loot] }, slug: { type: string }, name: { type: string }, cooldown: { type: integer, minimum: 0 }, effects: { type: array }, data: { type: object, additionalProperties: true } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/combat/simulate:
+    post:
+      operationId: browser.game.combat.simulate
+      summary: Run a deterministic combat simulation
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [opponent_id, actions], properties: { opponent_id: { type: string }, actions: { type: array }, state: { type: object, additionalProperties: true } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
 components:
   parameters:
     Id: { name: id, in: path, required: true, schema: { type: string, format: uuid } }

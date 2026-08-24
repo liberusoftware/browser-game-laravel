@@ -41,6 +41,29 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/social/{social}/members:
+    post:
+      operationId: browser.game.social.member
+      summary: Add or update a social membership
+      security: [{ sanctum: [] }]
+      parameters: [{ name: social, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [actor_id], properties: { actor_id: { type: string }, role: { type: string } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/{social}/messages:
+    post:
+      operationId: browser.game.social.message
+      summary: Send a chat or mail message
+      security: [{ sanctum: [] }]
+      parameters: [{ name: social, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [body], properties: { body: { type: string, maxLength: 10000 } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/reports:
+    post:
+      operationId: browser.game.social.report
+      summary: Submit a social report
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [target_id, reason], properties: { target_id: { type: string }, reason: { type: string, maxLength: 1000 } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
 components:
   parameters:
     Id:
