@@ -61,6 +61,13 @@ final class AccountsController extends Controller
         return response()->json(['data' => $this->resource($updated)]);
     }
 
+    public function verifyEmail(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+
+        return response()->json(['data' => $this->resource(app(AccountsManager::class)->verifyEmail($account))]);
+    }
+
     public function privacy(Request $request, AccountsRecord $account): JsonResponse
     {
         $account = $this->visibleAccount($request, $account);
@@ -82,6 +89,14 @@ final class AccountsController extends Controller
         return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
     }
 
+    public function completeDeletion(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $privacy = app(AccountsManager::class)->completeDeletion($account, (string) $request->user()->getAuthIdentifier());
+
+        return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
+    }
+
     public function revokeSession(Request $request, AccountsRecord $account, AccountSession $session): JsonResponse
     {
         $account = $this->visibleAccount($request, $account);
@@ -99,6 +114,14 @@ final class AccountsController extends Controller
             'type' => 'browser-game-account-session',
             'attributes' => $session->only(['ip_address', 'user_agent', 'last_seen_at', 'expires_at', 'revoked_at']),
         ])->values()]);
+    }
+
+    public function revokeAllSessions(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $count = app(AccountsManager::class)->revokeAllSessions($account, (string) $request->user()->getAuthIdentifier());
+
+        return response()->json(['data' => ['revoked' => $count]]);
     }
 
     public function issueRecovery(Request $request, AccountsRecord $account): JsonResponse

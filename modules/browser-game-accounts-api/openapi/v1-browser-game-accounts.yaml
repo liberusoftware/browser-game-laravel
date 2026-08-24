@@ -125,6 +125,20 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/Id' }]
       responses: { '202': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/verify-email:
+    post:
+      operationId: browser.game.accounts.verify_email
+      summary: Verify the account email address
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/deletion-complete:
+    post:
+      operationId: browser.game.accounts.deletion_complete
+      summary: Complete an approved account deletion request
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/accounts/{account}/sessions:
     get:
       operationId: browser.game.accounts.sessions
@@ -146,6 +160,13 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/Id' }, { name: session, in: path, required: true, schema: { type: string, format: uuid } }]
       responses: { '204': { description: Session revoked }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/{account}/sessions/revoke-all:
+    post:
+      operationId: browser.game.accounts.sessions.revoke_all
+      summary: Revoke all active account sessions
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Sessions revoked }, '401': { $ref: '#/components/responses/Unauthorized' } }
   /api/v1/browser-game/accounts/recovery/consume:
     post:
       operationId: browser.game.accounts.recovery.consume

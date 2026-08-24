@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\Accounts\Events\AccountBanChanged;
+use Liberu\BrowserGame\Accounts\Events\AccountEmailVerified;
 use Liberu\BrowserGame\Accounts\Events\AccountLifecycleChanged;
 use Liberu\BrowserGame\Accounts\Events\AccountRecoveryIssued;
 use Liberu\BrowserGame\Accounts\Events\AccountsDefined;
@@ -53,6 +54,19 @@ final class AccountsManager
             'email' => $email,
             'username' => $username,
         ]);
+
+        return $account->refresh();
+    }
+
+    public function verifyEmail(AccountsRecord $account): AccountsRecord
+    {
+        if ($account->email === null) {
+            throw ValidationException::withMessages(['email' => 'An email address is required before verification.']);
+        }
+        if ($account->email_verified_at === null) {
+            $account->update(['email_verified_at' => now()]);
+            AccountEmailVerified::dispatch((string) $account->getKey(), (string) $account->email);
+        }
 
         return $account->refresh();
     }
@@ -113,6 +127,16 @@ final class AccountsManager
         return $record->refresh();
     }
 
+    public function revokeAllSessions(AccountsRecord $account, ?string $actorId = null): int
+    {
+        $sessions = $account->sessions()->whereNull('revoked_at')->get();
+        foreach ($sessions as $session) {
+            $this->revokeSession($account, $session, $actorId);
+        }
+
+        return $sessions->count();
+    }
+
     /** @return array{recovery: AccountRecovery, token: string} */
     public function issueRecovery(AccountsRecord $account, int $minutes = 30): array
     {
@@ -143,11 +167,17 @@ final class AccountsManager
 
     public function resolveSession(string $token): ?AccountSession
     {
-        return AccountSession::query()->with('account')
+        $session = AccountSession::query()->with('account')
             ->where('token_hash', hash('sha512', $token))
             ->whereNull('revoked_at')
             ->where(fn ($query) => $query->whereNull('expires_at')->orWhere('expires_at', '>', now()))
             ->first();
+        if ($session === null || $session->account->status !== 'active' || $this->isBanned($session->account)) {
+            return null;
+        }
+        $session->update(['last_seen_at' => now()]);
+
+        return $session->refresh();
     }
 
     public function ban(AccountsRecord $account, string $reason, ?string $endsAt = null, ?string $actorId = null): AccountBan
@@ -206,6 +236,26 @@ final class AccountsManager
             ['account_id' => $account->getKey()],
             ['deletion_requested_at' => now()],
         );
+    }
+
+    public function completeDeletion(AccountsRecord $account, ?string $actorId = null): AccountPrivacy
+    {
+        $privacy = DB::transaction(function () use ($account): AccountPrivacy {
+            $privacy = AccountPrivacy::query()->whereKey($account->getKey())->lockForUpdate()->firstOrCreate(
+                ['account_id' => $account->getKey()],
+                ['deletion_requested_at' => now()],
+            );
+            if ($privacy->deletion_completed_at === null) {
+                $privacy->update(['deletion_requested_at' => $privacy->deletion_requested_at ?? now(), 'deletion_completed_at' => now()]);
+                $account->update(['name' => 'Deleted account', 'email' => null, 'username' => null, 'status' => 'closed', 'closed_at' => now()]);
+                $account->sessions()->whereNull('revoked_at')->update(['revoked_at' => now()]);
+            }
+
+            return $privacy->refresh();
+        });
+        AccountLifecycleChanged::dispatch((string) $account->getKey(), 'deleted', $actorId);
+
+        return $privacy;
     }
 
     private function changeStatus(AccountsRecord $account, string $status, ?string $actorId): AccountsRecord
