@@ -36,10 +36,16 @@ final class CollectionsController extends Controller
 
     public function record(Request $request, CollectionsRecord $collections): JsonResponse
     {
-        $validated = $request->validate(['entry_key' => ['required', 'string', 'max:128'], 'quantity' => ['nullable', 'integer', 'min:1']]);
-        $progress = app(CollectionsManager::class)->record((string) $request->user()->getAuthIdentifier(), $collections, $validated['entry_key'], $validated['quantity'] ?? 1);
+        $teamId = $request->user()?->currentTeam?->getKey();
+        $collections = app(CollectionsQuery::class)->visible(null, $teamId === null ? null : (string) $teamId)->whereKey($collections->getKey())->firstOrFail();
+        $validated = $request->validate(['entry_key' => ['required', 'string', 'max:128'], 'quantity' => ['nullable', 'integer', 'min:1'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
+        $progress = app(CollectionsManager::class)->record((string) $request->user()->getAuthIdentifier(), $collections, $validated['entry_key'], $validated['quantity'] ?? 1, $validated['idempotency_key'] ?? $request->header('Idempotency-Key'));
 
-        return response()->json(['data' => $progress], 201);
+        return response()->json(['data' => [
+            'id' => (string) $progress->getKey(),
+            'type' => 'browser-game-collection-progress',
+            'attributes' => $progress->only(['collection_id', 'entry_key', 'quantity', 'completion_count', 'completed_at', 'reward_claimed_at', 'data']),
+        ]], 201);
     }
 
     private function resource(Model $collections): array

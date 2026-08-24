@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\BrowserGame\CollectionsFilament\Resources;
 
 use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -22,7 +23,13 @@ final class CollectionsResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([
+            TextInput::make('name')->required()->maxLength(255),
+            Select::make('kind')->required()->options(['achievement' => 'Achievement', 'title' => 'Title', 'reputation' => 'Reputation', 'pet' => 'Pet', 'mount' => 'Mount', 'housing' => 'Housing', 'cosmetic' => 'Cosmetic']),
+            Select::make('status')->required()->options(['active' => 'Active', 'paused' => 'Paused', 'archived' => 'Archived']),
+            TextInput::make('team_id'),
+            KeyValue::make('data'),
+        ]);
     }
 
     public static function table(Table $table): Table

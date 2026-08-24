@@ -47,7 +47,7 @@ paths:
       summary: Record authenticated actor collection progress
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/Id' }]
-      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [entry_key], properties: { entry_key: { type: string }, quantity: { type: integer, minimum: 1 } } } } } }
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [entry_key], properties: { entry_key: { type: string }, quantity: { type: integer, minimum: 1 }, idempotency_key: { type: string, maxLength: 128 } } } } } }
       responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   parameters:

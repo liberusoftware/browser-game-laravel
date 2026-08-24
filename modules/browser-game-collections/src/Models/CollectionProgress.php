@@ -15,7 +15,7 @@ final class CollectionProgress extends Model
 
     protected function casts(): array
     {
-        return ['quantity' => 'integer', 'completed_at' => 'datetime', 'data' => 'array'];
+        return ['quantity' => 'integer', 'completion_count' => 'integer', 'completed_at' => 'datetime', 'reward_claimed_at' => 'datetime', 'data' => 'array'];
     }
 
     public function collection(): BelongsTo
