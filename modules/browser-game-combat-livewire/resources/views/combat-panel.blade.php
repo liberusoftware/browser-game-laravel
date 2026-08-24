@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-combat-heading"><h2 id="browser-game-combat-heading">Combat</h2>@forelse ($battles as $battle)<article><h3>{{ $battle->actor_id }} vs {{ $battle->opponent_id }}</h3><p>{{ $battle->status }} · turn {{ $battle->turn }}</p></article>@empty<p role="status">No combat is available.</p>@endforelse</section>

@@ -1,0 +1,38 @@
+openapi: 3.1.0
+info:
+  title: browser game combat API
+  version: 1.0.0
+paths:
+  /api/v1/browser-game/combat:
+    get:
+      operationId: browser.game.combat.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/ResourceCollection'}}
+    post:
+      operationId: browser.game.combat.create
+      security: [{sanctum: []}]
+      parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}]
+      responses: {'201': {$ref: '#/components/responses/Resource'}}
+  /api/v1/browser-game/combat/{id}:
+    get:
+      operationId: browser.game.combat.get
+      security: [{sanctum: []}]
+      parameters: [{'$ref': '#/components/parameters/Id'}]
+      responses: {'200': {$ref: '#/components/responses/Resource'}}
+  /api/v1/browser-game/combat/{id}/actions:
+    post:
+      operationId: browser.game.combat.action
+      security: [{sanctum: []}]
+      parameters: [{'$ref': '#/components/parameters/Id'}, {'$ref': '#/components/parameters/IdempotencyKey'}]
+      responses: {'200': {$ref: '#/components/responses/Resource'}}
+components:
+  parameters:
+    Id: {name: id, in: path, required: true, schema: {type: string}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 128}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  schemas:
+    BrowserGameCombatResource: {type: object, required: [id, type, attributes], properties: {id: {type: string}, type: {type: string, const: browser-game-combat}, attributes: {type: object, properties: {actor_id: {type: string}, opponent_id: {type: string}, status: {type: string}, turn: {type: integer}, state: {type: object, additionalProperties: true}}}}}
+    ResourceCollection: {type: object, required: [data], properties: {data: {type: array, items: {$ref: '#/components/schemas/BrowserGameCombatResource'}}}}
+  responses:
+    Resource: {description: Authorized combat resource, content: {application/json: {schema: {$ref: '#/components/schemas/BrowserGameCombatResource'}}}}
+    ResourceCollection: {description: Authorized combat resources, content: {application/json: {schema: {$ref: '#/components/schemas/ResourceCollection'}}}}

@@ -263,6 +263,26 @@
             "type": "path",
             "url": "modules/browser-game-world-livewire",
             "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat-livewire",
+            "options": {"symlink": false}
         }
     ],
     "require": {
@@ -305,6 +325,10 @@
         "liberusoftware/module-browser-game-world-api": "^1.0",
         "liberusoftware/module-browser-game-world-filament": "^1.0",
         "liberusoftware/module-browser-game-world-livewire": "^1.0",
+        "liberusoftware/module-browser-game-combat": "^1.0",
+        "liberusoftware/module-browser-game-combat-api": "^1.0",
+        "liberusoftware/module-browser-game-combat-filament": "^1.0",
+        "liberusoftware/module-browser-game-combat-livewire": "^1.0",
         "liberusoftware/module-manager-filament": "^1.1",
         "liberusoftware/identity-core": "^1.0",
         "liberusoftware/identity-core-filament": "^1.0",

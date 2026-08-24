@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f234db329ed177f33b24a1592e5fb9ba",
+    "content-hash": "64ea1fcb28cadfa6af1842041e07a31b",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6481,6 +6481,181 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Characters.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-combat",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-combat",
+                "reference": "78017c9acf5efee1b30b0418296c6be5c7adee61"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-combat"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\Combat\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\Combat\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Browser Game combat turns, abilities, effects, cooldowns, enemies, loot, logs, and simulation.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-combat-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-combat-api",
+                "reference": "ef9aa52e76957d1b0034696f5ce8046f88a52e78"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-combat": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-combat-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CombatApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Combat.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-combat-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-combat-filament",
+                "reference": "48830115f5585a7f0e7251b19865cbc58ad238e6"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-combat": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-combat-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CombatFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Combat.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-combat-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-combat-livewire",
+                "reference": "93903c74ffcb156a96a5c4e0be647d5d1a5d0f07"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-combat": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-combat-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CombatLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Combat.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
