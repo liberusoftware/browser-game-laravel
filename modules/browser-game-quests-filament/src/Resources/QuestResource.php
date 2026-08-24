@@ -6,6 +6,7 @@ namespace Liberu\BrowserGame\QuestsFilament\Resources;
 
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -22,7 +23,7 @@ final class QuestResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('slug')->required(), TextInput::make('storyline'), TextInput::make('status')->required(), Textarea::make('objectives')->json()->required(), Textarea::make('prerequisites')->json(), Textarea::make('branches')->json(), Textarea::make('dialogue')->json(), Textarea::make('rewards')->json()]);
+        return $schema->components([TextInput::make('name')->required(), TextInput::make('slug')->required(), TextInput::make('storyline'), TextInput::make('status')->required(), Toggle::make('repeatable'), Textarea::make('objectives')->json()->required(), Textarea::make('prerequisites')->json(), Textarea::make('branches')->json(), Textarea::make('dialogue')->json(), Textarea::make('rewards')->json()]);
     }
 
     public static function table(Table $table): Table

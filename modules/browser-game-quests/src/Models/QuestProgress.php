@@ -21,6 +21,6 @@ final class QuestProgress extends Model
 
     protected function casts(): array
     {
-        return ['progress' => 'array'];
+        return ['progress' => 'array', 'accepted_at' => 'datetime', 'completed_at' => 'datetime', 'reward_claimed_at' => 'datetime', 'completion_count' => 'integer'];
     }
 }
