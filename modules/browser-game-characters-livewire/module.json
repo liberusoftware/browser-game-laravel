@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-characters-livewire",
+  "display_name": "Browser Game Characters Livewire",
+  "description": "Accessible server-driven character progression surface.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\CharactersLivewire\\CharactersLivewireServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-characters": "^1.0"}},
+  "capabilities": ["browser-game.characters.livewire"],
+  "default_enabled": false,
+  "features": ["Character progression", "Health and level display", "Accessible feedback"]
+}

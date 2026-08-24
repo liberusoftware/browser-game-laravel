@@ -1,0 +1,29 @@
+openapi: 3.1.0
+info: {title: Browser Game Characters API, version: 1.0.0}
+paths:
+  /api/v1/browser-game/characters:
+    get: {operationId: browser.game.characters.list, security: [{sanctum: []}], responses: {'200': {description: Authorized character collection}}}
+    post:
+      operationId: browser.game.characters.create
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CharacterRequest'}}}}
+      responses: {'201': {description: Character created}}
+  /api/v1/browser-game/characters/{character}/respec:
+    post:
+      operationId: browser.game.characters.respec
+      security: [{sanctum: []}]
+      parameters: [{name: character, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {'200': {description: Character respecified}}
+components:
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  schemas:
+    CharacterRequest:
+      type: object
+      required: [name, race, class]
+      properties:
+        name: {type: string, maxLength: 120}
+        race: {type: string, maxLength: 80}
+        class: {type: string, maxLength: 80}
+        background: {type: string, nullable: true}
+        statistics: {type: object, additionalProperties: {type: integer}}
+        skills: {type: object, additionalProperties: {type: integer}}

@@ -223,6 +223,26 @@
             "type": "path",
             "url": "modules/browser-game-game-core-livewire",
             "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters-livewire",
+            "options": {"symlink": false}
         }
     ],
     "require": {
@@ -257,6 +277,10 @@
         "liberusoftware/module-browser-game-game-core-api": "^1.0",
         "liberusoftware/module-browser-game-game-core-filament": "^1.0",
         "liberusoftware/module-browser-game-game-core-livewire": "^1.0",
+        "liberusoftware/module-browser-game-characters": "^1.0",
+        "liberusoftware/module-browser-game-characters-api": "^1.0",
+        "liberusoftware/module-browser-game-characters-filament": "^1.0",
+        "liberusoftware/module-browser-game-characters-livewire": "^1.0",
         "liberusoftware/module-manager-filament": "^1.1",
         "liberusoftware/identity-core": "^1.0",
         "liberusoftware/identity-core-filament": "^1.0",

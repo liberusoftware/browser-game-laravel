@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-characters",
+  "display_name": "Browser Game Characters",
+  "description": "Character creation, identity traits, progression, statistics, skills, health, and respec.",
+  "version": "1.0.0",
+  "category": "capability",
+  "provider": "Liberu\\BrowserGame\\Characters\\CharactersServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0"},
+  "suggests": {"liberusoftware/audit": "^1.0", "liberusoftware/observability": "^1.0"},
+  "capabilities": ["browser-game.characters"],
+  "default_enabled": false,
+  "features": ["Character creation", "Race class background", "Statistics and skills", "Experience and level", "Health", "Respec"]
+}
