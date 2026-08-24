@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64ea1fcb28cadfa6af1842041e07a31b",
+    "content-hash": "24f2ef70ac721b47e8d1104687109e0e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6847,6 +6847,49 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Game Core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-quests",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-quests",
+                "reference": "c4cbfc4a37c1a8f21e1d97b25e884af3d1f77fdc"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-quests"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\Quests\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Browser Game quest storylines and progress.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
