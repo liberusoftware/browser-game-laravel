@@ -102,6 +102,57 @@ paths:
           description: Deletion request recorded.
         '422':
           $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{account}/age-region:
+    post:
+      operationId: browser.game.accounts.age_region
+      summary: Set account age and region policy data
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, properties: { birth_year: { type: integer }, region: { type: string } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/privacy:
+    put:
+      operationId: browser.game.accounts.privacy
+      summary: Update account privacy preferences
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/deletion-request:
+    post:
+      operationId: browser.game.accounts.deletion_request
+      summary: Request account deletion
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '202': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/sessions:
+    get:
+      operationId: browser.game.accounts.sessions
+      summary: List account sessions
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/recovery:
+    post:
+      operationId: browser.game.accounts.recovery.issue
+      summary: Issue an account recovery request
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '429': { $ref: '#/components/responses/TooManyRequests' } }
+  /api/v1/browser-game/accounts/{account}/sessions/{session}/revoke:
+    post:
+      operationId: browser.game.accounts.sessions.revoke
+      summary: Revoke an account session
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { name: session, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '204': { description: Session revoked }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/recovery/consume:
+    post:
+      operationId: browser.game.accounts.recovery.consume
+      summary: Consume an account recovery token
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [token], properties: { token: { type: string }, password: { type: string, format: password } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   parameters:
     Id:

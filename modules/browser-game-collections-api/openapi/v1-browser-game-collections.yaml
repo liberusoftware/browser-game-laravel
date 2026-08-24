@@ -41,6 +41,14 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/collections/{collection}/progress:
+    post:
+      operationId: browser.game.collections.progress
+      summary: Record authenticated actor collection progress
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [entry_key], properties: { entry_key: { type: string }, quantity: { type: integer, minimum: 1 } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   parameters:
     Id:
@@ -141,6 +149,12 @@ components:
             $ref: '#/components/schemas/Problem'
     TooManyRequests:
       description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: Request validation failed.
       content:
         application/problem+json:
           schema:
