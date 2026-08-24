@@ -90,6 +90,8 @@ class GameApiAuthorizationTest extends TestCase
             ->assertJsonPath('data.id', (string) $visible->getKey());
 
         $this->getJson('/api/v1/browser-game/accounts/'.$hidden->getKey())
-            ->assertNotFound();
+            ->assertNotFound()
+            ->assertHeader('Content-Type', 'application/problem+json')
+            ->assertJsonPath('status', 404);
     }
 }
