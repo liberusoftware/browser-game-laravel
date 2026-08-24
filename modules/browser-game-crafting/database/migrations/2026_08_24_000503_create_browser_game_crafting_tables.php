@@ -19,7 +19,7 @@ return new class() extends Migration
             $table->text('description')->nullable();
             $table->string('profession')->nullable()->index();
             $table->unsignedInteger('min_level')->default(1);
-            $table->unsignedDecimal('success_rate', 5, 2)->default(100);
+            $table->decimal('success_rate', 5, 2)->default(100);
             $table->unsignedInteger('crafting_time_seconds')->default(0);
             $table->json('materials')->nullable();
             $table->json('outputs')->nullable();

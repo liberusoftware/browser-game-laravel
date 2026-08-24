@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Liberu\BrowserGame\Crafting\Models\CraftingProfession;
 use Liberu\BrowserGame\Crafting\Models\CraftingQueue;
 use Liberu\BrowserGame\Crafting\Models\CraftingRecord;
+use Liberu\BrowserGame\Crafting\Models\CraftingResource;
 use Liberu\BrowserGame\Crafting\Queries\CraftingQuery;
 use Liberu\BrowserGame\Crafting\Support\CraftingManager;
 
@@ -41,10 +42,10 @@ final class CraftingController extends Controller
             'recipe_id' => ['required', 'uuid'],
             'quantity' => ['required', 'integer', 'min:1', 'max:1000'],
             'quality' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'idempotency_key' => ['nullable', 'string', 'max:120'],
+            'idempotency_key' => ['nullable', 'string', 'max:191'],
         ]);
         $recipe = CraftingRecord::query()->whereKey($data['recipe_id'])->where('status', 'active')->firstOrFail();
-        $queue = app(CraftingManager::class)->queueCraft((string) $request->user()->getAuthIdentifier(), $recipe, (int) $data['quantity'], (int) ($data['quality'] ?? 100), $data['idempotency_key'] ?? null);
+        $queue = app(CraftingManager::class)->queueCraft((string) $request->user()->getAuthIdentifier(), $recipe, (int) $data['quantity'], (int) ($data['quality'] ?? 100), $this->operationKey($request, $data['idempotency_key'] ?? null));
 
         return response()->json(['data' => $this->queueResource($queue)], 202);
     }
@@ -92,6 +93,17 @@ final class CraftingController extends Controller
         return response()->json(['data' => CraftingProfession::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->get()->map(fn (CraftingProfession $profession): array => ['id' => (string) $profession->getKey(), 'type' => 'browser-game-crafting-profession', 'attributes' => $profession->only(['profession', 'level', 'experience'])])->values()]);
     }
 
+    public function resources(Request $request): JsonResponse
+    {
+        $resources = CraftingResource::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->orderBy('resource_key')->get();
+
+        return response()->json(['data' => $resources->map(fn (CraftingResource $resource): array => [
+            'id' => (string) $resource->getKey(),
+            'type' => 'browser-game-crafting-resource',
+            'attributes' => ['resource_key' => $resource->resource_key, 'quantity' => $resource->quantity],
+        ])->values()]);
+    }
+
     private function resource(CraftingRecord $crafting): array
     {
         return ['id' => (string) $crafting->getKey(), 'type' => 'browser-game-crafting-recipe', 'attributes' => [
@@ -116,5 +128,12 @@ final class CraftingController extends Controller
     private function assertOwner(Request $request, CraftingQueue $queue): void
     {
         abort_unless($queue->actor_id === (string) $request->user()->getAuthIdentifier(), 404);
+    }
+
+    private function operationKey(Request $request, ?string $bodyKey = null): ?string
+    {
+        $key = $request->header('Idempotency-Key') ?: $bodyKey;
+
+        return is_string($key) && trim($key) !== '' ? substr(trim($key), 0, 191) : null;
     }
 }

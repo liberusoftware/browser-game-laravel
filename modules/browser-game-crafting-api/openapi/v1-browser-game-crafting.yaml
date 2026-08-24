@@ -29,6 +29,8 @@ paths:
       summary: Queue a crafting job
       security:
         - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -40,7 +42,7 @@ paths:
                 recipe_id: { type: string, format: uuid }
                 quantity: { type: integer, minimum: 1, maximum: 1000 }
                 quality: { type: integer, minimum: 0, maximum: 100 }
-                idempotency_key: { type: string, maxLength: 120 }
+                idempotency_key: { type: string, maxLength: 191, deprecated: true, description: Use the Idempotency-Key header. }
       responses:
         '202': { description: Crafting job queued }
         '422': { $ref: '#/components/responses/ValidationError' }
@@ -52,6 +54,7 @@ paths:
         - sanctum: []
       responses:
         '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
   /api/v1/browser-game/crafting/queue/{queue}/complete:
     post:
       operationId: browser.game.crafting.queue.complete
@@ -98,6 +101,12 @@ paths:
       summary: List authenticated crafting professions
       security: [{ sanctum: [] }]
       responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/crafting/resources:
+    get:
+      operationId: browser.game.crafting.resources
+      summary: List the authenticated player's crafting resources
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
   /api/v1/browser-game/crafting/queue/{queue}/cancel:
     post:
       operationId: browser.game.crafting.queue.cancel
@@ -131,6 +140,13 @@ components:
         minimum: 1
         maximum: 100
         default: 25
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 191
   securitySchemes:
     sanctum:
       type: http
@@ -200,6 +216,12 @@ components:
             $ref: '#/components/schemas/ResourceCollection'
     Unauthorized:
       description: Authentication is required.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: The request failed domain validation.
       content:
         application/problem+json:
           schema:

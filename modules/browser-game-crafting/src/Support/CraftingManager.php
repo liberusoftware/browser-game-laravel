@@ -7,10 +7,13 @@ namespace Liberu\BrowserGame\Crafting\Support;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Liberu\BrowserGame\Crafting\Events\CraftingCancelled;
 use Liberu\BrowserGame\Crafting\Events\CraftingCompleted;
 use Liberu\BrowserGame\Crafting\Events\CraftingDefined;
 use Liberu\BrowserGame\Crafting\Events\CraftingDiscovered;
+use Liberu\BrowserGame\Crafting\Events\CraftingFailed;
 use Liberu\BrowserGame\Crafting\Events\CraftingQueued;
+use Liberu\BrowserGame\Crafting\Events\CraftingSalvaged;
 use Liberu\BrowserGame\Crafting\Models\CraftingDiscovery;
 use Liberu\BrowserGame\Crafting\Models\CraftingOutput;
 use Liberu\BrowserGame\Crafting\Models\CraftingProfession;
@@ -84,24 +87,35 @@ final class CraftingManager
         if ($amount < 0) {
             throw ValidationException::withMessages(['experience' => 'Experience cannot be negative.']);
         }
-        $current = CraftingProfession::query()->firstOrCreate(
-            ['actor_id' => $actorId, 'profession' => $profession],
-            ['level' => 1, 'experience' => 0],
-        );
-        $experience = (int) $current->experience + $amount;
-        $current->update(['experience' => $experience, 'level' => max(1, intdiv($experience, 100) + 1)]);
 
-        return $current->refresh();
+        return DB::transaction(function () use ($actorId, $profession, $amount): CraftingProfession {
+            $current = CraftingProfession::query()->where('actor_id', $actorId)->where('profession', $profession)->lockForUpdate()->first();
+            if ($current === null) {
+                $current = CraftingProfession::query()->create(['actor_id' => $actorId, 'profession' => $profession, 'level' => 1, 'experience' => 0]);
+            }
+            $experience = (int) $current->experience + $amount;
+            $current->update(['experience' => $experience, 'level' => max(1, intdiv($experience, 100) + 1)]);
+
+            return $current->refresh();
+        });
     }
 
     public function discover(string $actorId, CraftingRecord $recipe): CraftingDiscovery
     {
         $this->required($actorId, 'actor_id');
-        $discovery = CraftingDiscovery::query()->firstOrCreate(
-            ['actor_id' => $actorId, 'recipe_id' => $recipe->getKey()],
-            ['discovered_at' => now()],
-        );
-        CraftingDiscovered::dispatch((string) $recipe->getKey(), $actorId);
+        $created = false;
+        $discovery = DB::transaction(function () use ($actorId, $recipe, &$created): CraftingDiscovery {
+            $discovery = CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->lockForUpdate()->first();
+            if ($discovery !== null) {
+                return $discovery;
+            }
+            $created = true;
+
+            return CraftingDiscovery::query()->create(['actor_id' => $actorId, 'recipe_id' => $recipe->getKey(), 'discovered_at' => now()]);
+        });
+        if ($created) {
+            CraftingDiscovered::dispatch((string) $recipe->getKey(), $actorId);
+        }
 
         return $discovery;
     }
@@ -114,15 +128,18 @@ final class CraftingManager
         if ($recipe->status !== 'active' || $actorLevel < (int) $recipe->min_level) {
             throw ValidationException::withMessages(['recipe' => 'The recipe is unavailable at the current level.']);
         }
-        if ($idempotencyKey !== null && ($existing = CraftingQueue::query()->where('idempotency_key', $idempotencyKey)->first()) !== null) {
-            return $existing;
-        }
         $requirements = (array) $recipe->discovery_requirements;
         if (($requirements['required'] ?? false) && ! CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->exists()) {
             throw ValidationException::withMessages(['recipe' => 'The recipe has not been discovered.']);
         }
 
         return DB::transaction(function () use ($actorId, $recipe, $quantity, $quality, $idempotencyKey): CraftingQueue {
+            if ($idempotencyKey !== null) {
+                $existing = CraftingQueue::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first();
+                if ($existing !== null) {
+                    return $existing->load('recipe');
+                }
+            }
             $materials = (array) $recipe->materials;
             foreach ($materials as $key => $required) {
                 $this->consumeResource($actorId, (string) $key, (int) $required * $quantity);
@@ -148,16 +165,18 @@ final class CraftingManager
 
     public function complete(CraftingQueue $queue): CraftingQueue
     {
-        if ($queue->status !== 'queued') {
-            return $queue->refresh();
-        }
-        if ($queue->completes_at !== null && $queue->completes_at->isFuture()) {
-            throw ValidationException::withMessages(['queue' => 'The crafting queue has not completed yet.']);
-        }
-        $updated = DB::transaction(function () use ($queue): CraftingQueue {
+        $outcome = 'unchanged';
+        $updated = DB::transaction(function () use ($queue, &$outcome): CraftingQueue {
             $queue = CraftingQueue::query()->lockForUpdate()->with('recipe')->findOrFail($queue->getKey());
+            if ($queue->status !== 'queued') {
+                return $queue;
+            }
+            if ($queue->completes_at !== null && $queue->completes_at->isFuture()) {
+                throw ValidationException::withMessages(['queue' => 'The crafting queue has not completed yet.']);
+            }
             if (! (bool) (($queue->metadata ?? [])['success'] ?? false)) {
                 $queue->update(['status' => 'failed', 'completed_at' => now(), 'failure_reason' => 'Crafting failed.']);
+                $outcome = 'failed';
 
                 return $queue->refresh();
             }
@@ -176,12 +195,15 @@ final class CraftingManager
                 ]);
             }
             $queue->update(['status' => 'completed', 'completed_at' => now()]);
+            $this->gainProfessionExperienceLocked($queue->actor_id, (string) ($queue->recipe->profession ?? 'general'), $queue->quantity);
+            $outcome = 'completed';
 
             return $queue->refresh();
         });
-        if ($updated->status === 'completed') {
-            $this->gainProfessionExperience($updated->actor_id, (string) ($updated->recipe->profession ?? 'general'), $updated->quantity);
+        if ($outcome === 'completed') {
             CraftingCompleted::dispatch((string) $updated->getKey(), $updated->actor_id, $updated->quality);
+        } elseif ($outcome === 'failed') {
+            CraftingFailed::dispatch((string) $updated->getKey(), $updated->actor_id, (string) $updated->failure_reason);
         }
 
         return $updated->load(['recipe', 'outputs']);
@@ -189,32 +211,61 @@ final class CraftingManager
 
     public function cancel(CraftingQueue $queue): CraftingQueue
     {
-        if ($queue->status !== 'queued') {
-            return $queue->refresh();
-        }
-
-        return DB::transaction(function () use ($queue): CraftingQueue {
+        $cancelled = false;
+        $updated = DB::transaction(function () use ($queue, &$cancelled): CraftingQueue {
+            $queue = CraftingQueue::query()->lockForUpdate()->findOrFail($queue->getKey());
+            if ($queue->status !== 'queued') {
+                return $queue;
+            }
             foreach ((array) (($queue->metadata ?? [])['materials'] ?? []) as $key => $amount) {
                 $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity);
             }
             $queue->update(['status' => 'cancelled', 'completed_at' => now()]);
+            $cancelled = true;
 
             return $queue->refresh();
         });
+        if ($cancelled) {
+            CraftingCancelled::dispatch((string) $updated->getKey(), $updated->actor_id);
+        }
+
+        return $updated;
     }
 
     public function salvage(CraftingQueue $queue): CraftingQueue
     {
-        if (! in_array($queue->status, ['completed', 'failed'], true)) {
-            throw ValidationException::withMessages(['queue' => 'Only completed or failed crafting can be salvaged.']);
-        }
-        $recipe = $queue->load('recipe')->recipe;
-        foreach ((array) $recipe->salvage as $key => $amount) {
-            $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity);
-        }
-        $queue->update(['status' => 'salvaged']);
+        $salvaged = false;
+        $updated = DB::transaction(function () use ($queue, &$salvaged): CraftingQueue {
+            $queue = CraftingQueue::query()->lockForUpdate()->with('recipe')->findOrFail($queue->getKey());
+            if (! in_array($queue->status, ['completed', 'failed'], true)) {
+                if ($queue->status === 'salvaged') {
+                    return $queue;
+                }
+                throw ValidationException::withMessages(['queue' => 'Only completed or failed crafting can be salvaged.']);
+            }
+            foreach ((array) $queue->recipe->salvage as $key => $amount) {
+                $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity);
+            }
+            $queue->update(['status' => 'salvaged']);
+            $salvaged = true;
 
-        return $queue->refresh();
+            return $queue->refresh();
+        });
+        if ($salvaged) {
+            CraftingSalvaged::dispatch((string) $updated->getKey(), $updated->actor_id);
+        }
+
+        return $updated;
+    }
+
+    private function gainProfessionExperienceLocked(string $actorId, string $profession, int $amount): void
+    {
+        $current = CraftingProfession::query()->where('actor_id', $actorId)->where('profession', $profession)->lockForUpdate()->first();
+        if ($current === null) {
+            $current = CraftingProfession::query()->create(['actor_id' => $actorId, 'profession' => $profession, 'level' => 1, 'experience' => 0]);
+        }
+        $experience = (int) $current->experience + $amount;
+        $current->update(['experience' => $experience, 'level' => max(1, intdiv($experience, 100) + 1)]);
     }
 
     private function consumeResource(string $actorId, string $resourceKey, int $quantity): void

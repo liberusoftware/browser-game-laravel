@@ -16,11 +16,14 @@ final class CraftingCatalog extends Component
 
     public int $quality = 100;
 
+    public ?string $statusMessage = null;
+
     public function queue(string $recipeId): void
     {
         $this->validate(['quantity' => ['required', 'integer', 'min:1', 'max:1000'], 'quality' => ['required', 'integer', 'min:0', 'max:100']]);
         $recipe = CraftingRecord::query()->whereKey($recipeId)->where('status', 'active')->firstOrFail();
         app(CraftingManager::class)->queueCraft((string) auth()->id(), $recipe, $this->quantity, $this->quality);
+        $this->statusMessage = 'Crafting queued.';
         $this->dispatch('crafting-queued');
     }
 
@@ -28,7 +31,24 @@ final class CraftingCatalog extends Component
     {
         $queue = CraftingQueue::query()->whereKey($queueId)->where('actor_id', (string) auth()->id())->firstOrFail();
         app(CraftingManager::class)->complete($queue);
+        $this->statusMessage = 'Crafting completed.';
         $this->dispatch('crafting-completed');
+    }
+
+    public function cancel(string $queueId): void
+    {
+        $queue = CraftingQueue::query()->whereKey($queueId)->where('actor_id', (string) auth()->id())->firstOrFail();
+        app(CraftingManager::class)->cancel($queue);
+        $this->statusMessage = 'Crafting cancelled and materials refunded.';
+        $this->dispatch('crafting-cancelled');
+    }
+
+    public function salvage(string $queueId): void
+    {
+        $queue = CraftingQueue::query()->whereKey($queueId)->where('actor_id', (string) auth()->id())->firstOrFail();
+        app(CraftingManager::class)->salvage($queue);
+        $this->statusMessage = 'Crafting output salvaged.';
+        $this->dispatch('crafting-salvaged');
     }
 
     public function render(): mixed
