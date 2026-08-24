@@ -288,6 +288,21 @@
             "type": "path",
             "url": "modules/browser-game-quests",
             "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests-livewire",
+            "options": {"symlink": false}
         }
     ],
     "require": {
@@ -335,6 +350,9 @@
         "liberusoftware/module-browser-game-combat-filament": "^1.0",
         "liberusoftware/module-browser-game-combat-livewire": "^1.0",
         "liberusoftware/module-browser-game-quests": "^1.0",
+        "liberusoftware/module-browser-game-quests-api": "^1.0",
+        "liberusoftware/module-browser-game-quests-filament": "^1.0",
+        "liberusoftware/module-browser-game-quests-livewire": "^1.0",
         "liberusoftware/module-manager-filament": "^1.1",
         "liberusoftware/identity-core": "^1.0",
         "liberusoftware/identity-core-filament": "^1.0",

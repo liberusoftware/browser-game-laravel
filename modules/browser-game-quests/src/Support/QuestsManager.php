@@ -19,7 +19,7 @@ final class QuestsManager
             throw ValidationException::withMessages(['quest' => 'Name, slug, and objectives are required.']);
         }
 
-return Quest::query()->create(['id' => (string) Str::uuid(), 'name' => $name, 'slug' => $slug, 'objectives' => $objectives, 'rewards' => $rewards, 'repeatable' => $repeatable, 'tenant_id' => $tenantId, 'team_id' => $teamId, 'status' => 'active']);
+        return Quest::query()->create(['id' => (string) Str::uuid(), 'name' => $name, 'slug' => $slug, 'objectives' => $objectives, 'rewards' => $rewards, 'repeatable' => $repeatable, 'tenant_id' => $tenantId, 'team_id' => $teamId, 'status' => 'active']);
     }
 
     public function progress(Quest $quest, string $actorId, array $progress, string $status = 'in_progress'): QuestProgress

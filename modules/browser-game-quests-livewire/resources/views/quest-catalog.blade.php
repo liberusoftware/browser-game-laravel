@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-quests-heading"><h2 id="browser-game-quests-heading">Quests</h2>@forelse($quests as $quest)<article><h3>{{ $quest->name }}</h3><p>{{ $quest->slug }}</p></article>@empty<p role="status">No quests are available.</p>@endforelse</section>

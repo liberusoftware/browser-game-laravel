@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24f2ef70ac721b47e8d1104687109e0e",
+    "content-hash": "52568aabc0333a1c7e4d95db19cc43f6",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6890,6 +6890,133 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game quest storylines and progress.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-quests-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-quests-api",
+                "reference": "c9382433105a6f1e025da299b2147ed5d6401a1a"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-quests": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-quests-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\QuestsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Quests.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-quests-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-quests-filament",
+                "reference": "da078970a940ce78763a88bceb4bfe3f02510789"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-quests": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-quests-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\QuestsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Quests.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-quests-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-quests-livewire",
+                "reference": "5bf87914b2697c21ab11b46077330adb5c036206"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-quests": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-quests-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\QuestsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Quests.",
             "transport-options": {
                 "symlink": false,
                 "relative": true

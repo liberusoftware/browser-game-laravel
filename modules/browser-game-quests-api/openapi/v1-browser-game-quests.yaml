@@ -1,0 +1,14 @@
+openapi: 3.1.0
+info: {title: browser game quests API, version: 1.0.0}
+paths:
+  /api/v1/browser-game/quests:
+    get: {operationId: browser.game.quests.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/ResourceCollection'}}}
+  /api/v1/browser-game/quests/{id}:
+    get: {operationId: browser.game.quests.get, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/Id'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+  /api/v1/browser-game/quests/{id}/progress:
+    post: {operationId: browser.game.quests.progress, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+components:
+  parameters: {Id: {name: id, in: path, required: true, schema: {type: string}}, IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 128}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  schemas: {BrowserGameQuestsResource: {type: object, required: [id, type, attributes], properties: {id: {type: string}, type: {type: string, const: browser-game-quest}, attributes: {type: object, additionalProperties: true}}}, ResourceCollection: {type: object, required: [data], properties: {data: {type: array, items: {$ref: '#/components/schemas/BrowserGameQuestsResource'}}}}}
+  responses: {Resource: {description: Quest resource, content: {application/json: {schema: {$ref: '#/components/schemas/BrowserGameQuestsResource'}}}}, ResourceCollection: {description: Quest resources, content: {application/json: {schema: {$ref: '#/components/schemas/ResourceCollection'}}}}}
