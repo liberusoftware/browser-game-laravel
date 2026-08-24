@@ -45,6 +45,20 @@ final class CombatController extends Controller
         return response()->json(['data' => ['id' => (string) $action->getKey(), 'type' => 'browser-game-combat-action', 'attributes' => ['turn' => $action->getAttribute('turn'), 'action' => $action->getAttribute('action'), 'value' => $action->getAttribute('value')]]]);
     }
 
+    public function definition(Request $request): JsonResponse
+    {
+        $v = $request->validate(['kind' => ['required', 'string'], 'slug' => ['required', 'string', 'max:120'], 'name' => ['required', 'string', 'max:255'], 'effects' => ['array'], 'data' => ['array'], 'cooldown' => ['integer', 'min:0']]);
+
+        return response()->json(['data' => app(CombatManager::class)->define($v['kind'], $v['slug'], $v['name'], $v['effects'] ?? [], $v['data'] ?? [], $v['cooldown'] ?? 0)], 201);
+    }
+
+    public function simulate(Request $request): JsonResponse
+    {
+        $v = $request->validate(['opponent_id' => ['required', 'string'], 'actions' => ['required', 'array'], 'state' => ['array']]);
+
+        return response()->json(['data' => app(CombatManager::class)->simulate((string) $request->user()->getAuthIdentifier(), $v['opponent_id'], $v['actions'], $v['state'] ?? [])]);
+    }
+
     private function team(Request $request): mixed
     {
         $user = $request->user();

@@ -21,6 +21,6 @@ final class Quest extends Model
 
     protected function casts(): array
     {
-        return ['objectives' => 'array', 'rewards' => 'array', 'repeatable' => 'boolean'];
+        return ['objectives' => 'array', 'prerequisites' => 'array', 'branches' => 'array', 'dialogue' => 'array', 'rewards' => 'array', 'repeatable' => 'boolean'];
     }
 }

@@ -42,6 +42,6 @@ final class GameWorldResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return ['index' => Resources\GameWorldResource\Pages\ListGameWorlds::route('/'), 'create' => Resources\GameWorldResource\Pages\CreateGameWorld::route('/create'), 'edit' => Resources\GameWorldResource\Pages\EditGameWorld::route('/{record}/edit')];
     }
 }

@@ -22,7 +22,16 @@ final class EconomyResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([
+            TextInput::make('name')->required()->maxLength(255),
+            TextInput::make('code')->required()->maxLength(30),
+            TextInput::make('kind')->required()->default('currency'),
+            TextInput::make('precision')->numeric()->minValue(0)->maxValue(6)->default(0),
+            TextInput::make('fee_basis_points')->numeric()->minValue(0)->maxValue(10000)->default(0),
+            TextInput::make('status')->required(),
+            TextInput::make('team_id'),
+            KeyValue::make('data'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +41,10 @@ final class EconomyResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Pages\ListEconomy::route('/'),
+            'create' => Pages\CreateEconomy::route('/create'),
+            'edit' => Pages\EditEconomy::route('/{record}/edit'),
+        ];
     }
 }

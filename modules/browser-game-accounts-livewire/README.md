@@ -1,6 +1,6 @@
 # Browser Game Accounts Livewire
 
-This package provides the livewire implementation for the Browser Game application. It provides the server-driven Livewire integration for the matching core module.
+This package provides the server-driven Livewire integration for the matching core module, including validated identity updates and account deletion requests. Components resolve accounts through the public query boundary and do not own persistence or authorization rules.
 
 ## Installation
 
@@ -13,4 +13,3 @@ The package requires PHP 8.5 and Laravel 13. Enable it through the host applicat
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-

@@ -32,6 +32,10 @@ final class CommerceResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Resources\CommerceResource\Pages\ListCommerce::route('/'),
+            'create' => Resources\CommerceResource\Pages\CreateCommerce::route('/create'),
+            'edit' => Resources\CommerceResource\Pages\EditCommerce::route('/{record}/edit'),
+        ];
     }
 }

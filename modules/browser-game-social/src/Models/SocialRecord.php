@@ -6,6 +6,7 @@ namespace Liberu\BrowserGame\Social\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class SocialRecord extends Model
 {
@@ -22,5 +23,10 @@ final class SocialRecord extends Model
     protected function casts(): array
     {
         return ['data' => 'array'];
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(SocialMembership::class, 'social_id');
     }
 }

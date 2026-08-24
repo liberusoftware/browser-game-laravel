@@ -38,10 +38,22 @@ return new class() extends Migration
             $table->unique(['combat_id', 'idempotency_key']);
             $table->index(['combat_id', 'turn']);
         });
+        Schema::create('browser_game_combat_catalog', function (Blueprint $table): void {
+            $table->uuid('id')->primary();
+            $table->string('kind')->index();
+            $table->string('slug')->unique();
+            $table->string('name');
+            $table->unsignedInteger('cooldown')->default(0);
+            $table->json('effects')->nullable();
+            $table->json('data')->nullable();
+            $table->string('status')->default('active')->index();
+            $table->timestamps();
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('browser_game_combat_catalog');
         Schema::dropIfExists('browser_game_combat_actions');
         Schema::dropIfExists('browser_game_combats');
     }

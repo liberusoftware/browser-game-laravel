@@ -21,6 +21,6 @@ final class ModerationAndAnalyticsRecord extends Model
 
     protected function casts(): array
     {
-        return ['data' => 'array'];
+        return ['data' => 'array', 'value' => 'decimal:6', 'resolved_at' => 'datetime'];
     }
 }

@@ -22,7 +22,7 @@ final class ModerationAndAnalyticsResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([TextInput::make('name')->required(), TextInput::make('kind')->required(), TextInput::make('status')->required(), TextInput::make('target_id'), TextInput::make('team_id'), KeyValue::make('data')]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +32,6 @@ final class ModerationAndAnalyticsResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return ['index' => Resources\ModerationAndAnalyticsResource\Pages\ListModerationAndAnalytics::route('/'), 'create' => Resources\ModerationAndAnalyticsResource\Pages\CreateModerationAndAnalytics::route('/create'), 'edit' => Resources\ModerationAndAnalyticsResource\Pages\EditModerationAndAnalytics::route('/{record}/edit')];
     }
 }

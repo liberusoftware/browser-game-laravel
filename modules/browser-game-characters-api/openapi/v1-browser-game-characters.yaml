@@ -42,6 +42,26 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/stats:
+    post:
+      operationId: browser.game.characters.stats.spend
+      summary: Spend authorized character stat points
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [statistics]
+              properties:
+                statistics: { type: object, additionalProperties: { type: integer, minimum: 0 } }
+      responses:
+        '200': { description: Character statistics updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 components:
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }

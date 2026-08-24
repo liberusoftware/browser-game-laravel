@@ -31,6 +31,6 @@ final class CombatBattleResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return ['index' => Resources\CombatBattleResource\Pages\ListCombatBattles::route('/'), 'create' => Resources\CombatBattleResource\Pages\CreateCombatBattle::route('/create'), 'edit' => Resources\CombatBattleResource\Pages\EditCombatBattle::route('/{record}/edit')];
     }
 }

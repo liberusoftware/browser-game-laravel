@@ -12,7 +12,7 @@ final class CompetitionCatalog extends Component
     public function render(): mixed
     {
         $teamId = auth()->user()?->currentTeam?->getKey();
-        $competition = app(CompetitionQuery::class)->visible(null, $teamId === null ? null : (string) $teamId)->where('status', 'active')->latest()->limit(25)->get();
+        $competition = app(CompetitionQuery::class)->visible(null, $teamId === null ? null : (string) $teamId)->whereIn('status', ['active', 'open'])->latest()->limit(25)->get();
 
         return resolve('view')->make('browser-game-competition-livewire::competition-catalog', ['competition' => $competition]);
     }

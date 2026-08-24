@@ -22,7 +22,27 @@ final class ItemsResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([
+            TextInput::make('name')->required()->maxLength(255),
+            TextInput::make('description')->maxLength(1000),
+            TextInput::make('type')->required()->default('misc'),
+            TextInput::make('rarity')->required()->default('common'),
+            TextInput::make('slot'),
+            TextInput::make('strength_bonus')->numeric()->default(0),
+            TextInput::make('defense_bonus')->numeric()->default(0),
+            TextInput::make('agility_bonus')->numeric()->default(0),
+            TextInput::make('intelligence_bonus')->numeric()->default(0),
+            TextInput::make('health_bonus')->numeric()->default(0),
+            TextInput::make('mana_bonus')->numeric()->default(0),
+            TextInput::make('max_durability')->numeric(),
+            TextInput::make('max_stack')->numeric()->minValue(1),
+            TextInput::make('min_level')->numeric()->required()->default(1),
+            TextInput::make('sell_price')->numeric()->required()->default(0),
+            TextInput::make('buy_price')->numeric()->required()->default(0),
+            TextInput::make('status')->required()->default('active'),
+            TextInput::make('team_id'),
+            KeyValue::make('data'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +52,10 @@ final class ItemsResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Pages\ListItems::route('/'),
+            'create' => Pages\CreateItem::route('/create'),
+            'edit' => Pages\EditItem::route('/{record}/edit'),
+        ];
     }
 }

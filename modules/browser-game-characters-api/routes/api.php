@@ -10,4 +10,5 @@ Route::prefix('api/v1/browser-game/characters')->middleware(['api', 'auth:sanctu
     Route::post('/', [CharactersController::class, 'store'])->name('browser-game.characters.store');
     Route::get('/{character}', [CharactersController::class, 'show'])->name('browser-game.characters.show');
     Route::post('/{character}/respec', [CharactersController::class, 'respec'])->name('browser-game.characters.respec');
+    Route::post('/{character}/stats', [CharactersController::class, 'spendStats'])->name('browser-game.characters.stats');
 });

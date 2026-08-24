@@ -15,7 +15,14 @@ return new class() extends Migration
             $table->string('tenant_id')->nullable()->index();
             $table->string('team_id')->nullable()->index();
             $table->string('name');
+            $table->string('kind')->default('report')->index();
             $table->string('status')->default('active')->index();
+            $table->string('actor_id')->nullable()->index();
+            $table->string('target_id')->nullable()->index();
+            $table->string('severity')->nullable();
+            $table->decimal('value', 20, 6)->nullable();
+            $table->string('idempotency_key')->nullable()->unique();
+            $table->timestamp('resolved_at')->nullable();
             $table->json('data')->nullable();
             $table->timestamps();
         });

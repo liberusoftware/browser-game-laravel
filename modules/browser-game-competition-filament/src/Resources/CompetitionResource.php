@@ -22,7 +22,7 @@ final class CompetitionResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([TextInput::make('name')->required(), TextInput::make('kind')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +32,6 @@ final class CompetitionResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return ['index' => Resources\CompetitionResource\Pages\ListCompetitions::route('/'), 'create' => Resources\CompetitionResource\Pages\CreateCompetition::route('/create'), 'edit' => Resources\CompetitionResource\Pages\EditCompetition::route('/{record}/edit')];
     }
 }

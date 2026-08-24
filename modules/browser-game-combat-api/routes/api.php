@@ -9,4 +9,6 @@ Route::prefix('api/v1/browser-game/combat')->middleware(['api', 'auth:sanctum', 
     Route::get('/{battle}', [CombatController::class, 'show'])->name('browser-game.combat.show');
     Route::post('/', [CombatController::class, 'store'])->name('browser-game.combat.store');
     Route::post('/{battle}/actions', [CombatController::class, 'action'])->name('browser-game.combat.action');
+    Route::post('/definitions', [CombatController::class, 'definition'])->name('browser-game.combat.definition');
+    Route::post('/simulate', [CombatController::class, 'simulate'])->name('browser-game.combat.simulate');
 });

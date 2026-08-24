@@ -22,7 +22,7 @@ final class SocialResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([TextInput::make('name')->required(), TextInput::make('kind')->required(), TextInput::make('status')->required(), TextInput::make('owner_id'), TextInput::make('team_id'), KeyValue::make('data')]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +32,6 @@ final class SocialResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return ['index' => Resources\SocialResource\Pages\ListSocial::route('/'), 'create' => Resources\SocialResource\Pages\CreateSocial::route('/create'), 'edit' => Resources\SocialResource\Pages\EditSocial::route('/{record}/edit')];
     }
 }

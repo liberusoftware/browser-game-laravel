@@ -22,7 +22,16 @@ final class AccountsResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([
+            TextInput::make('name')->required()->maxLength(255),
+            TextInput::make('email')->email()->maxLength(255),
+            TextInput::make('username')->maxLength(50),
+            TextInput::make('region')->maxLength(20),
+            TextInput::make('birth_year')->numeric()->minValue(1900),
+            TextInput::make('status')->required()->in(['active', 'suspended', 'closed']),
+            TextInput::make('team_id'),
+            KeyValue::make('data'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +41,10 @@ final class AccountsResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Pages\ListAccounts::route('/'),
+            'create' => Pages\CreateAccount::route('/create'),
+            'edit' => Pages\EditAccount::route('/{record}/edit'),
+        ];
     }
 }

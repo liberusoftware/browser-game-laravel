@@ -2,5 +2,4 @@
 
 ## 1.0.0 - 2026-08-24
 
-- Initial Browser Game Collections package release.
-
+- Added collection entries, actor progress, completion tracking, and API progress recording.

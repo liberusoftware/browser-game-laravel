@@ -1,6 +1,8 @@
 # Browser Game Items
 
-This package provides the core domain implementation for the Browser Game application. It owns the provider-neutral domain contracts, behavior, persistence, and authorization boundary for this capability.
+This package owns the provider-neutral item catalogue and player inventory boundary for the Browser Game application. Item definitions include type, rarity, equipment slot, stat bonuses, level requirements, and buy/sell values. Inventory mutations are transactional, lock the player/item row, reject invalid quantities, and never depend on an application `Player` model.
+
+The public `ItemsManager` provides `define`, `addToInventory`, `removeFromInventory`, and `inventory`. Presentation packages translate these operations for API and Livewire consumers; Filament manages catalogue records. Marketplace and crafting integrations should use these public operations rather than querying the inventory table directly.
 
 ## Installation
 
@@ -13,4 +15,3 @@ The package requires PHP 8.5 and Laravel 13. Enable it through the host applicat
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-

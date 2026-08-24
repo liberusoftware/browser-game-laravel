@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\LiveOpsApi\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Liberu\BrowserGame\LiveOps\Models\LiveOpsRecord;
 use Liberu\BrowserGame\LiveOps\Queries\LiveOpsQuery;
+use Liberu\BrowserGame\LiveOps\Support\LiveOpsManager;
 
 final class LiveOpsController extends Controller
 {
@@ -18,7 +18,34 @@ final class LiveOpsController extends Controller
         $teamId = $request->user()?->currentTeam?->getKey();
         $items = app(LiveOpsQuery::class)->visible(null, $teamId)->latest()->paginate(min($request->integer('page_size', 25), 100));
 
-        return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
+        return response()->json(['data' => $items->through(fn (LiveOpsRecord $item): array => $this->resource($item))]);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $v = $request->validate(['name' => ['required', 'string', 'max:255'], 'kind' => ['required', 'string'], 'data' => ['array'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
+        $record = app(LiveOpsManager::class)->create($v['name'], $v['kind'], $v['data'] ?? [], null, $request->user()?->currentTeam?->getKey(), $v['idempotency_key'] ?? null);
+
+        return response()->json(['data' => $this->resource($record)], 201);
+    }
+
+    public function publish(LiveOpsRecord $liveOps): JsonResponse
+    {
+        return response()->json(['data' => $this->resource(app(LiveOpsManager::class)->publish($liveOps))]);
+    }
+
+    public function claim(Request $request, LiveOpsRecord $liveOps): JsonResponse
+    {
+        $v = $request->validate(['claim_key' => ['nullable', 'string', 'max:128']]);
+
+        return response()->json(['data' => app(LiveOpsManager::class)->claim((string) $request->user()->getAuthIdentifier(), $liveOps, $v['claim_key'] ?? 'default')], 201);
+    }
+
+    public function rollback(Request $request, LiveOpsRecord $liveOps): JsonResponse
+    {
+        $v = $request->validate(['reason' => ['required', 'string', 'max:1000']]);
+
+        return response()->json(['data' => $this->resource(app(LiveOpsManager::class)->rollback($liveOps, (string) $request->user()->getAuthIdentifier(), $v['reason']))]);
     }
 
     public function show(Request $request, LiveOpsRecord $liveOps): JsonResponse

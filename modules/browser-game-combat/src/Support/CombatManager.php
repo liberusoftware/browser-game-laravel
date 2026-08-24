@@ -11,6 +11,7 @@ use Liberu\BrowserGame\Combat\Events\CombatActionResolved;
 use Liberu\BrowserGame\Combat\Events\CombatBattleStarted;
 use Liberu\BrowserGame\Combat\Models\CombatAction;
 use Liberu\BrowserGame\Combat\Models\CombatBattle;
+use Liberu\BrowserGame\Combat\Models\CombatDefinition;
 
 final class CombatManager
 {
@@ -54,5 +55,25 @@ final class CombatManager
         CombatActionResolved::dispatch((string) $battle->getKey(), (string) $result->getKey(), (int) $result->getAttribute('turn'), (int) $result->getAttribute('value'));
 
         return $result;
+    }
+
+    public function define(string $kind, string $slug, string $name, array $effects = [], array $data = [], int $cooldown = 0): CombatDefinition
+    {
+        if (! in_array($kind, ['ability', 'effect', 'enemy', 'boss', 'loot'], true) || trim($slug) === '' || trim($name) === '' || $cooldown < 0) {
+            throw ValidationException::withMessages(['definition' => 'A valid combat definition is required.']);
+        }
+
+        return CombatDefinition::query()->create(['id' => (string) Str::uuid(), 'kind' => $kind, 'slug' => $slug, 'name' => $name, 'effects' => $effects, 'data' => $data, 'cooldown' => $cooldown, 'status' => 'active']);
+    }
+
+    public function simulate(string $actorId, string $opponentId, array $actions, array $state = []): array
+    {
+        $turn = 1;
+        $log = [];
+        foreach ($actions as $action) {
+            $log[] = ['turn' => $turn++, 'actor_id' => $actorId, 'action' => $action['action'] ?? 'attack', 'value' => max(0, (int) ($action['value'] ?? 0))];
+        }
+
+        return ['actor_id' => $actorId, 'opponent_id' => $opponentId, 'state' => $state, 'turns' => $log, 'seed' => hash('sha256', json_encode([$actorId, $opponentId, $actions], JSON_THROW_ON_ERROR))];
     }
 }

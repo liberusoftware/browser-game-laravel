@@ -2,6 +2,8 @@
 
 This package provides the api implementation for the Browser Game application. It exposes the documented HTTP contract and delegates domain behavior to the matching core module.
 
+The API exposes scoped recipe reads, discovery, queue creation and lifecycle actions, profession reads, idempotency keys, and queue output resources.
+
 ## Installation
 
 ```bash
@@ -13,4 +15,3 @@ The package requires PHP 8.5 and Laravel 13. Enable it through the host applicat
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-

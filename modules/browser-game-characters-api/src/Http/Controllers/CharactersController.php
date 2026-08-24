@@ -44,12 +44,24 @@ final class CharactersController extends Controller
         return response()->json(['data' => $this->resource($updated)]);
     }
 
+    public function spendStats(Request $request, GameCharacter $character): JsonResponse
+    {
+        abort_unless($character->player_id === (string) $request->user()->getAuthIdentifier(), 404);
+        $data = $request->validate(['statistics' => ['required', 'array'], 'statistics.*' => ['integer', 'min:0']]);
+        $updated = app(CharactersManager::class)->spendStatPoints($character, $data['statistics']);
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
     private function resource(GameCharacter $character): array
     {
         return ['id' => (string) $character->getKey(), 'type' => 'browser-game-characters', 'attributes' => [
             'name' => $character->name, 'race' => $character->race, 'class' => $character->class, 'background' => $character->background,
             'statistics' => $character->statistics, 'skills' => $character->skills, 'experience' => $character->experience,
             'level' => $character->level, 'health' => $character->health, 'max_health' => $character->max_health,
+            'mana' => $character->mana, 'max_mana' => $character->max_mana,
+            'base_stats' => ['strength' => $character->strength, 'defense' => $character->defense, 'agility' => $character->agility, 'intelligence' => $character->intelligence],
+            'stat_points' => $character->stat_points,
             'available_skill_points' => $character->available_skill_points, 'respec_count' => $character->respec_count,
         ]];
     }

@@ -31,6 +31,6 @@ final class WorldEntityResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return ['index' => Resources\WorldEntityResource\Pages\ListWorldEntities::route('/'), 'create' => Resources\WorldEntityResource\Pages\CreateWorldEntity::route('/create'), 'edit' => Resources\WorldEntityResource\Pages\EditWorldEntity::route('/{record}/edit')];
     }
 }

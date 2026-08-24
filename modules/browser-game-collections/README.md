@@ -8,9 +8,8 @@ This package provides the core domain implementation for the Browser Game applic
 composer require liberusoftware/module-browser-game-collections
 ```
 
-The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. 
+The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. It defines collectible sets and entries, tracks actor progress transactionally, caps progress at each requirement, and records completion timestamps for reward delivery integrations.
 
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-

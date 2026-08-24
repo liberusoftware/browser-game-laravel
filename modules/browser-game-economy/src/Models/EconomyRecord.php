@@ -21,6 +21,6 @@ final class EconomyRecord extends Model
 
     protected function casts(): array
     {
-        return ['data' => 'array'];
+        return ['data' => 'array', 'precision' => 'integer', 'fee_basis_points' => 'integer'];
     }
 }

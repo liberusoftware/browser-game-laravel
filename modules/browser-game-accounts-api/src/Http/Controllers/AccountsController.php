@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Liberu\BrowserGame\Accounts\Models\AccountSession;
 use Liberu\BrowserGame\Accounts\Models\AccountsRecord;
 use Liberu\BrowserGame\Accounts\Queries\AccountsQuery;
+use Liberu\BrowserGame\Accounts\Support\AccountsManager;
 
 final class AccountsController extends Controller
 {
@@ -33,8 +35,114 @@ final class AccountsController extends Controller
         return response()->json(['data' => $this->resource($account)]);
     }
 
+    public function update(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'username' => ['nullable', 'string', 'min:3', 'max:50', 'regex:/^[A-Za-z0-9_.-]+$/'],
+        ]);
+        $updated = app(AccountsManager::class)->updateIdentity($account, $data['name'], $data['email'] ?? null, $data['username'] ?? null);
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
+    public function ageRegion(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $data = $request->validate([
+            'birth_year' => ['nullable', 'integer', 'min:1900', 'max:'.now()->year],
+            'region' => ['nullable', 'string', 'max:20'],
+            'age_verified' => ['required', 'boolean'],
+        ]);
+        $updated = app(AccountsManager::class)->setAgeRegionPolicy($account, $data['birth_year'] ?? null, $data['region'] ?? null, (bool) $data['age_verified']);
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
+    public function privacy(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $data = $request->validate([
+            'profile_visibility' => ['required', 'in:private,friends,public'],
+            'marketing_consent' => ['required', 'boolean'],
+            'analytics_consent' => ['required', 'boolean'],
+        ]);
+        $privacy = app(AccountsManager::class)->updatePrivacy($account, $data['profile_visibility'], (bool) $data['marketing_consent'], (bool) $data['analytics_consent']);
+
+        return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
+    }
+
+    public function requestDeletion(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $privacy = app(AccountsManager::class)->requestDeletion($account);
+
+        return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
+    }
+
+    public function revokeSession(Request $request, AccountsRecord $account, AccountSession $session): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $revoked = app(AccountsManager::class)->revokeSession($account, $session, (string) $request->user()->getAuthIdentifier());
+
+        return response()->json(['data' => ['id' => (string) $revoked->getKey(), 'type' => 'browser-game-account-session', 'attributes' => $revoked->only(['last_seen_at', 'expires_at', 'revoked_at'])]]);
+    }
+
+    public function sessions(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+
+        return response()->json(['data' => $account->sessions()->latest()->get()->map(fn (AccountSession $session): array => [
+            'id' => (string) $session->getKey(),
+            'type' => 'browser-game-account-session',
+            'attributes' => $session->only(['ip_address', 'user_agent', 'last_seen_at', 'expires_at', 'revoked_at']),
+        ])->values()]);
+    }
+
+    public function issueRecovery(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $recovery = app(AccountsManager::class)->issueRecovery($account, (int) config('browser-game.accounts.recovery_minutes', 30));
+
+        return response()->json(['data' => [
+            'id' => (string) $recovery['recovery']->getKey(),
+            'type' => 'browser-game-account-recovery',
+            'attributes' => ['expires_at' => $recovery['recovery']->expires_at],
+        ]], 202);
+    }
+
+    public function consumeRecovery(Request $request): JsonResponse
+    {
+        $data = $request->validate(['token' => ['required', 'string', 'min:40']]);
+        $account = app(AccountsManager::class)->consumeRecovery($data['token']);
+        abort_if($account === null, 422, 'The recovery token is invalid or expired.');
+
+        return response()->json(['data' => ['id' => (string) $account->getKey(), 'type' => 'browser-game-account-recovery', 'attributes' => ['consumed' => true]]]);
+    }
+
     private function resource(Model $account): array
     {
-        return ['id' => (string) $account->getKey(), 'type' => 'browser-game-account', 'attributes' => ['name' => $account->getAttribute('name'), 'status' => $account->getAttribute('status'), 'data' => $account->getAttribute('data'), 'tenant_id' => $account->getAttribute('tenant_id'), 'team_id' => $account->getAttribute('team_id')]];
+        return ['id' => (string) $account->getKey(), 'type' => 'browser-game-account', 'attributes' => [
+            'name' => $account->getAttribute('name'),
+            'email' => $account->getAttribute('email'),
+            'username' => $account->getAttribute('username'),
+            'status' => $account->getAttribute('status'),
+            'region' => $account->getAttribute('region'),
+            'age_verified' => $account->getAttribute('age_verified'),
+            'data' => $account->getAttribute('data'),
+            'tenant_id' => $account->getAttribute('tenant_id'),
+            'team_id' => $account->getAttribute('team_id'),
+        ]];
+    }
+
+    private function visibleAccount(Request $request, AccountsRecord $account): AccountsRecord
+    {
+        $teamId = $request->user()?->currentTeam?->getKey();
+        abort_unless($teamId !== null, 404);
+
+        return app(AccountsQuery::class)->visible(null, (string) $teamId)
+            ->whereKey($account->getKey())->firstOrFail();
     }
 }

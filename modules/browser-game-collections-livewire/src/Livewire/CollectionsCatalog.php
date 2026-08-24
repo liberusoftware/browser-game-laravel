@@ -12,7 +12,7 @@ final class CollectionsCatalog extends Component
     public function render(): mixed
     {
         $teamId = auth()->user()?->currentTeam?->getKey();
-        $collections = app(CollectionsQuery::class)->visible(null, $teamId === null ? null : (string) $teamId)->where('status', 'active')->latest()->limit(25)->get();
+        $collections = app(CollectionsQuery::class)->visible(null, $teamId === null ? null : (string) $teamId)->where('status', 'active')->with('entries')->latest()->limit(25)->get();
 
         return resolve('view')->make('browser-game-collections-livewire::collections-catalog', ['collections' => $collections]);
     }

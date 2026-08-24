@@ -41,6 +41,67 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+    patch:
+      operationId: browser.game.accounts.update
+      summary: Update account identity
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{id}/age-region:
+    post:
+      operationId: browser.game.accounts.ageRegion.update
+      summary: Update age and region policy data
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{id}/privacy:
+    put:
+      operationId: browser.game.accounts.privacy.update
+      summary: Update account privacy consent
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Privacy settings updated.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{id}/deletion-request:
+    post:
+      operationId: browser.game.accounts.deletion.request
+      summary: Request account deletion
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Deletion request recorded.
+        '422':
+          $ref: '#/components/responses/ValidationError'
 components:
   parameters:
     Id:
@@ -66,6 +127,13 @@ components:
       scheme: bearer
       bearerFormat: Sanctum
   schemas:
+    IdentityRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 255 }
+        email: { type: string, format: email, nullable: true }
+        username: { type: string, minLength: 3, maxLength: 50, nullable: true }
     BrowserGameAccountsResource:
       type: object
       required: [id, type, attributes]
@@ -157,6 +225,12 @@ components:
             $ref: '#/components/schemas/Problem'
     TooManyRequests:
       description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: Validation failed.
       content:
         application/problem+json:
           schema:

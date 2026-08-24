@@ -31,10 +31,10 @@ final class GameCharacter extends Model
 
     protected $table = 'browser_game_characters';
 
-    protected $fillable = ['player_id', 'world_id', 'team_id', 'name', 'race', 'class', 'background', 'statistics', 'skills', 'experience', 'level', 'health', 'max_health', 'available_skill_points', 'respec_count'];
+    protected $fillable = ['player_id', 'world_id', 'team_id', 'name', 'race', 'class', 'background', 'statistics', 'skills', 'experience', 'level', 'health', 'max_health', 'mana', 'max_mana', 'strength', 'defense', 'agility', 'intelligence', 'stat_points', 'available_skill_points', 'respec_count', 'last_battle_at', 'last_action_at'];
 
     protected function casts(): array
     {
-        return ['statistics' => 'array', 'skills' => 'array', 'experience' => 'integer', 'level' => 'integer', 'health' => 'integer', 'max_health' => 'integer', 'available_skill_points' => 'integer', 'respec_count' => 'integer'];
+        return ['statistics' => 'array', 'skills' => 'array', 'experience' => 'integer', 'level' => 'integer', 'health' => 'integer', 'max_health' => 'integer', 'mana' => 'integer', 'max_mana' => 'integer', 'strength' => 'integer', 'defense' => 'integer', 'agility' => 'integer', 'intelligence' => 'integer', 'stat_points' => 'integer', 'available_skill_points' => 'integer', 'respec_count' => 'integer', 'last_battle_at' => 'datetime', 'last_action_at' => 'datetime'];
     }
 }

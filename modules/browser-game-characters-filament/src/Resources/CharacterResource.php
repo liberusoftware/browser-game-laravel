@@ -25,9 +25,20 @@ final class CharacterResource extends Resource
             TextInput::make('name')->required()->maxLength(120),
             TextInput::make('race')->required()->maxLength(80),
             TextInput::make('class')->required()->maxLength(80),
+            TextInput::make('player_id')->required()->maxLength(120),
+            TextInput::make('background')->maxLength(120),
             TextInput::make('level')->numeric()->disabled(),
             TextInput::make('experience')->numeric()->disabled(),
             TextInput::make('health')->numeric()->disabled(),
+            TextInput::make('max_health')->numeric()->disabled(),
+            TextInput::make('mana')->numeric()->disabled(),
+            TextInput::make('max_mana')->numeric()->disabled(),
+            TextInput::make('strength')->numeric()->disabled(),
+            TextInput::make('defense')->numeric()->disabled(),
+            TextInput::make('agility')->numeric()->disabled(),
+            TextInput::make('intelligence')->numeric()->disabled(),
+            TextInput::make('stat_points')->numeric()->disabled(),
+            TextInput::make('available_skill_points')->numeric()->disabled(),
         ]);
     }
 
@@ -44,6 +55,10 @@ final class CharacterResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Pages\ListCharacters::route('/'),
+            'create' => Pages\CreateCharacter::route('/create'),
+            'edit' => Pages\EditCharacter::route('/{record}/edit'),
+        ];
     }
 }

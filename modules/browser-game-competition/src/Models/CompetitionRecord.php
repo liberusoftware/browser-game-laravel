@@ -6,6 +6,7 @@ namespace Liberu\BrowserGame\Competition\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class CompetitionRecord extends Model
 {
@@ -21,6 +22,16 @@ final class CompetitionRecord extends Model
 
     protected function casts(): array
     {
-        return ['data' => 'array'];
+        return ['data' => 'array', 'starts_at' => 'datetime', 'ends_at' => 'datetime', 'season' => 'integer'];
+    }
+
+    public function entries(): HasMany
+    {
+        return $this->hasMany(CompetitionEntry::class, 'competition_id');
+    }
+
+    public function matches(): HasMany
+    {
+        return $this->hasMany(CompetitionMatch::class, 'competition_id');
     }
 }

@@ -24,6 +24,50 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/economy/wallet:
+    get:
+      operationId: browser.game.economy.wallet
+      summary: List authenticated currency balances
+      security:
+        - sanctum: []
+      responses:
+        '200': { description: Wallet balances }
+  /api/v1/browser-game/economy/transfer:
+    post:
+      operationId: browser.game.economy.transfer
+      summary: Transfer currency to another actor
+      security:
+        - sanctum: []
+      responses:
+        '200': { description: Transfer recorded }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/listings:
+    get:
+      operationId: browser.game.economy.listings
+      summary: List active marketplace listings
+      security:
+        - sanctum: []
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+    post:
+      operationId: browser.game.economy.listing.create
+      summary: Create a marketplace listing
+      security:
+        - sanctum: []
+      responses:
+        '201': { description: Listing created }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/listings/{listing}/purchase:
+    post:
+      operationId: browser.game.economy.listing.purchase
+      summary: Purchase an active marketplace listing
+      security:
+        - sanctum: []
+      parameters:
+        - { name: listing, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: Listing purchased }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/economy/{id}:
     get:
       operationId: browser.game.economy.get

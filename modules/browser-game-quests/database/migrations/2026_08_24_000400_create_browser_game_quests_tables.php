@@ -15,8 +15,12 @@ return new class() extends Migration
             $table->string('team_id')->nullable()->index();
             $table->string('slug')->unique();
             $table->string('name');
+            $table->string('storyline')->nullable()->index();
             $table->string('status')->default('active')->index();
             $table->json('objectives');
+            $table->json('prerequisites')->nullable();
+            $table->json('branches')->nullable();
+            $table->json('dialogue')->nullable();
             $table->json('rewards')->nullable();
             $table->boolean('repeatable')->default(false);
             $table->timestamps();

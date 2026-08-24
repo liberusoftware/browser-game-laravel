@@ -2,6 +2,8 @@
 
 This package provides the livewire implementation for the Browser Game application. It provides the server-driven Livewire integration for the matching core module.
 
+The catalog validates quantity and quality input before delegating queue creation and completion to the core boundary.
+
 ## Installation
 
 ```bash
@@ -13,4 +15,3 @@ The package requires PHP 8.5 and Laravel 13. Enable it through the host applicat
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-

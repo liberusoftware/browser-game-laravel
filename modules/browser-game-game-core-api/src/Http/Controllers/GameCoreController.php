@@ -50,6 +50,41 @@ final class GameCoreController extends Controller
         return response()->json(['data' => $this->resource($updated)]);
     }
 
+    public function clock(Request $request, GameWorld $world): JsonResponse
+    {
+        $v = $request->validate(['current_at' => ['required', 'date'], 'speed' => ['required', 'numeric', 'min:0'], 'paused' => ['boolean']]);
+
+        return response()->json(['data' => app(GameCoreManager::class)->setClock($this->context($request), $world, $v['current_at'], (string) $v['speed'], (bool) ($v['paused'] ?? false))]);
+    }
+
+    public function ruleset(Request $request, GameWorld $world): JsonResponse
+    {
+        $v = $request->validate(['version' => ['required', 'integer', 'min:1'], 'rules' => ['required', 'array']]);
+
+        return response()->json(['data' => app(GameCoreManager::class)->publishRuleset($this->context($request), $world, $v['version'], $v['rules'])], 201);
+    }
+
+    public function content(Request $request, GameWorld $world): JsonResponse
+    {
+        $v = $request->validate(['version' => ['required', 'integer', 'min:1'], 'content_hash' => ['required', 'string', 'max:128'], 'manifest' => ['required', 'array']]);
+
+        return response()->json(['data' => app(GameCoreManager::class)->publishContentVersion($this->context($request), $world, $v['version'], $v['content_hash'], $v['manifest'])], 201);
+    }
+
+    public function flag(Request $request, GameWorld $world, string $key): JsonResponse
+    {
+        $v = $request->validate(['enabled' => ['required', 'boolean'], 'rollout_percentage' => ['integer', 'min:0', 'max:100'], 'constraints' => ['array']]);
+
+        return response()->json(['data' => app(GameCoreManager::class)->setFeatureFlag($this->context($request), $world, $key, $v['enabled'], $v['rollout_percentage'] ?? 100, $v['constraints'] ?? [])]);
+    }
+
+    public function maintenance(Request $request, GameWorld $world): JsonResponse
+    {
+        $v = $request->validate(['status' => ['required', 'in:scheduled,active,resolved'], 'message' => ['nullable', 'string', 'max:2000']]);
+
+        return response()->json(['data' => app(GameCoreManager::class)->setMaintenance($this->context($request), $world, $v['status'], $v['message'] ?? null)]);
+    }
+
     private function context(Request $request): GameCoreContext
     {
         $user = $request->user();

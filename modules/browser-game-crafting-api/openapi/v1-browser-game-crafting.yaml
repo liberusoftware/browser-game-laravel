@@ -24,6 +24,57 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: browser.game.crafting.queue
+      summary: Queue a crafting job
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [recipe_id, quantity]
+              properties:
+                recipe_id: { type: string, format: uuid }
+                quantity: { type: integer, minimum: 1, maximum: 1000 }
+                quality: { type: integer, minimum: 0, maximum: 100 }
+                idempotency_key: { type: string, maxLength: 120 }
+      responses:
+        '202': { description: Crafting job queued }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/crafting/queue:
+    get:
+      operationId: browser.game.crafting.queues
+      summary: List the authenticated player's crafting queue
+      security:
+        - sanctum: []
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+  /api/v1/browser-game/crafting/queue/{queue}/complete:
+    post:
+      operationId: browser.game.crafting.queue.complete
+      summary: Complete a ready crafting job
+      security:
+        - sanctum: []
+      parameters:
+        - { name: queue, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Crafting job completed }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/crafting/{id}/discover:
+    post:
+      operationId: browser.game.crafting.discover
+      summary: Discover a recipe
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '201': { description: Recipe discovered }
+        '404': { $ref: '#/components/responses/NotFound' }
   /api/v1/browser-game/crafting/{id}:
     get:
       operationId: browser.game.crafting.get

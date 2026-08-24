@@ -8,9 +8,8 @@ This package provides the core domain implementation for the Browser Game applic
 composer require liberusoftware/module-browser-game-moderation-and-analytics
 ```
 
-The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. 
+The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. It records typed reports, sanctions, appeals, telemetry, funnels, balance/economy signals, fraud, and health evidence with idempotency and explicit resolution transitions.
 
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-

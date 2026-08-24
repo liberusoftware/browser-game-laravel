@@ -6,9 +6,25 @@ namespace Liberu\BrowserGame\ItemsLivewire\Livewire;
 
 use Liberu\BrowserGame\Items\Queries\ItemsQuery;
 use Livewire\Component;
+use Liberu\BrowserGame\Items\Models\ItemsRecord;
+use Liberu\BrowserGame\Items\Support\ItemsManager;
 
 final class ItemsCatalog extends Component
 {
+    public function add(string $itemId): void
+    {
+        $item = ItemsRecord::query()->whereKey($itemId)->where('status', 'active')->firstOrFail();
+        app(ItemsManager::class)->addToInventory((string) auth()->id(), $item);
+        $this->dispatch('inventory-updated');
+    }
+
+    public function remove(string $itemId): void
+    {
+        $item = ItemsRecord::query()->whereKey($itemId)->where('status', 'active')->firstOrFail();
+        app(ItemsManager::class)->removeFromInventory((string) auth()->id(), $item);
+        $this->dispatch('inventory-updated');
+    }
+
     public function render(): mixed
     {
         $teamId = auth()->user()?->currentTeam?->getKey();

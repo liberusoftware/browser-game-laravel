@@ -32,6 +32,10 @@ final class CollectionsResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Resources\CollectionsResource\Pages\ListCollections::route('/'),
+            'create' => Resources\CollectionsResource\Pages\CreateCollections::route('/create'),
+            'edit' => Resources\CollectionsResource\Pages\EditCollections::route('/{record}/edit'),
+        ];
     }
 }

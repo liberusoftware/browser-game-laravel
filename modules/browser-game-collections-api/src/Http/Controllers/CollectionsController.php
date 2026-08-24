@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Liberu\BrowserGame\Collections\Models\CollectionsRecord;
 use Liberu\BrowserGame\Collections\Queries\CollectionsQuery;
+use Liberu\BrowserGame\Collections\Support\CollectionsManager;
 
 final class CollectionsController extends Controller
 {
@@ -31,6 +32,14 @@ final class CollectionsController extends Controller
             ->firstOrFail();
 
         return response()->json(['data' => $this->resource($collections)]);
+    }
+
+    public function record(Request $request, CollectionsRecord $collections): JsonResponse
+    {
+        $validated = $request->validate(['entry_key' => ['required', 'string', 'max:128'], 'quantity' => ['nullable', 'integer', 'min:1']]);
+        $progress = app(CollectionsManager::class)->record((string) $request->user()->getAuthIdentifier(), $collections, $validated['entry_key'], $validated['quantity'] ?? 1);
+
+        return response()->json(['data' => $progress], 201);
     }
 
     private function resource(Model $collections): array

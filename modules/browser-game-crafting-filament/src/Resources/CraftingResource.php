@@ -22,7 +22,19 @@ final class CraftingResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('name')->required(), TextInput::make('status')->required(), TextInput::make('team_id'), KeyValue::make('data')]);
+        return $schema->components([
+            TextInput::make('name')->required()->maxLength(255),
+            TextInput::make('slug')->maxLength(255),
+            TextInput::make('profession')->maxLength(80),
+            TextInput::make('min_level')->numeric()->minValue(1)->default(1),
+            TextInput::make('success_rate')->numeric()->minValue(0)->maxValue(100)->default(100),
+            TextInput::make('crafting_time_seconds')->numeric()->minValue(0)->default(0),
+            TextInput::make('status')->required()->in(['active', 'archived']),
+            KeyValue::make('materials')->required(),
+            KeyValue::make('outputs')->required(),
+            KeyValue::make('salvage'),
+            KeyValue::make('data'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -32,6 +44,10 @@ final class CraftingResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Pages\ListCrafting::route('/'),
+            'create' => Pages\CreateCrafting::route('/create'),
+            'edit' => Pages\EditCrafting::route('/{record}/edit'),
+        ];
     }
 }
