@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\Characters\Events\CharacterCreated;
 use Liberu\BrowserGame\Characters\Events\CharacterProgressed;
 use Liberu\BrowserGame\Characters\Events\CharacterRespecced;
+use Liberu\BrowserGame\Characters\Events\CharacterSkillsAllocated;
 use Liberu\BrowserGame\Characters\Models\GameCharacter;
 use Liberu\BrowserGame\Characters\Queries\CharacterQuery;
 
@@ -47,12 +48,19 @@ final class CharactersManager
         return $character;
     }
 
-    public function awardExperience(GameCharacter $character, int $amount): GameCharacter
+    public function awardExperience(GameCharacter $character, int $amount, ?string $operationKey = null): GameCharacter
     {
         if ($amount < 0) {
             throw ValidationException::withMessages(['experience' => 'Experience cannot be negative.']);
         }
-        $updated = DB::transaction(function () use ($character, $amount): GameCharacter {
+        $alreadyApplied = false;
+        $updated = DB::transaction(function () use ($character, $amount, $operationKey, &$alreadyApplied): GameCharacter {
+            $character = GameCharacter::query()->whereKey($character->getKey())->lockForUpdate()->firstOrFail();
+            if ($operationKey !== null && $character->last_operation_key === $operationKey) {
+                $alreadyApplied = true;
+
+                return $character;
+            }
             $experience = (int) $character->getAttribute('experience') + $amount;
             $level = $this->query->levelForExperience($experience);
             $oldLevel = (int) $character->getAttribute('level');
@@ -68,26 +76,49 @@ final class CharactersManager
                 'mana' => $levelsGained > 0 ? $maxMana : min((int) $character->getAttribute('mana'), $maxMana),
                 'available_skill_points' => (int) $character->getAttribute('available_skill_points') + ($levelsGained * (int) config('browser-game.characters.skill_points_per_level', 5)),
                 'stat_points' => (int) $character->getAttribute('stat_points') + ($levelsGained * (int) config('browser-game.characters.stat_points_per_level', 5)),
+                'last_operation_key' => $operationKey,
             ]);
 
             return $character->refresh();
         });
-        CharacterProgressed::dispatch((string) $updated->getKey(), (int) $updated->experience, (int) $updated->level);
+        if (! $alreadyApplied) {
+            CharacterProgressed::dispatch((string) $updated->getKey(), (int) $updated->experience, (int) $updated->level);
+        }
 
         return $updated;
     }
 
-    public function respec(GameCharacter $character, array $skills): GameCharacter
+    public function respec(GameCharacter $character, array $skills, ?string $operationKey = null): GameCharacter
     {
         if (array_sum(array_map('intval', $skills)) < 0 || count(array_filter($skills, fn ($points): bool => (int) $points < 0)) > 0) {
             throw ValidationException::withMessages(['skills' => 'Skill points cannot be negative.']);
         }
-        $updated = DB::transaction(function () use ($character, $skills): GameCharacter {
-            $character->update(['skills' => array_map('intval', $skills), 'respec_count' => (int) $character->getAttribute('respec_count') + 1]);
+        $alreadyApplied = false;
+        $updated = DB::transaction(function () use ($character, $skills, $operationKey, &$alreadyApplied): GameCharacter {
+            $character = GameCharacter::query()->whereKey($character->getKey())->lockForUpdate()->firstOrFail();
+            if ($operationKey !== null && $character->last_operation_key === $operationKey) {
+                $alreadyApplied = true;
+
+                return $character;
+            }
+            $skills = array_map('intval', $skills);
+            $maximum = (int) config('browser-game.characters.starting_skill_points', 0)
+                + max(0, ((int) $character->level - 1) * (int) config('browser-game.characters.skill_points_per_level', 5));
+            if (array_sum($skills) > $maximum) {
+                throw ValidationException::withMessages(['skills' => 'The character does not have enough skill points.']);
+            }
+            $character->update([
+                'skills' => $skills,
+                'available_skill_points' => $maximum - array_sum($skills),
+                'respec_count' => (int) $character->getAttribute('respec_count') + 1,
+                'last_operation_key' => $operationKey,
+            ]);
 
             return $character->refresh();
         });
-        CharacterRespecced::dispatch((string) $updated->getKey(), (int) $updated->respec_count);
+        if (! $alreadyApplied) {
+            CharacterRespecced::dispatch((string) $updated->getKey(), (int) $updated->respec_count);
+        }
 
         return $updated;
     }
@@ -104,14 +135,75 @@ final class CharactersManager
             throw ValidationException::withMessages(['statistics' => 'The character does not have enough stat points.']);
         }
 
-        $updates = [];
-        foreach ($allowed as $stat) {
-            if (array_key_exists($stat, $points)) {
-                $updates[$stat] = (int) $character->getAttribute($stat) + (int) $points[$stat];
+        $updated = DB::transaction(function () use ($character, $points, $allowed, $spent): GameCharacter {
+            $character = GameCharacter::query()->whereKey($character->getKey())->lockForUpdate()->firstOrFail();
+            if ($spent > (int) $character->getAttribute('stat_points')) {
+                throw ValidationException::withMessages(['statistics' => 'The character does not have enough stat points.']);
+            }
+            $updates = [];
+            foreach ($allowed as $stat) {
+                if (array_key_exists($stat, $points)) {
+                    $updates[$stat] = (int) $character->getAttribute($stat) + (int) $points[$stat];
+                }
+            }
+            $updates['stat_points'] = (int) $character->getAttribute('stat_points') - $spent;
+            $character->update($updates);
+
+            return $character->refresh();
+        });
+
+        return $updated;
+    }
+
+    public function allocateSkills(GameCharacter $character, array $skills, ?string $operationKey = null): GameCharacter
+    {
+        $skills = array_map('intval', $skills);
+        if (count(array_filter($skills, fn (int $points): bool => $points < 0)) > 0) {
+            throw ValidationException::withMessages(['skills' => 'Skill points cannot be negative.']);
+        }
+        $spent = array_sum($skills);
+        $alreadyApplied = false;
+        $updated = DB::transaction(function () use ($character, $skills, $spent, $operationKey, &$alreadyApplied): GameCharacter {
+            $character = GameCharacter::query()->whereKey($character->getKey())->lockForUpdate()->firstOrFail();
+            if ($operationKey !== null && $character->last_operation_key === $operationKey) {
+                $alreadyApplied = true;
+
+                return $character;
+            }
+            if ($spent > (int) $character->available_skill_points) {
+                throw ValidationException::withMessages(['skills' => 'The character does not have enough skill points.']);
+            }
+            $current = $character->skills ?? [];
+            foreach ($skills as $skill => $points) {
+                $current[$skill] = (int) ($current[$skill] ?? 0) + $points;
+            }
+            $character->update([
+                'skills' => $current,
+                'available_skill_points' => (int) $character->available_skill_points - $spent,
+                'last_operation_key' => $operationKey,
+            ]);
+
+            return $character->refresh();
+        });
+        if (! $alreadyApplied) {
+            CharacterSkillsAllocated::dispatch((string) $updated->getKey(), $spent);
+        }
+
+        return $updated;
+    }
+
+    public function updateProfile(GameCharacter $character, string $name, string $race, string $class, ?string $background = null): GameCharacter
+    {
+        foreach (['name' => $name, 'race' => $race, 'class' => $class] as $field => $value) {
+            if (trim($value) === '') {
+                throw ValidationException::withMessages([$field => 'This value is required.']);
             }
         }
-        $updates['stat_points'] = (int) $character->getAttribute('stat_points') - $spent;
-        $character->update($updates);
+        $duplicate = GameCharacter::query()->where('player_id', $character->player_id)->where('name', $name)->where('id', '!=', $character->getKey())->exists();
+        if ($duplicate) {
+            throw ValidationException::withMessages(['name' => 'A character with this name already exists.']);
+        }
+        $character->update(compact('name', 'race', 'class', 'background'));
 
         return $character->refresh();
     }
@@ -119,6 +211,10 @@ final class CharactersManager
     public function updateVitals(GameCharacter $character, int $health, int $mana): GameCharacter
     {
         if ($health < 0 || $health > (int) $character->max_health || $mana < 0 || $mana > (int) $character->max_mana) {
+            throw ValidationException::withMessages(['vitals' => 'Health and mana must remain within their maximum values.']);
+        }
+        $character = GameCharacter::query()->whereKey($character->getKey())->lockForUpdate()->firstOrFail();
+        if ($health > (int) $character->max_health || $mana > (int) $character->max_mana) {
             throw ValidationException::withMessages(['vitals' => 'Health and mana must remain within their maximum values.']);
         }
         $character->update(['health' => $health, 'mana' => $mana, 'last_action_at' => now()]);

@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $max_health
  * @property int $available_skill_points
  * @property int $respec_count
+ * @property string|null $last_operation_key
  */
 final class GameCharacter extends Model
 {
@@ -31,7 +32,7 @@ final class GameCharacter extends Model
 
     protected $table = 'browser_game_characters';
 
-    protected $fillable = ['player_id', 'world_id', 'team_id', 'name', 'race', 'class', 'background', 'statistics', 'skills', 'experience', 'level', 'health', 'max_health', 'mana', 'max_mana', 'strength', 'defense', 'agility', 'intelligence', 'stat_points', 'available_skill_points', 'respec_count', 'last_battle_at', 'last_action_at'];
+    protected $fillable = ['player_id', 'world_id', 'team_id', 'name', 'race', 'class', 'background', 'statistics', 'skills', 'experience', 'level', 'health', 'max_health', 'mana', 'max_mana', 'strength', 'defense', 'agility', 'intelligence', 'stat_points', 'available_skill_points', 'respec_count', 'last_operation_key', 'last_battle_at', 'last_action_at'];
 
     protected function casts(): array
     {

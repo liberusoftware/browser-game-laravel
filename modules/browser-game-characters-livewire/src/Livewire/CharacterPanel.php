@@ -16,9 +16,20 @@ final class CharacterPanel extends Component
 
     public array $statistics = [];
 
+    public array $skillAllocation = [];
+
+    public int $health = 0;
+
+    public int $mana = 0;
+
+    public ?string $statusMessage = null;
+
     public function mount(string $characterId): void
     {
         $this->characterId = $characterId;
+        $character = $this->ownedCharacter();
+        $this->health = (int) $character->health;
+        $this->mana = (int) $character->mana;
     }
 
     public function respec(): void
@@ -26,6 +37,7 @@ final class CharacterPanel extends Component
         $character = $this->ownedCharacter();
         $this->validate(['skills' => ['array'], 'skills.*' => ['integer', 'min:0']]);
         app(CharactersManager::class)->respec($character, $this->skills);
+        $this->statusMessage = 'Skills respecced.';
         $this->dispatch('character-updated');
     }
 
@@ -34,6 +46,25 @@ final class CharacterPanel extends Component
         $character = $this->ownedCharacter();
         $this->validate(['statistics' => ['array'], 'statistics.*' => ['integer', 'min:0']]);
         app(CharactersManager::class)->spendStatPoints($character, $this->statistics);
+        $this->statusMessage = 'Statistics updated.';
+        $this->dispatch('character-updated');
+    }
+
+    public function allocateSkills(): void
+    {
+        $character = $this->ownedCharacter();
+        $this->validate(['skillAllocation' => ['array'], 'skillAllocation.*' => ['integer', 'min:0']]);
+        app(CharactersManager::class)->allocateSkills($character, $this->skillAllocation);
+        $this->statusMessage = 'Skills allocated.';
+        $this->dispatch('character-updated');
+    }
+
+    public function updateVitals(): void
+    {
+        $character = $this->ownedCharacter();
+        $this->validate(['health' => ['integer', 'min:0'], 'mana' => ['integer', 'min:0']]);
+        app(CharactersManager::class)->updateVitals($character, $this->health, $this->mana);
+        $this->statusMessage = 'Vitals updated.';
         $this->dispatch('character-updated');
     }
 

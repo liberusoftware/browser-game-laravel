@@ -23,32 +23,73 @@ final class CharactersController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate(['name' => ['required', 'string', 'max:120'], 'race' => ['required', 'string', 'max:80'], 'class' => ['required', 'string', 'max:80'], 'background' => ['nullable', 'string', 'max:120'], 'statistics' => ['array'], 'skills' => ['array']]);
-        $character = app(CharactersManager::class)->create((string) $request->user()->getAuthIdentifier(), $data['name'], $data['race'], $data['class'], $data['background'] ?? null, $data['statistics'] ?? [], $data['skills'] ?? []);
+        $character = app(CharactersManager::class)->create((string) $request->user()->getAuthIdentifier(), $data['name'], $data['race'], $data['class'], $data['background'] ?? null, $data['statistics'] ?? [], $data['skills'] ?? [], null, $request->user()?->currentTeam?->getKey());
 
         return response()->json(['data' => $this->resource($character)], 201);
     }
 
+    public function update(Request $request, GameCharacter $character): JsonResponse
+    {
+        $this->authorizeCharacter($request, $character);
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'race' => ['required', 'string', 'max:80'],
+            'class' => ['required', 'string', 'max:80'],
+            'background' => ['nullable', 'string', 'max:120'],
+        ]);
+        $updated = app(CharactersManager::class)->updateProfile($character, $data['name'], $data['race'], $data['class'], $data['background'] ?? null);
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
     public function show(Request $request, GameCharacter $character): JsonResponse
     {
-        abort_unless($character->player_id === (string) $request->user()->getAuthIdentifier(), 404);
+        $this->authorizeCharacter($request, $character);
 
         return response()->json(['data' => $this->resource($character)]);
     }
 
     public function respec(Request $request, GameCharacter $character): JsonResponse
     {
-        abort_unless($character->player_id === (string) $request->user()->getAuthIdentifier(), 404);
+        $this->authorizeCharacter($request, $character);
         $data = $request->validate(['skills' => ['required', 'array']]);
-        $updated = app(CharactersManager::class)->respec($character, $data['skills']);
+        $updated = app(CharactersManager::class)->respec($character, $data['skills'], $this->operationKey($request));
 
         return response()->json(['data' => $this->resource($updated)]);
     }
 
     public function spendStats(Request $request, GameCharacter $character): JsonResponse
     {
-        abort_unless($character->player_id === (string) $request->user()->getAuthIdentifier(), 404);
+        $this->authorizeCharacter($request, $character);
         $data = $request->validate(['statistics' => ['required', 'array'], 'statistics.*' => ['integer', 'min:0']]);
         $updated = app(CharactersManager::class)->spendStatPoints($character, $data['statistics']);
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
+    public function skills(Request $request, GameCharacter $character): JsonResponse
+    {
+        $this->authorizeCharacter($request, $character);
+        $data = $request->validate(['skills' => ['required', 'array'], 'skills.*' => ['integer', 'min:0']]);
+        $updated = app(CharactersManager::class)->allocateSkills($character, $data['skills'], $this->operationKey($request));
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
+    public function experience(Request $request, GameCharacter $character): JsonResponse
+    {
+        $this->authorizeCharacter($request, $character);
+        $data = $request->validate(['amount' => ['required', 'integer', 'min:0']]);
+        $updated = app(CharactersManager::class)->awardExperience($character, $data['amount'], $this->operationKey($request));
+
+        return response()->json(['data' => $this->resource($updated)]);
+    }
+
+    public function vitals(Request $request, GameCharacter $character): JsonResponse
+    {
+        $this->authorizeCharacter($request, $character);
+        $data = $request->validate(['health' => ['required', 'integer', 'min:0'], 'mana' => ['required', 'integer', 'min:0']]);
+        $updated = app(CharactersManager::class)->updateVitals($character, $data['health'], $data['mana']);
 
         return response()->json(['data' => $this->resource($updated)]);
     }
@@ -63,6 +104,19 @@ final class CharactersController extends Controller
             'base_stats' => ['strength' => $character->strength, 'defense' => $character->defense, 'agility' => $character->agility, 'intelligence' => $character->intelligence],
             'stat_points' => $character->stat_points,
             'available_skill_points' => $character->available_skill_points, 'respec_count' => $character->respec_count,
+            'last_action_at' => $character->last_action_at?->toISOString(),
         ]];
+    }
+
+    private function authorizeCharacter(Request $request, GameCharacter $character): void
+    {
+        abort_unless($character->player_id === (string) $request->user()->getAuthIdentifier(), 404);
+    }
+
+    private function operationKey(Request $request): ?string
+    {
+        $key = $request->header('Idempotency-Key');
+
+        return is_string($key) && trim($key) !== '' ? substr(trim($key), 0, 191) : null;
     }
 }

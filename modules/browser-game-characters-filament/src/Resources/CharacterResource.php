@@ -39,6 +39,7 @@ final class CharacterResource extends Resource
             TextInput::make('intelligence')->numeric()->disabled(),
             TextInput::make('stat_points')->numeric()->disabled(),
             TextInput::make('available_skill_points')->numeric()->disabled(),
+            TextInput::make('respec_count')->numeric()->disabled(),
         ]);
     }
 
@@ -50,6 +51,8 @@ final class CharacterResource extends Resource
             TextColumn::make('class')->badge(),
             TextColumn::make('level')->numeric()->sortable(),
             TextColumn::make('experience')->numeric()->sortable(),
+            TextColumn::make('health')->numeric()->label('Health'),
+            TextColumn::make('available_skill_points')->numeric()->label('Skill points'),
         ])->defaultSort('level', 'desc');
     }
 

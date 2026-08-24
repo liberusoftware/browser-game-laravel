@@ -8,9 +8,9 @@ use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final readonly class CharacterCreated implements ShouldDispatchAfterCommit
+final readonly class CharacterSkillsAllocated implements ShouldDispatchAfterCommit
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public string $characterId, public string $playerId) {}
+    public function __construct(public string $characterId, public int $pointsSpent) {}
 }

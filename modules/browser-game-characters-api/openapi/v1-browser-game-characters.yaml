@@ -30,6 +30,24 @@ paths:
         '201': { description: Character created }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}:
+    patch:
+      operationId: browser.game.characters.update
+      summary: Update an authorized character profile
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: If-Match, in: header, required: false, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CharacterProfileRequest' }
+      responses:
+        '200': { description: Character updated }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}/respec:
     post:
       operationId: browser.game.characters.respec
@@ -40,6 +58,69 @@ paths:
       responses:
         '200': { description: Character respecified }
         '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/skills:
+    post:
+      operationId: browser.game.characters.skills.allocate
+      summary: Allocate available character skill points
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [skills]
+              properties:
+                skills: { type: object, additionalProperties: { type: integer, minimum: 0 } }
+      responses:
+        '200': { description: Skills allocated }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/experience:
+    post:
+      operationId: browser.game.characters.experience.award
+      summary: Award character experience through an authorized action
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: { type: integer, minimum: 0 }
+      responses:
+        '200': { description: Experience awarded }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/vitals:
+    post:
+      operationId: browser.game.characters.vitals.update
+      summary: Update bounded character health and mana
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [health, mana]
+              properties:
+                health: { type: integer, minimum: 0 }
+                mana: { type: integer, minimum: 0 }
+      responses:
+        '200': { description: Vitals updated }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}/stats:
@@ -63,6 +144,12 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
 components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, maxLength: 191 }
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
   schemas:
@@ -76,6 +163,14 @@ components:
         background: { type: [string, 'null'] }
         statistics: { type: object, additionalProperties: { type: integer } }
         skills: { type: object, additionalProperties: { type: integer } }
+    CharacterProfileRequest:
+      type: object
+      required: [name, race, class]
+      properties:
+        name: { type: string, maxLength: 120 }
+        race: { type: string, maxLength: 80 }
+        class: { type: string, maxLength: 80 }
+        background: { type: [string, 'null'] }
     Problem:
       type: object
       required: [title, status]
