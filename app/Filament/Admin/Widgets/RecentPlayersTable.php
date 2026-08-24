@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Widgets;
 
 use App\Models\Player;
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -40,7 +41,9 @@ class RecentPlayersTable extends BaseWidget
             ])
             ->recordActions([
                 Action::make('view')
-                    ->url(fn (Player $record): string => route('filament.admin.resources.players.view', $record))
+                    ->url(fn (Player $record): string => Filament::getTenant()
+                        ? route('filament.admin.resources.players.view', ['tenant' => Filament::getTenant(), 'record' => $record])
+                        : '#')
                     ->icon('heroicon-m-eye'),
             ]);
     }

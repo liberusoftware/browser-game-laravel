@@ -2,7 +2,6 @@
 
 namespace App\Filament\App\Widgets;
 
-use App\Models\Player;
 use App\Models\Player_Item;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +18,7 @@ class InventoryWidget extends Widget
     public function getViewData(): array
     {
         $user = Auth::user();
-        $player = Player::where('user_id', $user->id)->first();
+        $player = $user?->player;
 
         if (! $player) {
             return [

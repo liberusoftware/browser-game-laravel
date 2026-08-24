@@ -2,7 +2,6 @@
 
 namespace App\Filament\App\Widgets;
 
-use App\Models\Player;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +13,7 @@ class PlayerStatsWidget extends BaseWidget
     protected function getStats(): array
     {
         $user = Auth::user();
-        $player = Player::where('user_id', $user->id)->first();
+        $player = $user?->player;
 
         if (! $player) {
             return [

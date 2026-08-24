@@ -22,12 +22,30 @@ use App\Filament\Admin\Resources\PlayerItemResource\Pages\ViewPlayerItem;
 use App\Filament\Admin\Resources\PlayerResource\Pages\EditPlayer;
 use App\Filament\Admin\Resources\PlayerResource\Pages\ListPlayers;
 use App\Filament\Admin\Resources\PlayerResource\Pages\ViewPlayer;
+use App\Filament\Admin\Resources\PlayerResource\RelationManagers\AchievementsRelationManager;
+use App\Filament\Admin\Resources\PlayerResource\RelationManagers\ItemsRelationManager;
+use App\Filament\Admin\Resources\PlayerResource\RelationManagers\QuestsRelationManager;
+use App\Filament\Admin\Resources\PlayerResource\RelationManagers\ResourcesRelationManager;
 use App\Filament\Admin\Resources\QuestResource\Pages\EditQuest;
 use App\Filament\Admin\Resources\QuestResource\Pages\ListQuests;
 use App\Filament\Admin\Resources\QuestResource\Pages\ViewQuest;
 use App\Filament\Admin\Resources\Users\Pages\EditUser;
 use App\Filament\Admin\Resources\Users\Pages\ListUsers;
 use App\Filament\Admin\Resources\Users\Pages\ViewUser;
+use App\Filament\Admin\Resources\Users\Tables\UsersTable;
+use App\Filament\Admin\Widgets\ContentStatsChart;
+use App\Filament\Admin\Widgets\GameStatsOverview;
+use App\Filament\Admin\Widgets\ItemTypeChart;
+use App\Filament\Admin\Widgets\LeaderboardWidget;
+use App\Filament\Admin\Widgets\PlayerLevelChart;
+use App\Filament\Admin\Widgets\PlayerProgressWidget;
+use App\Filament\Admin\Widgets\QuickActionsWidget;
+use App\Filament\Admin\Widgets\RecentAchievementsWidget;
+use App\Filament\Admin\Widgets\RecentPlayersTable;
+use App\Filament\App\Widgets\ActiveQuestsWidget;
+use App\Filament\App\Widgets\InventoryWidget;
+use App\Filament\App\Widgets\PlayerStatsWidget;
+use App\Filament\App\Widgets\SocialLinksWidget;
 use App\Livewire\CombatArena;
 use App\Livewire\CraftingWorkshop;
 use App\Livewire\DailyRewardClaim;
@@ -58,10 +76,38 @@ use App\Notifications\LevelUpNotification;
 use App\Notifications\QuestCompletedNotification;
 use App\Services\MenuService;
 use App\Services\RankingService;
+use App\Services\TeamManagementService;
+use App\Settings\GameSettings;
+use Filament\Support\Contracts\TranslatableContentDriver;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Component;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
+
+class ReleaseScopeTableHarness extends Component implements HasTable
+{
+    use InteractsWithTable;
+
+    public function table(Table $table): Table
+    {
+        return $table;
+    }
+
+    public function makeFilamentTranslatableContentDriver(): ?TranslatableContentDriver
+    {
+        return null;
+    }
+
+    public function render(): View
+    {
+        return view('welcome');
+    }
+}
 
 it('executes the game model relationship contracts', function () {
     $models = [
@@ -95,6 +141,19 @@ it('executes the game model relationship contracts', function () {
     $achievement = new Achievement();
 
     foreach ([
+        (new DailyReward())->player(),
+        (new Guild_Membership())->player(),
+        (new Guild_Membership())->guild(),
+        (new Leaderboard())->player(),
+        (new PlayerEquipment())->player(),
+        (new PlayerEquipment())->item(),
+        (new PlayerSkill())->player(),
+        (new PlayerSkill())->skill(),
+        (new Player_Profile())->player(),
+        (new Player_Quest())->player(),
+        (new Player_Quest())->quest(),
+        (new Resource())->player(),
+        (new Skill())->players(),
         $player->gameNotifications(),
         $player->profile(),
         $player->playerItems(),
@@ -136,6 +195,8 @@ it('executes the game model relationship contracts', function () {
     ] as $relation) {
         expect($relation)->toBeObject();
     }
+
+    expect(GameSettings::group())->toBe('game');
 });
 
 it('renders menus and executes game events and notifications', function () {
@@ -175,6 +236,14 @@ it('runs the player ranking command through its service contract', function () {
         ->expectsOutput('Updated scores for 2 players.')
         ->expectsOutput('Updated rankings for 2 players.')
         ->assertSuccessful();
+});
+
+it('creates and assigns a personal team through the team service', function () {
+    $user = User::factory()->create(['name' => 'Coverage User']);
+    $team = app(TeamManagementService::class)->createPersonalTeamForUser($user);
+
+    expect($team->name)->toBe("Coverage User's Team")
+        ->and($user->fresh()->current_team_id)->toBe($team->id);
 });
 
 it('builds the registered Filament page actions and infolists', function () {
@@ -265,4 +334,48 @@ it('executes the remaining gameplay components and their empty-state branches', 
         ->call('purchaseItem', 999999)
         ->call('cancelListing', 999999)
         ->assertStatus(200);
+});
+
+it('renders the registered admin and app widgets', function () {
+    Player::factory()->create(['email' => 'widget-player@example.com']);
+    $user = User::factory()->create(['email' => 'widget-player@example.com']);
+    $this->actingAs($user);
+
+    foreach ([
+        ContentStatsChart::class,
+        GameStatsOverview::class,
+        ItemTypeChart::class,
+        LeaderboardWidget::class,
+        PlayerLevelChart::class,
+        PlayerProgressWidget::class,
+        QuickActionsWidget::class,
+        RecentAchievementsWidget::class,
+        RecentPlayersTable::class,
+        ActiveQuestsWidget::class,
+        InventoryWidget::class,
+        PlayerStatsWidget::class,
+        SocialLinksWidget::class,
+    ] as $widget) {
+        Livewire::test($widget)->assertStatus(200);
+    }
+});
+
+it('builds the registered relation-manager and user table definitions', function () {
+    $table = Table::make(new ReleaseScopeTableHarness());
+
+    foreach ([
+        AchievementsRelationManager::class,
+        ItemsRelationManager::class,
+        QuestsRelationManager::class,
+        ResourcesRelationManager::class,
+    ] as $managerClass) {
+        $manager = (new ReflectionClass($managerClass))->newInstanceWithoutConstructor();
+        $method = new ReflectionMethod($managerClass, 'table');
+        $method->setAccessible(true);
+
+        expect($method->invoke($manager, $table))->toBeInstanceOf(Table::class);
+    }
+
+    expect(UsersTable::configure($table))
+        ->toBeInstanceOf(Table::class);
 });
