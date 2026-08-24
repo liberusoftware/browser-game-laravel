@@ -303,6 +303,56 @@
             "type": "path",
             "url": "modules/browser-game-quests-livewire",
             "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-accounts",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-items",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-crafting",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-economy",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-competition",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-collections",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-social",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-live-ops",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-commerce",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-moderation-and-analytics",
+            "options": {"symlink": false}
         }
     ],
     "require": {
@@ -353,6 +403,16 @@
         "liberusoftware/module-browser-game-quests-api": "^1.0",
         "liberusoftware/module-browser-game-quests-filament": "^1.0",
         "liberusoftware/module-browser-game-quests-livewire": "^1.0",
+        "liberusoftware/module-browser-game-accounts": "^1.0",
+        "liberusoftware/module-browser-game-items": "^1.0",
+        "liberusoftware/module-browser-game-crafting": "^1.0",
+        "liberusoftware/module-browser-game-economy": "^1.0",
+        "liberusoftware/module-browser-game-competition": "^1.0",
+        "liberusoftware/module-browser-game-collections": "^1.0",
+        "liberusoftware/module-browser-game-social": "^1.0",
+        "liberusoftware/module-browser-game-live-ops": "^1.0",
+        "liberusoftware/module-browser-game-commerce": "^1.0",
+        "liberusoftware/module-browser-game-moderation-and-analytics": "^1.0",
         "liberusoftware/module-manager-filament": "^1.1",
         "liberusoftware/identity-core": "^1.0",
         "liberusoftware/identity-core-filament": "^1.0",
@@ -415,8 +475,18 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Database\\Factories\\": "database/factories/",
+        "App\\": "app/",
+        "Liberu\\BrowserGame\\Accounts\\": "modules/browser-game-accounts/src/",
+        "Liberu\\BrowserGame\\Collections\\": "modules/browser-game-collections/src/",
+        "Liberu\\BrowserGame\\Commerce\\": "modules/browser-game-commerce/src/",
+        "Liberu\\BrowserGame\\Competition\\": "modules/browser-game-competition/src/",
+        "Liberu\\BrowserGame\\Crafting\\": "modules/browser-game-crafting/src/",
+        "Liberu\\BrowserGame\\Economy\\": "modules/browser-game-economy/src/",
+        "Liberu\\BrowserGame\\Items\\": "modules/browser-game-items/src/",
+        "Liberu\\BrowserGame\\LiveOps\\": "modules/browser-game-live-ops/src/",
+        "Liberu\\BrowserGame\\ModerationAndAnalytics\\": "modules/browser-game-moderation-and-analytics/src/",
+        "Liberu\\BrowserGame\\Social\\": "modules/browser-game-social/src/",
+        "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
