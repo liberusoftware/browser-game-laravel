@@ -40,9 +40,11 @@ final class CombatController extends Controller
 
     public function action(Request $request, CombatBattle $battle): JsonResponse
     {
-        $action = app(CombatManager::class)->resolve($battle, (string) $request->user()->getKey(), (string) $request->string('action'), $request->integer('value'), $request->header('Idempotency-Key'), (array) $request->input('effects', []));
+        $validated = $request->validate(['action' => ['required', 'string', 'max:120'], 'value' => ['nullable', 'integer', 'min:0'], 'effects' => ['array']]);
+        $action = app(CombatManager::class)->resolve($battle, (string) $request->user()->getKey(), $validated['action'], $validated['value'] ?? 0, $request->header('Idempotency-Key'), $validated['effects'] ?? []);
+        $battle = $battle->fresh();
 
-        return response()->json(['data' => ['id' => (string) $action->getKey(), 'type' => 'browser-game-combat-action', 'attributes' => ['turn' => $action->getAttribute('turn'), 'action' => $action->getAttribute('action'), 'value' => $action->getAttribute('value')]]]);
+        return response()->json(['data' => ['id' => (string) $action->getKey(), 'type' => 'browser-game-combat-action', 'attributes' => ['combat_id' => $battle->getKey(), 'turn' => $action->getAttribute('turn'), 'action' => $action->getAttribute('action'), 'value' => $action->getAttribute('value'), 'effects' => $action->getAttribute('effects'), 'battle_status' => $battle->status, 'state' => $battle->state]]]);
     }
 
     public function definition(Request $request): JsonResponse

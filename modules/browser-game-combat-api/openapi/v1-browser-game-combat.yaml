@@ -44,6 +44,7 @@ paths:
       parameters:
         - { $ref: '#/components/parameters/Id' }
         - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [action], properties: { action: { type: string, maxLength: 120 }, value: { type: integer, minimum: 0 }, effects: { type: array, items: { type: object, additionalProperties: true } } } } } } }
       responses:
         '200': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }

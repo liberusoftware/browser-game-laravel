@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\CombatFilament\Resources;
 
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -21,7 +23,12 @@ final class CombatBattleResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([TextInput::make('actor_id')->required(), TextInput::make('opponent_id')->required(), TextInput::make('status')->required()]);
+        return $schema->components([
+            TextInput::make('actor_id')->required(),
+            TextInput::make('opponent_id')->required(),
+            Select::make('status')->required()->options(['active' => 'Active', 'completed' => 'Completed', 'abandoned' => 'Abandoned']),
+            KeyValue::make('state'),
+        ]);
     }
 
     public static function table(Table $table): Table
