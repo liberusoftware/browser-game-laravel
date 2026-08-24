@@ -11,4 +11,4 @@
   "require-dev": {"liberusoftware/package-testbench": "^1.5", "pestphp/pest": "^5.0"},
   "scripts": {"test": "pest"},
   "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
-}
+,"homepage":"https://github.com/liberusoftware/module-browser-game-characters","support":{"source":"https://github.com/liberusoftware/module-browser-game-characters","issues":"https://github.com/liberusoftware/module-browser-game-characters/issues"}}

@@ -39,9 +39,9 @@ if [[ -f package-lock.json ]]; then
 fi
 
 if composer run-script --list | grep -qE '^  test '; then
-    composer test
+    XDEBUG_MODE=coverage composer test -- --coverage --min=100
 elif [[ -x vendor/bin/pest ]]; then
-    vendor/bin/pest
+    XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=100
 fi
 
 [[ "$release" == "true" ]] || { printf 'Updates validated. Review and commit the worktree changes.\n'; exit 0; }

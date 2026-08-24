@@ -65,8 +65,8 @@ jobs:
 
       # Keep the release-scope gate in the command that actually runs Pest. The Laravel
       # test wrapper accepts this option but does not enforce Pest's minimum threshold.
-      - name: Run tests
-        run: XDEBUG_MODE=coverage vendor/bin/pest --coverage-clover=coverage.xml --min=100
+      - name: Run tests with the release-scope coverage gate
+        run: XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=100 --coverage-clover=coverage.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
