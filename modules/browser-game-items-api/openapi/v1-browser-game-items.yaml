@@ -54,7 +54,7 @@ paths:
       operationId: browser.game.items.inventory.add
       summary: Add an item to the authenticated inventory
       security: [{ sanctum: [] }]
-      parameters: [{ $ref: '#/components/parameters/Id' }]
+      parameters: [{ $ref: '#/components/parameters/Item' }]
       requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/InventoryMutation' } } } }
       responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/items/inventory/{item}/remove:
@@ -62,7 +62,7 @@ paths:
       operationId: browser.game.items.inventory.remove
       summary: Remove an item from the authenticated inventory
       security: [{ sanctum: [] }]
-      parameters: [{ $ref: '#/components/parameters/Id' }]
+      parameters: [{ $ref: '#/components/parameters/Item' }]
       requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/InventoryMutation' } } } }
       responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/items/inventory/entries/{id}/equip:
@@ -94,6 +94,38 @@ paths:
       parameters: [{ $ref: '#/components/parameters/Id' }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [delta], properties: { delta: { type: integer } } } } } }
       responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/items/inventory/entries/{id}/container:
+    post:
+      operationId: browser.game.items.inventory.container
+      summary: Place an owned inventory entry in a container
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [container_id]
+              properties:
+                container_id: { type: integer, minimum: 1 }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/items/inventory/entries/{id}/provenance:
+    post:
+      operationId: browser.game.items.inventory.provenance
+      summary: Record provenance for an owned inventory entry
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provenance]
+              properties:
+                provenance: { type: object, additionalProperties: true }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   parameters:
     Id:
@@ -101,6 +133,14 @@ components:
       in: path
       required: true
       description: Opaque resource identifier.
+      schema:
+        type: string
+        format: uuid
+    Item:
+      name: item
+      in: path
+      required: true
+      description: Opaque item definition identifier.
       schema:
         type: string
         format: uuid

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Liberu\BrowserGame\Items\Models\InventoryEntry;
 use Liberu\BrowserGame\Items\Models\ItemsRecord;
 use Liberu\BrowserGame\Items\Queries\ItemsQuery;
-use Liberu\BrowserGame\Items\Models\InventoryEntry;
 use Liberu\BrowserGame\Items\Support\ItemsManager;
 
 final class ItemsController extends Controller
@@ -82,6 +82,22 @@ final class ItemsController extends Controller
     {
         $data = $request->validate(['delta' => ['required', 'integer', 'between:-100000,100000']]);
         $updated = app(ItemsManager::class)->adjustDurability((string) $request->user()->getAuthIdentifier(), $entry, (int) $data['delta']);
+
+        return response()->json(['data' => $this->inventoryResource($updated)]);
+    }
+
+    public function container(Request $request, InventoryEntry $entry): JsonResponse
+    {
+        $data = $request->validate(['container_id' => ['required', 'integer', 'min:1']]);
+        $updated = app(ItemsManager::class)->putInContainer((string) $request->user()->getAuthIdentifier(), $entry, (int) $data['container_id']);
+
+        return response()->json(['data' => $this->inventoryResource($updated)]);
+    }
+
+    public function provenance(Request $request, InventoryEntry $entry): JsonResponse
+    {
+        $data = $request->validate(['provenance' => ['required', 'array']]);
+        $updated = app(ItemsManager::class)->setProvenance((string) $request->user()->getAuthIdentifier(), $entry, $data['provenance']);
 
         return response()->json(['data' => $this->inventoryResource($updated)]);
     }

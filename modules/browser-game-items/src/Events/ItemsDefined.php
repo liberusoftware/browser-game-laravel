@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\Items\Events;
 
+use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 
-final readonly class ItemsDefined
+final readonly class ItemsDefined implements ShouldDispatchAfterCommit
 {
     use Dispatchable;
 
