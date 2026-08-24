@@ -22,7 +22,7 @@ final class CollectionsRecord extends Model
 
     protected function casts(): array
     {
-        return ['data' => 'array'];
+        return ['data' => 'array', 'repeatable' => 'boolean'];
     }
 
     public function entries(): HasMany

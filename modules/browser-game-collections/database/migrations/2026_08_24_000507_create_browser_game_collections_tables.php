@@ -15,7 +15,9 @@ return new class() extends Migration
             $table->string('tenant_id')->nullable()->index();
             $table->string('team_id')->nullable()->index();
             $table->string('name');
+            $table->string('kind')->default('achievement')->index();
             $table->string('status')->default('active')->index();
+            $table->boolean('repeatable')->default(false);
             $table->json('data')->nullable();
             $table->timestamps();
         });
@@ -24,6 +26,8 @@ return new class() extends Migration
             $table->foreignUuid('collection_id')->constrained('browser_game_collections')->cascadeOnDelete();
             $table->string('entry_key');
             $table->string('name');
+            $table->string('category')->default('achievement');
+            $table->string('rarity')->nullable();
             $table->unsignedInteger('required_quantity')->default(1);
             $table->json('reward')->nullable();
             $table->json('data')->nullable();

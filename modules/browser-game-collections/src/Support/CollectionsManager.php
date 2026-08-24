@@ -41,6 +41,17 @@ final class CollectionsManager
         return $collection->entries()->create(['entry_key' => $entryKey, 'name' => $name, 'required_quantity' => $requiredQuantity, 'reward' => $reward, 'data' => $data]);
     }
 
+    public function defineCollection(string $name, string $kind = 'achievement', array $data = [], bool $repeatable = false, ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        if (! in_array($kind, ['achievement', 'title', 'reputation', 'pet', 'mount', 'housing', 'cosmetic'], true)) {
+            throw ValidationException::withMessages(['kind' => 'Unsupported collection kind.']);
+        }
+        $collection = $this->define($name, $data, $tenantId, $teamId);
+        $collection->update(['kind' => $kind, 'repeatable' => $repeatable]);
+
+        return $collection->fresh();
+    }
+
     public function record(string $actorId, CollectionsRecord $collection, string $entryKey, int $quantity = 1): CollectionProgress
     {
         if ($quantity < 1) {
