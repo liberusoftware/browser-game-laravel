@@ -47,7 +47,7 @@ class QuestResource extends Resource
     {
         return [
             'XP Reward' => $record->experience_reward,
-            'Item Reward' => $record->itemReward?->name ?? 'None',
+            'Item Reward' => $record->itemReward->name ?? 'None',
         ];
     }
 

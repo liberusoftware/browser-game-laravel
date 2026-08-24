@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MarketplaceListing extends Model
 {
@@ -23,17 +24,19 @@ class MarketplaceListing extends Model
         'sold_at' => 'datetime',
     ];
 
-    public function seller()
+    /** @return BelongsTo<Player, $this> */
+    public function seller(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'seller_id');
     }
 
-    public function buyer()
+    public function buyer(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'buyer_id');
     }
 
-    public function item()
+    /** @return BelongsTo<Item, $this> */
+    public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }

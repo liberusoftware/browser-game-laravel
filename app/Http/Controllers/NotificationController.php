@@ -31,7 +31,7 @@ class NotificationController extends Controller
             $player = $player->player ?? null;
         }
 
-        if (! $player || ! ($player instanceof Player)) {
+        if (! $player) {
             return response()->json(['error' => 'Player not found'], 404);
         }
 
@@ -55,7 +55,7 @@ class NotificationController extends Controller
             $player = $player->player ?? null;
         }
 
-        if (! $player || ! ($player instanceof Player)) {
+        if (! $player) {
             return response()->json(['error' => 'Player not found'], 404);
         }
 
@@ -78,7 +78,7 @@ class NotificationController extends Controller
             $player = $player->player ?? null;
         }
 
-        if (! $player || ! ($player instanceof Player)) {
+        if (! $player) {
             return response()->json(['error' => 'Player not found'], 404);
         }
 
@@ -109,7 +109,7 @@ class NotificationController extends Controller
             $player = $player->player ?? null;
         }
 
-        if (! $player || ! ($player instanceof Player)) {
+        if (! $player) {
             return response()->json(['error' => 'Player not found'], 404);
         }
 
@@ -131,7 +131,7 @@ class NotificationController extends Controller
             $player = $player->player ?? null;
         }
 
-        if (! $player || ! ($player instanceof Player)) {
+        if (! $player) {
             return response()->json(['error' => 'Player not found'], 404);
         }
 

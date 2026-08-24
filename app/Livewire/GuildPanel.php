@@ -71,13 +71,13 @@ class GuildPanel extends Component
         }])->find($guildId);
 
         if ($guild) {
-            $this->guildMembers = $guild->members->map(function ($member) {
+            $this->guildMembers = $guild->members->map(function (Player $member): array {
                 return [
                     'id' => $member->id,
                     'username' => $member->username,
                     'level' => $member->level,
-                    'role' => $member->pivot->role ?? 'member',
-                    'joined_at' => $member->pivot->joined_at,
+                    'role' => data_get($member->getRelationValue('pivot'), 'role', 'member'),
+                    'joined_at' => data_get($member->getRelationValue('pivot'), 'joined_at'),
                 ];
             })->toArray();
         }

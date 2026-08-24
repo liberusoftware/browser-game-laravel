@@ -134,8 +134,11 @@ class QuestController extends Controller
      */
     protected function getPlayer(Request $request): Player
     {
-        $player = $request->user();
-        abort_unless($player instanceof Player, 403, 'Player authentication required.');
+        $user = $request->user();
+        abort_unless($user !== null, 403, 'Player authentication required.');
+
+        $player = Player::query()->where('email', $user->email)->first();
+        abort_unless($player !== null, 403, 'Player authentication required.');
 
         return $player;
     }

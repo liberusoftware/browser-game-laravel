@@ -206,7 +206,7 @@ class BenchmarkInventory extends Command
 
         // Access item relationship (triggers N+1)
         foreach ($playerItems as $playerItem) {
-            $name = $playerItem->item->name;
+            $name = $playerItem->item?->name;
         }
 
         $time = (microtime(true) - $start) * 1000;

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InventoryWidget extends Widget
 {
+    /** @var view-string */
     protected string $view = 'filament.app.widgets.inventory-widget';
 
     protected static ?int $sort = 3;

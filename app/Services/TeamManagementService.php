@@ -32,10 +32,11 @@ class TeamManagementService
      */
     public function createPersonalTeamForUser(User $user): Team
     {
-        $team = $user->ownedTeams()->create([
+        $createdTeam = $user->ownedTeams()->create([
             'name' => $user->name."'s Team",
             'personal_team' => true,
         ]);
+        $team = Team::query()->findOrFail($createdTeam->getKey());
 
         $user->switchTeam($team);
 

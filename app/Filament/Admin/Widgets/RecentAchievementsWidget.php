@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Models\Player;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -16,8 +17,8 @@ class RecentAchievementsWidget extends BaseWidget
     {
         return $table
             ->query(
-                \DB::table('player_achievements')
-                    ->join('players', 'player_achievements.player_id', '=', 'players.id')
+                Player::query()
+                    ->join('player_achievements', 'player_achievements.player_id', '=', 'players.id')
                     ->join('achievements', 'player_achievements.achievement_id', '=', 'achievements.id')
                     ->whereNotNull('player_achievements.unlocked_at')
                     ->select(

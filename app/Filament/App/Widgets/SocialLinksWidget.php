@@ -2,19 +2,20 @@
 
 namespace App\Filament\App\Widgets;
 
-use App\Settings\GeneralSettings;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\View\View;
+use Liberu\Foundation\Settings\Settings\SiteSettings;
 use Override;
 
 class SocialLinksWidget extends Widget
 {
+    /** @var view-string */
     protected string $view = 'filament.app.widgets.social-links-widget';
 
     #[Override]
     public function render(): View
     {
-        $settings = app(GeneralSettings::class);
+        $settings = app(SiteSettings::class);
 
         $links = [];
 

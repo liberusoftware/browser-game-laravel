@@ -18,7 +18,8 @@ class CraftingWorkshop extends Component
 
     public function mount()
     {
-        $this->player = Auth::user()?->player ?? Player::where('email', Auth::user()->email)->first();
+        $user = Auth::user();
+        $this->player = $user->player ?? Player::where('email', $user->email)->first();
     }
 
     public function selectRecipe($recipeId)

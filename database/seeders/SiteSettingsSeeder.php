@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Settings\GeneralSettings;
 use Illuminate\Database\Seeder;
+use Liberu\Foundation\Settings\Settings\SiteSettings;
 
 class SiteSettingsSeeder extends Seeder
 {
     public function run()
     {
-        $settings = app(GeneralSettings::class);
+        $settings = app(SiteSettings::class);
 
         $settings->site_name = config('app.name', 'Liberu Genealogy');
         $settings->site_email = 'info@liberugenealogy.com';

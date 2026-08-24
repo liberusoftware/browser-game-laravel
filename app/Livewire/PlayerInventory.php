@@ -39,14 +39,14 @@ class PlayerInventory extends Component
         }
 
         // Load items with quantity
-        $this->inventory = $this->player->items->map(function ($item) {
+        $this->inventory = $this->player->items->map(function (Item $item): array {
             return [
                 'id' => $item->id,
                 'name' => $item->name,
                 'description' => $item->description,
                 'type' => $item->type,
                 'rarity' => $item->rarity,
-                'quantity' => $item->pivot->quantity,
+                'quantity' => data_get($item->getRelationValue('pivot'), 'quantity'),
             ];
         })->toArray();
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Battle extends Model
 {
@@ -29,17 +30,19 @@ class Battle extends Model
         'completed_at' => 'datetime',
     ];
 
-    public function attacker()
+    /** @return BelongsTo<Player, $this> */
+    public function attacker(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'attacker_id');
     }
 
-    public function defender()
+    /** @return BelongsTo<Player, $this> */
+    public function defender(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'defender_id');
     }
 
-    public function winner()
+    public function winner(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'winner_id');
     }

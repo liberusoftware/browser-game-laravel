@@ -77,8 +77,12 @@ class CombatController extends Controller
 
     private function player(Request $request): Player
     {
-        abort_unless($request->user() instanceof Player, 403, 'Player authentication required.');
+        $user = $request->user();
+        abort_unless($user !== null, 403, 'Player authentication required.');
 
-        return $request->user();
+        $player = Player::query()->where('email', $user->email)->first();
+        abort_unless($player !== null, 403, 'Player authentication required.');
+
+        return $player;
     }
 }

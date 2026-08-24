@@ -21,8 +21,10 @@ class CombatArena extends Component
 
     public function mount()
     {
-        $this->player = Auth::user()?->player ?? Player::where('email', Auth::user()->email)->first();
-        $this->opponentLevel = max(1, $this->player->level - 2);
+        $user = Auth::user();
+        $player = $user->player ?? Player::where('email', $user->email)->first();
+        $this->player = $player;
+        $this->opponentLevel = max(1, $player->level - 2);
     }
 
     public function startPvEBattle()
