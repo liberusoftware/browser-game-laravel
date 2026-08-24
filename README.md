@@ -122,12 +122,12 @@ vendor/bin/pint --test
 npm run build
 ```
 
-The test suite exercises authentication, teams, authorization, game services, API endpoints, Filament resources, Livewire components, module boundaries, and installed providers. The CI workflow publishes `coverage.xml` to Codecov and enforces the configured release-scope coverage threshold (`--min=99` at present); a coverage failure blocks the workflow.
+The test suite exercises authentication, teams, authorization, game services, API endpoints, Filament resources, Livewire components, module boundaries, and installed providers. The CI workflow publishes `coverage.xml` to Codecov and enforces the configured release-scope coverage threshold (`--min=100`); a coverage failure blocks the workflow.
 
 Run the same coverage gate locally with:
 
 ```bash
-XDEBUG_MODE=coverage vendor/bin/pest --coverage-clover=coverage.xml --min=99
+XDEBUG_MODE=coverage vendor/bin/pest --coverage-clover=coverage.xml --min=100
 ```
 
 ### Publishing the component repositories
