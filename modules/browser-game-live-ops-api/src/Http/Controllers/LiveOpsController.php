@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\LiveOpsApi\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -39,6 +40,31 @@ final class LiveOpsController extends Controller
         $v = $request->validate(['claim_key' => ['nullable', 'string', 'max:128']]);
 
         return response()->json(['data' => app(LiveOpsManager::class)->claim((string) $request->user()->getAuthIdentifier(), $liveOps, $v['claim_key'] ?? 'default')], 201);
+    }
+
+    public function dailyStatus(Request $request, LiveOpsRecord $liveOps): JsonResponse
+    {
+        return response()->json(['data' => app(LiveOpsManager::class)->dailyStatus(
+            (string) $request->user()->getAuthIdentifier(),
+            $liveOps,
+            $request->string('timezone')->toString() ?: null,
+        )]);
+    }
+
+    public function dailyClaim(Request $request, LiveOpsRecord $liveOps): JsonResponse
+    {
+        $data = $request->validate(['timezone' => ['nullable', 'timezone']]);
+        $claim = app(LiveOpsManager::class)->claimDaily(
+            (string) $request->user()->getAuthIdentifier(),
+            $liveOps,
+            $data['timezone'] ?? null,
+        );
+
+        return response()->json(['data' => [
+            'id' => (string) $claim->getKey(),
+            'type' => 'browser-game-live-ops-claim',
+            'attributes' => ['claim_key' => $claim->claim_key, 'status' => $claim->status, 'grant' => $claim->grant],
+        ]], 201);
     }
 
     public function rollback(Request $request, LiveOpsRecord $liveOps): JsonResponse

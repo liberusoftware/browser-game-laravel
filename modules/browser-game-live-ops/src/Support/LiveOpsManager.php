@@ -7,6 +7,7 @@ namespace Liberu\BrowserGame\LiveOps\Support;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Liberu\BrowserGame\LiveOps\Events\LiveOpsClaimed;
 use Liberu\BrowserGame\LiveOps\Events\LiveOpsDefined;
 use Liberu\BrowserGame\LiveOps\Models\LiveOpsClaim;
 use Liberu\BrowserGame\LiveOps\Models\LiveOpsRecord;
@@ -62,6 +63,100 @@ final class LiveOpsManager
 
     public function claim(string $actorId, LiveOpsRecord $record, string $claimKey = 'default'): LiveOpsClaim
     {
+        $this->required($actorId, 'actor_id');
+        $this->required($claimKey, 'claim_key');
+        $this->assertAvailable($record);
+
+        $created = false;
+        $claim = DB::transaction(function () use ($actorId, $record, $claimKey, &$created): LiveOpsClaim {
+            $record = LiveOpsRecord::query()->lockForUpdate()->findOrFail($record->getKey());
+            $this->assertAvailable($record);
+            $existing = LiveOpsClaim::query()->where([
+                'actor_id' => $actorId,
+                'live_ops_id' => $record->getKey(),
+                'claim_key' => $claimKey,
+            ])->first();
+            if ($existing !== null) {
+                return $existing;
+            }
+
+            $created = true;
+
+            return LiveOpsClaim::query()->create([
+                'actor_id' => $actorId,
+                'live_ops_id' => $record->getKey(),
+                'claim_key' => $claimKey,
+                'status' => 'claimed',
+                'grant' => $record->data['grant'] ?? null,
+            ]);
+        });
+        if ($created) {
+            LiveOpsClaimed::dispatch((string) $record->getKey(), $actorId, (string) $claim->getKey(), $claimKey);
+        }
+
+        return $claim;
+    }
+
+    /**
+     * Claim a published daily activity once per calendar day and return its
+     * current streak in the claim grant metadata.
+     */
+    public function claimDaily(string $actorId, LiveOpsRecord $record, ?string $timezone = null): LiveOpsClaim
+    {
+        if ($record->kind !== 'daily_activity') {
+            throw ValidationException::withMessages(['kind' => 'The record is not a daily activity.']);
+        }
+        $claimKey = now($timezone ?: config('app.timezone', 'UTC'))->toDateString();
+        $claim = $this->claim($actorId, $record, $claimKey);
+        if ($claim->getAttribute('grant') !== null && array_key_exists('streak', (array) $claim->grant)) {
+            return $claim;
+        }
+
+        $streak = $this->dailyStreak($actorId, $record, $claimKey, $timezone, false);
+        $grant = array_merge((array) ($claim->grant ?? $record->data['grant'] ?? []), ['streak' => $streak, 'claim_date' => $claimKey]);
+        $claim->update(['grant' => $grant]);
+
+        return $claim->refresh();
+    }
+
+    /** @return array{claim_key: string, claimed: bool, streak: int, grant: array<mixed>} */
+    public function dailyStatus(string $actorId, LiveOpsRecord $record, ?string $timezone = null): array
+    {
+        if ($record->kind !== 'daily_activity') {
+            throw ValidationException::withMessages(['kind' => 'The record is not a daily activity.']);
+        }
+        $claimKey = now($timezone ?: config('app.timezone', 'UTC'))->toDateString();
+        $claim = LiveOpsClaim::query()->where(['actor_id' => $actorId, 'live_ops_id' => $record->getKey(), 'claim_key' => $claimKey])->first();
+
+        return [
+            'claim_key' => $claimKey,
+            'claimed' => $claim !== null,
+            'streak' => $claim === null ? $this->dailyStreak($actorId, $record, $claimKey, $timezone) : (int) (($claim->grant ?? [])['streak'] ?? 0),
+            'grant' => (array) ($record->data['grant'] ?? []),
+        ];
+    }
+
+    private function dailyStreak(string $actorId, LiveOpsRecord $record, string $claimKey, ?string $timezone, bool $includeCurrent = true): int
+    {
+        $date = \Carbon\CarbonImmutable::parse($claimKey, $timezone ?: config('app.timezone', 'UTC'));
+        if (! $includeCurrent) {
+            $date = $date->subDay();
+        }
+        $streak = 0;
+        while (LiveOpsClaim::query()->where([
+            'actor_id' => $actorId,
+            'live_ops_id' => $record->getKey(),
+            'claim_key' => $date->toDateString(),
+        ])->exists()) {
+            $streak++;
+            $date = $date->subDay();
+        }
+
+        return $streak + 1;
+    }
+
+    private function assertAvailable(LiveOpsRecord $record): void
+    {
         if ($record->status !== 'published') {
             throw ValidationException::withMessages(['status' => 'This Live Ops activity is not available.']);
         }
@@ -69,14 +164,13 @@ final class LiveOpsManager
             throw ValidationException::withMessages(['availability' => 'This activity is outside its active window.']);
         }
 
-        return DB::transaction(function () use ($actorId, $record, $claimKey): LiveOpsClaim {
-            $existing = LiveOpsClaim::query()->where(['actor_id' => $actorId, 'live_ops_id' => $record->getKey(), 'claim_key' => $claimKey])->first();
-            if ($existing !== null) {
-                return $existing;
-            }
+    }
 
-            return LiveOpsClaim::query()->create(['actor_id' => $actorId, 'live_ops_id' => $record->getKey(), 'claim_key' => $claimKey, 'status' => 'claimed', 'grant' => $record->data['grant'] ?? null]);
-        });
+    private function required(string $value, string $field): void
+    {
+        if (trim($value) === '') {
+            throw ValidationException::withMessages([$field => 'A value is required.']);
+        }
     }
 
     public function rollback(LiveOpsRecord $record, string $actorId, string $reason): LiveOpsRecord

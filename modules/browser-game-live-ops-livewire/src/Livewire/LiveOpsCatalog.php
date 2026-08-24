@@ -21,6 +21,14 @@ final class LiveOpsCatalog extends Component
         $this->message = 'Claim recorded.';
     }
 
+    public function claimDaily(string $recordId): void
+    {
+        abort_unless(auth()->check(), 403);
+        $record = LiveOpsRecord::query()->findOrFail($recordId);
+        app(LiveOpsManager::class)->claimDaily((string) auth()->id(), $record);
+        $this->message = 'Daily reward claimed.';
+    }
+
     public function render(): mixed
     {
         $teamId = auth()->user()?->currentTeam?->getKey();
