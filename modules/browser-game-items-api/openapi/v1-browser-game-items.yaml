@@ -41,6 +41,59 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/items/inventory/me:
+    get:
+      operationId: browser.game.items.inventory
+      summary: Retrieve the authenticated actor inventory
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/browser-game/items/inventory/{item}/add:
+    post:
+      operationId: browser.game.items.inventory.add
+      summary: Add an item to the authenticated inventory
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/InventoryMutation' } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/items/inventory/{item}/remove:
+    post:
+      operationId: browser.game.items.inventory.remove
+      summary: Remove an item from the authenticated inventory
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/InventoryMutation' } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/items/inventory/entries/{id}/equip:
+    post:
+      operationId: browser.game.items.inventory.equip
+      summary: Equip an inventory entry
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/items/inventory/entries/{id}/unequip:
+    post:
+      operationId: browser.game.items.inventory.unequip
+      summary: Unequip an inventory entry
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/items/inventory/entries/{id}/bind:
+    post:
+      operationId: browser.game.items.inventory.bind
+      summary: Bind an inventory entry to its actor
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/items/inventory/entries/{id}/durability:
+    post:
+      operationId: browser.game.items.inventory.durability
+      summary: Adjust inventory entry durability
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [delta], properties: { delta: { type: integer } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   parameters:
     Id:
@@ -66,6 +119,12 @@ components:
       scheme: bearer
       bearerFormat: Sanctum
   schemas:
+    InventoryMutation:
+      type: object
+      required: [quantity]
+      properties:
+        quantity: { type: integer, minimum: 1 }
+        metadata: { type: object, additionalProperties: true }
     Resource:
       type: object
       required: [id, type, attributes]
@@ -145,3 +204,8 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: Request validation failed.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }

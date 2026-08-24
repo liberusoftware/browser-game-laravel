@@ -52,6 +52,46 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/game-core/{world}/clock:
+    put:
+      operationId: browser.game.game.core.clock
+      summary: Set the authoritative game clock
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [current_at, speed], properties: { current_at: { type: string, format: date-time }, speed: { type: number, minimum: 0 }, paused: { type: boolean } } } } } }
+      responses: { '200': { description: Clock updated }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/game-core/{world}/rulesets:
+    post:
+      operationId: browser.game.game.core.ruleset
+      summary: Publish a ruleset version
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [version, rules], properties: { version: { type: integer, minimum: 1 }, rules: { type: object, additionalProperties: true } } } } } }
+      responses: { '201': { description: Ruleset published }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/game-core/{world}/content-versions:
+    post:
+      operationId: browser.game.game.core.content
+      summary: Publish a content version
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [version, content_hash, manifest], properties: { version: { type: integer, minimum: 1 }, content_hash: { type: string }, manifest: { type: object, additionalProperties: true } } } } } }
+      responses: { '201': { description: Content version published }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/game-core/{world}/feature-flags/{key}:
+    put:
+      operationId: browser.game.game.core.feature.flag
+      summary: Change a feature flag
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }, { name: key, in: path, required: true, schema: { type: string } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [enabled], properties: { enabled: { type: boolean }, rollout_percentage: { type: integer, minimum: 0, maximum: 100 }, constraints: { type: object, additionalProperties: true } } } } } }
+      responses: { '200': { description: Feature flag updated }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/game-core/{world}/maintenance:
+    put:
+      operationId: browser.game.game.core.maintenance
+      summary: Change maintenance state
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [status], properties: { status: { type: string, enum: [scheduled, active, resolved] }, message: { type: string } } } } } }
+      responses: { '200': { description: Maintenance state updated }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
