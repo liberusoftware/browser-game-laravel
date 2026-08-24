@@ -31,7 +31,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: liberusoftware/boilerplate
+          images: liberusoftware/browser-game-laravel
           tags: |
             type=ref,event=branch
             type=ref,event=pr

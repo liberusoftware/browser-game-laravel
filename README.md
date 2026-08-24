@@ -6,7 +6,7 @@
 
 [![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)](https://www.php.net/) [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/) [![Filament](https://img.shields.io/badge/Filament-5-FDAE4B)](https://filamentphp.com/) [![Livewire](https://img.shields.io/badge/Livewire-4-FB70A9)](https://livewire.laravel.com/)
 
-[![Install](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/install.yml/badge.svg?branch=main)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/install.yml) [![Tests](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/tests.yml) [![Docker](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/docker.yml) [![Coverage](https://codecov.io/gh/liberu-browser-game/browser-game-laravel/branch/main/graph/badge.svg)](https://codecov.io/gh/liberu-browser-game/browser-game-laravel) [![Latest release](https://img.shields.io/github/v/release/liberu-browser-game/browser-game-laravel?sort=semver)](https://github.com/liberu-browser-game/browser-game-laravel/releases/latest) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![Install](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/install.yml/badge.svg?branch=main)](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/install.yml) [![Tests](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/tests.yml) [![Docker](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/docker.yml) [![Coverage](https://codecov.io/gh/liberusoftware/browser-game-laravel/branch/main/graph/badge.svg)](https://codecov.io/gh/liberusoftware/browser-game-laravel) [![Latest release](https://img.shields.io/github/v/release/liberusoftware/browser-game-laravel?sort=semver)](https://github.com/liberusoftware/browser-game-laravel/releases/latest) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 Liberu Browser Game is the deployable host for a persistent browser-based game. It combines the Liberu Composer ecosystem with game-domain systems for players, quests, combat, crafting, inventory, guilds, marketplace trading, achievements, rewards, notifications, and leaderboards.
 
@@ -38,7 +38,7 @@ Liberu Browser Game is the deployable host for a persistent browser-based game. 
 ## Quick start
 
 ```bash
-git clone https://github.com/liberu-browser-game/browser-game-laravel.git
+git clone https://github.com/liberusoftware/browser-game-laravel.git
 cd browser-game-laravel
 composer install
 cp .env.example .env
@@ -134,7 +134,7 @@ XDEBUG_MODE=coverage vendor/bin/pest --coverage-clover=coverage.xml --min=100
 
 The publishing helper derives repository names from directory names, using
 `module-` for entries in `modules/` and `theme-` for entries in `themes/`. It
-also handles this complete meta repository as `boilerplate-laravel`.
+also handles this complete meta repository as `browser-game-laravel`.
 
 ```bash
 # Inspect all mappings without changing GitHub
@@ -188,7 +188,7 @@ API failures without printing the configured token.
 | Automation | [liberusoftware/automation-laravel](https://github.com/liberusoftware/automation-laravel) | Governed workflows, provider-neutral AI, approvals, and connectors |
 | Billing | [liberusoftware/billing-laravel](https://github.com/liberusoftware/billing-laravel) | Billing, subscriptions, payments, invoices, and revenue operations |
 | Boilerplate | [liberusoftware/boilerplate-laravel](https://github.com/liberusoftware/boilerplate-laravel) | Modular Laravel foundation and reference implementation |
-| Browser game | [liberu-browser-game/browser-game-laravel](https://github.com/liberu-browser-game/browser-game-laravel) | Browser-based game platform and domain capabilities |
+| Browser game | [liberusoftware/browser-game-laravel](https://github.com/liberusoftware/browser-game-laravel) | Browser-based game platform and domain capabilities |
 | CMS | [liberusoftware/cms-laravel](https://github.com/liberusoftware/cms-laravel) | Content, publishing, pages, media, search, and delivery |
 | Control panel | [liberusoftware/control-panel-laravel](https://github.com/liberusoftware/control-panel-laravel) | Hosting, infrastructure, DNS, mail, backups, and operations |
 | CRM | [liberusoftware/crm-laravel](https://github.com/liberusoftware/crm-laravel) | Customers, leads, opportunities, sales, and service |
@@ -212,4 +212,4 @@ Feedback and contributions are welcome. Report reproducible bugs, propose focuse
 
 ## Contributors
 
-Thank you to everyone who helps improve Liberu Browser Game. [View the contributors graph](https://github.com/liberu-browser-game/browser-game-laravel/graphs/contributors).
+Thank you to everyone who helps improve Liberu Browser Game. [View the contributors graph](https://github.com/liberusoftware/browser-game-laravel/graphs/contributors).

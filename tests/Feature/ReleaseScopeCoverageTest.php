@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Events\GuildInvitationSent;
 use App\Events\GuildMemberJoined;
 use App\Events\GuildMemberLeft;
@@ -57,6 +59,7 @@ use App\Filament\App\Widgets\ActiveQuestsWidget;
 use App\Filament\App\Widgets\InventoryWidget;
 use App\Filament\App\Widgets\PlayerStatsWidget;
 use App\Filament\App\Widgets\SocialLinksWidget;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QuestController;
 use App\Livewire\CombatArena;
 use App\Livewire\CraftingWorkshop;
@@ -91,8 +94,8 @@ use App\Notifications\AchievementUnlockedNotification;
 use App\Notifications\GuildInvitationNotification;
 use App\Notifications\LevelUpNotification;
 use App\Notifications\QuestCompletedNotification;
-use App\Services\DailyRewardService;
 use App\Services\CraftingService;
+use App\Services\DailyRewardService;
 use App\Services\MarketplaceService;
 use App\Services\MenuService;
 use App\Services\QuestService;
@@ -380,7 +383,7 @@ it('covers direct player notification controller responses', function () {
     $player = Player::factory()->create();
     $request = Request::create('/api/notifications', 'GET');
     $request->setUserResolver(fn () => $player);
-    $controller = app(\App\Http\Controllers\NotificationController::class);
+    $controller = app(NotificationController::class);
 
     expect($controller->index($request)->getStatusCode())->toBe(200)
         ->and($controller->unread($request)->getStatusCode())->toBe(200)

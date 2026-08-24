@@ -1,12 +1,14 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "liberusoftware/boilerplate-laravel",
+    "name": "liberusoftware/browser-game-laravel",
     "type": "project",
-    "description": "Liberu boilerplate Laravel application.",
+    "description": "Liberu persistent browser-based game Laravel application.",
     "keywords": [
         "laravel",
         "framework",
-        "boilerplate"
+        "browser-game",
+        "pbbg",
+        "game"
     ],
     "license": "MIT",
     "repositories": [
