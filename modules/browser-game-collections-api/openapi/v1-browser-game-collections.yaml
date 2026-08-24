@@ -1,0 +1,12 @@
+openapi: 3.1.0
+info: {title: browser game collections API, version: 1.0.0}
+paths:
+  /api/v1/browser-game/collections:
+    get: {operationId: browser.game.collections.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/ResourceCollection'}}}
+  /api/v1/browser-game/collections/{id}:
+    get: {operationId: browser.game.collections.get, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/Id'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+components:
+  parameters: {Id: {name: id, in: path, required: true, schema: {type: string}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  schemas: {BrowserGameCollectionsResource: {type: object, required: [id, type, attributes], properties: {id: {type: string}, type: {type: string, const: browser-game-collections}, attributes: {type: object, additionalProperties: true}}}, ResourceCollection: {type: object, required: [data], properties: {data: {type: array, items: {$ref: '#/components/schemas/BrowserGameCollectionsResource'}}}}}
+  responses: {Resource: {description: Collections resource, content: {application/json: {schema: {$ref: '#/components/schemas/BrowserGameCollectionsResource'}}}}, ResourceCollection: {description: Collections resources, content: {application/json: {schema: {$ref: '#/components/schemas/ResourceCollection'}}}}}

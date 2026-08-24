@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-crafting-heading"><h2 id="browser-game-crafting-heading">Crafting</h2>@forelse($crafting as $crafting)<article><h3>{{ $crafting->name }}</h3><p>{{ $crafting->status }}</p></article>@empty<p role="status">No crafting are available.</p>@endforelse</section>

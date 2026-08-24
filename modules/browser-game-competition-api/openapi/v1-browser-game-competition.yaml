@@ -1,0 +1,12 @@
+openapi: 3.1.0
+info: {title: browser game competition API, version: 1.0.0}
+paths:
+  /api/v1/browser-game/competition:
+    get: {operationId: browser.game.competition.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/ResourceCollection'}}}
+  /api/v1/browser-game/competition/{id}:
+    get: {operationId: browser.game.competition.get, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/Id'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+components:
+  parameters: {Id: {name: id, in: path, required: true, schema: {type: string}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  schemas: {BrowserGameCompetitionResource: {type: object, required: [id, type, attributes], properties: {id: {type: string}, type: {type: string, const: browser-game-competition}, attributes: {type: object, additionalProperties: true}}}, ResourceCollection: {type: object, required: [data], properties: {data: {type: array, items: {$ref: '#/components/schemas/BrowserGameCompetitionResource'}}}}}
+  responses: {Resource: {description: Competition resource, content: {application/json: {schema: {$ref: '#/components/schemas/BrowserGameCompetitionResource'}}}}, ResourceCollection: {description: Competition resources, content: {application/json: {schema: {$ref: '#/components/schemas/ResourceCollection'}}}}}

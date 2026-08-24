@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-items-heading"><h2 id="browser-game-items-heading">Items</h2>@forelse($items as $items)<article><h3>{{ $items->name }}</h3><p>{{ $items->status }}</p></article>@empty<p role="status">No items are available.</p>@endforelse</section>

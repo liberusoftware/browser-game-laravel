@@ -1,0 +1,12 @@
+openapi: 3.1.0
+info: {title: browser game live-ops API, version: 1.0.0}
+paths:
+  /api/v1/browser-game/live-ops:
+    get: {operationId: browser.game.live-ops.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/ResourceCollection'}}}
+  /api/v1/browser-game/live-ops/{id}:
+    get: {operationId: browser.game.live-ops.get, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/Id'}], responses: {'200': {$ref: '#/components/responses/Resource'}}}
+components:
+  parameters: {Id: {name: id, in: path, required: true, schema: {type: string}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
+  schemas: {BrowserGameLiveOpsResource: {type: object, required: [id, type, attributes], properties: {id: {type: string}, type: {type: string, const: browser-game-live-ops}, attributes: {type: object, additionalProperties: true}}}, ResourceCollection: {type: object, required: [data], properties: {data: {type: array, items: {$ref: '#/components/schemas/BrowserGameLiveOpsResource'}}}}}
+  responses: {Resource: {description: LiveOps resource, content: {application/json: {schema: {$ref: '#/components/schemas/BrowserGameLiveOpsResource'}}}}, ResourceCollection: {description: LiveOps resources, content: {application/json: {schema: {$ref: '#/components/schemas/ResourceCollection'}}}}}

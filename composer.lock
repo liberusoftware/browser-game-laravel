@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f929408e8ff93ba67ec19234303c2d33",
+    "content-hash": "1a9b3a5f427a08fbbc813eb1b56f3177",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6340,6 +6340,133 @@
             }
         },
         {
+            "name": "liberusoftware/module-browser-game-accounts-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-accounts-api",
+                "reference": "299202355120c2b3c165c293dc8eb0dc0698c1a4"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-accounts": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-accounts-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\AccountsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Accounts.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-accounts-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-accounts-filament",
+                "reference": "7168890ed7260fbc45b4d59e9d44aff8ca2318ec"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-accounts": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-accounts-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\AccountsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Accounts.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-accounts-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-accounts-livewire",
+                "reference": "89f1432cc0ab5952060f4887043085b6850cc0e8"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-accounts": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-accounts-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\AccountsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Accounts.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-browser-game-characters",
             "version": "1.0.0",
             "dist": {
@@ -6573,6 +6700,133 @@
             }
         },
         {
+            "name": "liberusoftware/module-browser-game-collections-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-collections-api",
+                "reference": "b5e91c38c235faebf58b83b7cb487aedf13cf2f8"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-collections": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-collections-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CollectionsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Collections.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-collections-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-collections-filament",
+                "reference": "1fd7f4c62263a9e5453ec4fc09e610d49a789d77"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-collections": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-collections-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CollectionsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Collections.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-collections-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-collections-livewire",
+                "reference": "ac78b90440157ce96f03f6e32a304c5426428306"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-collections": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-collections-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CollectionsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Collections.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-browser-game-combat",
             "version": "1.0.0",
             "dist": {
@@ -6791,6 +7045,133 @@
             }
         },
         {
+            "name": "liberusoftware/module-browser-game-commerce-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-commerce-api",
+                "reference": "0da9ba978bfe00686719f8df5114421b58821fd5"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-commerce": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-commerce-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CommerceApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Commerce.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-commerce-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-commerce-filament",
+                "reference": "13346217463f3342b4e081e52a903eb062c7824a"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-commerce": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-commerce-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CommerceFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Commerce.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-commerce-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-commerce-livewire",
+                "reference": "0cde1277beb630bd091d9ade45008c1b7ad9cc4b"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-commerce": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-commerce-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CommerceLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Commerce.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-browser-game-competition",
             "version": "1.0.0",
             "dist": {
@@ -6828,6 +7209,133 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Competition capability.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-competition-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-competition-api",
+                "reference": "04c169d1b5488ae40fada1d07560bdf7763f4d7e"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-competition": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-competition-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CompetitionApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Competition.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-competition-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-competition-filament",
+                "reference": "7256080d2e737be2a984987b092c4910ff07ec7f"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-competition": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-competition-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CompetitionFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Competition.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-competition-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-competition-livewire",
+                "reference": "fd15c04134c0734cbf1506b2dbf3d24a22374f8a"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-competition": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-competition-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CompetitionLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Competition.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6877,6 +7385,133 @@
             }
         },
         {
+            "name": "liberusoftware/module-browser-game-crafting-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-crafting-api",
+                "reference": "ba960086e480680d794686e5ed44272c9bd80009"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-crafting": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-crafting-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CraftingApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Crafting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-crafting-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-crafting-filament",
+                "reference": "c4d8517e0a051a60f8c91d1aaaa5573629507224"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-crafting": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-crafting-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CraftingFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Crafting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-crafting-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-crafting-livewire",
+                "reference": "e6c8fb53d1a1cd5c2cb398397cbfbcac0860b4c3"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-crafting": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-crafting-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\CraftingLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Crafting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-browser-game-economy",
             "version": "1.0.0",
             "dist": {
@@ -6914,6 +7549,133 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Economy capability.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-economy-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-economy-api",
+                "reference": "32f931b956c1f40472d579c24b9daa01fc5b4762"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-economy": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-economy-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\EconomyApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Economy.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-economy-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-economy-filament",
+                "reference": "81cbc999d459c3bc41ae543147a46def4b5a5ef4"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-economy": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-economy-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\EconomyFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Economy.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-economy-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-economy-livewire",
+                "reference": "5aedddb04db2e096a40f2d634f864374e9c7e661"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-economy": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-economy-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\EconomyLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Economy.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7154,6 +7916,133 @@
             }
         },
         {
+            "name": "liberusoftware/module-browser-game-items-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-items-api",
+                "reference": "04f0c8d2f5c754c1dd92344f9efd4df93bca1adc"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-items": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-items-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\ItemsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Items.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-items-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-items-filament",
+                "reference": "0aa6f0b2058f5e1380ba2d46c5991ac132f757f0"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-items": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-items-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\ItemsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Items.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-items-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-items-livewire",
+                "reference": "6bfedb23cb009d5db8a76018e7c35a23425e83b8"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-items": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-items-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\ItemsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Items.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-browser-game-live-ops",
             "version": "1.0.0",
             "dist": {
@@ -7197,6 +8086,133 @@
             }
         },
         {
+            "name": "liberusoftware/module-browser-game-live-ops-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-live-ops-api",
+                "reference": "e63604d57bccbaf3da35a763ff48d93c0e9fa44d"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-live-ops": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-live-ops-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\LiveOpsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game LiveOps.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-live-ops-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-live-ops-filament",
+                "reference": "84af1785ee925b3c4ca358a51406df13b484b9b8"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-live-ops": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-live-ops-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\LiveOpsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game LiveOps.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-live-ops-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-live-ops-livewire",
+                "reference": "a79c11da6e3bcbddfe48b288c5f2dc420fc32508"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-live-ops": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-live-ops-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\LiveOpsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game LiveOps.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-browser-game-moderation-and-analytics",
             "version": "1.0.0",
             "dist": {
@@ -7234,6 +8250,133 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game ModerationAndAnalytics capability.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-moderation-and-analytics-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-moderation-and-analytics-api",
+                "reference": "d8c86fb92d34a324089fd266a59489d9c7d1f45b"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-moderation-and-analytics": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-moderation-and-analytics-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\ModerationAndAnalyticsApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game ModerationAndAnalytics.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-moderation-and-analytics-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-moderation-and-analytics-filament",
+                "reference": "8bb27b01cb714e7d7fa60c7c280af0c885d6fe56"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-moderation-and-analytics": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-moderation-and-analytics-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\ModerationAndAnalyticsFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game ModerationAndAnalytics.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-moderation-and-analytics-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-moderation-and-analytics-livewire",
+                "reference": "a6fc2f1b9a47f3e3ac1bb4ded413d5f46b590341"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-moderation-and-analytics": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-moderation-and-analytics-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\ModerationAndAnalyticsLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game ModerationAndAnalytics.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7447,6 +8590,133 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Social capability.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-social-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-social-api",
+                "reference": "219ce8985fbedc22ba86fd217efe670e6e8f7254"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "liberusoftware/module-browser-game-social": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-social-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\SocialApi\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Social.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-social-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-social-filament",
+                "reference": "8432666fddaab0d9503f8791169674bbf249c07a"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-browser-game-social": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-social-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\SocialFilament\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Social.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-social-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-social-livewire",
+                "reference": "8495ff340135152a1e527d31e067fc98fd23227d"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-social": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-social-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\SocialLivewire\\": "src/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Social.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8960,16 +10230,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v4.3.5",
+            "version": "v4.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "7ef4b2a876c71744e86463079dd506b26eeab624"
+                "reference": "0c925c55b4a5c134f2fb147efa4b9f53a837d866"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/7ef4b2a876c71744e86463079dd506b26eeab624",
-                "reference": "7ef4b2a876c71744e86463079dd506b26eeab624",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/0c925c55b4a5c134f2fb147efa4b9f53a837d866",
+                "reference": "0c925c55b4a5c134f2fb147efa4b9f53a837d866",
                 "shasum": ""
             },
             "require": {
@@ -9024,7 +10294,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v4.3.5"
+                "source": "https://github.com/livewire/livewire/tree/v4.4.1"
             },
             "funding": [
                 {
@@ -9032,7 +10302,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-03T04:09:44+00:00"
+            "time": "2026-08-18T11:39:06+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -10304,16 +11574,16 @@
         },
         {
             "name": "pragmarx/google2fa",
-            "version": "v9.0.0",
+            "version": "v9.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/antonioribeiro/google2fa.git",
-                "reference": "e6bc62dd6ae83acc475f57912e27466019a1f2cf"
+                "reference": "f00bc788c555adfb6765c437ff3538e59cd88af1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/antonioribeiro/google2fa/zipball/e6bc62dd6ae83acc475f57912e27466019a1f2cf",
-                "reference": "e6bc62dd6ae83acc475f57912e27466019a1f2cf",
+                "url": "https://api.github.com/repos/antonioribeiro/google2fa/zipball/f00bc788c555adfb6765c437ff3538e59cd88af1",
+                "reference": "f00bc788c555adfb6765c437ff3538e59cd88af1",
                 "shasum": ""
             },
             "require": {
@@ -10321,8 +11591,11 @@
                 "php": "^7.1|^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.9",
-                "phpunit/phpunit": "^7.5.15|^8.5|^9.0"
+                "phpstan/phpstan": "^1.0|^2.0",
+                "phpstan/phpstan-phpunit": "^1.0|^2.0",
+                "phpunit/phpunit": "~9|~10|~11|~12|~13",
+                "psalm/plugin-phpunit": "^0.19|^0.20",
+                "vimeo/psalm": "^5.26|^6.13"
             },
             "type": "library",
             "autoload": {
@@ -10345,14 +11618,23 @@
             "keywords": [
                 "2fa",
                 "Authentication",
+                "MFA",
                 "Two Factor Authentication",
-                "google2fa"
+                "google-authenticator",
+                "google2fa",
+                "hotp",
+                "otp",
+                "rfc4226",
+                "rfc6238",
+                "totp"
             ],
             "support": {
+                "docs": "https://github.com/antonioribeiro/google2fa#readme",
                 "issues": "https://github.com/antonioribeiro/google2fa/issues",
-                "source": "https://github.com/antonioribeiro/google2fa/tree/v9.0.0"
+                "security": "https://github.com/antonioribeiro/google2fa/security/policy",
+                "source": "https://github.com/antonioribeiro/google2fa"
             },
-            "time": "2025-09-19T22:51:08+00:00"
+            "time": "2026-08-15T13:22:01+00:00"
         },
         {
             "name": "pragmarx/google2fa-qrcode",
@@ -18081,19 +19363,21 @@
         },
         {
             "name": "hamcrest/hamcrest-php",
-            "version": "v2.1.1",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hamcrest/hamcrest-php.git",
-                "reference": "f8b1c0173b22fa6ec77a81fe63e5b01eba7e6487"
+                "reference": "b61cd040da1a4925bc90a51c074f5297e7c0fa52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hamcrest/hamcrest-php/zipball/f8b1c0173b22fa6ec77a81fe63e5b01eba7e6487",
-                "reference": "f8b1c0173b22fa6ec77a81fe63e5b01eba7e6487",
+                "url": "https://api.github.com/repos/hamcrest/hamcrest-php/zipball/b61cd040da1a4925bc90a51c074f5297e7c0fa52",
+                "reference": "b61cd040da1a4925bc90a51c074f5297e7c0fa52",
                 "shasum": ""
             },
             "require": {
+                "ext-ctype": "*",
+                "ext-dom": "*",
                 "php": "^7.4|^8.0"
             },
             "replace": {
@@ -18102,13 +19386,15 @@
                 "kodova/hamcrest-php": "*"
             },
             "require-dev": {
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-phpunit": "^2.0",
                 "phpunit/php-file-iterator": "^1.4 || ^2.0 || ^3.0",
                 "phpunit/phpunit": "^4.8.36 || ^5.7 || ^6.5 || ^7.0 || ^8.0 || ^9.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -18126,9 +19412,9 @@
             ],
             "support": {
                 "issues": "https://github.com/hamcrest/hamcrest-php/issues",
-                "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.1.1"
+                "source": "https://github.com/hamcrest/hamcrest-php/tree/v3.0.0"
             },
-            "time": "2025-04-30T06:54:44+00:00"
+            "time": "2026-03-17T11:56:53+00:00"
         },
         {
             "name": "iamcal/sql-parser",
@@ -18692,29 +19978,28 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.6.12",
+            "version": "1.6.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "1f4efdd7d3beafe9807b08156dfcb176d18f1699"
+                "reference": "967a801bd188989a5669bd280f252d51c0fdc9ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/1f4efdd7d3beafe9807b08156dfcb176d18f1699",
-                "reference": "1f4efdd7d3beafe9807b08156dfcb176d18f1699",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/967a801bd188989a5669bd280f252d51c0fdc9ee",
+                "reference": "967a801bd188989a5669bd280f252d51c0fdc9ee",
                 "shasum": ""
             },
             "require": {
-                "hamcrest/hamcrest-php": "^2.0.1",
-                "lib-pcre": ">=7.0",
+                "hamcrest/hamcrest-php": "^2.0 || ^3.0",
                 "php": ">=7.3"
             },
             "conflict": {
                 "phpunit/phpunit": "<8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.5 || ^9.6.17",
-                "symplify/easy-coding-standard": "^12.1.14"
+                "phpunit/phpunit": "^9.6.36",
+                "symplify/easy-coding-standard": "^13.2.17"
             },
             "type": "library",
             "autoload": {
@@ -18771,7 +20056,7 @@
                 "security": "https://github.com/mockery/mockery/security/advisories",
                 "source": "https://github.com/mockery/mockery"
             },
-            "time": "2024-05-16T03:13:13+00:00"
+            "time": "2026-08-19T19:37:52+00:00"
         },
         {
             "name": "myclabs/deep-copy",

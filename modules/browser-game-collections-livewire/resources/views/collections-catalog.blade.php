@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-collections-heading"><h2 id="browser-game-collections-heading">Collections</h2>@forelse($collections as $collections)<article><h3>{{ $collections->name }}</h3><p>{{ $collections->status }}</p></article>@empty<p role="status">No collections are available.</p>@endforelse</section>

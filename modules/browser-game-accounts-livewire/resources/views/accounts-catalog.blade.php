@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-accounts-heading"><h2 id="browser-game-accounts-heading">Accounts</h2>@forelse($accounts as $account)<article><h3>{{ $account->name }}</h3><p>{{ $account->status }}</p></article>@empty<p role="status">No accounts are available.</p>@endforelse</section>

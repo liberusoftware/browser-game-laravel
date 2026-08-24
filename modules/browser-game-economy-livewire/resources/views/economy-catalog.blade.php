@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-economy-heading"><h2 id="browser-game-economy-heading">Economy</h2>@forelse($economy as $economy)<article><h3>{{ $economy->name }}</h3><p>{{ $economy->status }}</p></article>@empty<p role="status">No economy are available.</p>@endforelse</section>

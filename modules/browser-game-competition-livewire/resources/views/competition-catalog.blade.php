@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-competition-heading"><h2 id="browser-game-competition-heading">Competition</h2>@forelse($competition as $competition)<article><h3>{{ $competition->name }}</h3><p>{{ $competition->status }}</p></article>@empty<p role="status">No competition are available.</p>@endforelse</section>

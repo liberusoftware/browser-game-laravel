@@ -1,0 +1,1 @@
+<section aria-labelledby="browser-game-live-ops-heading"><h2 id="browser-game-live-ops-heading">LiveOps</h2>@forelse($liveOps as $liveOps)<article><h3>{{ $liveOps->name }}</h3><p>{{ $liveOps->status }}</p></article>@empty<p role="status">No live-ops are available.</p>@endforelse</section>
