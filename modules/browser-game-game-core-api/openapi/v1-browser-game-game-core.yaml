@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Game Core API
+  version: 1.0.0
+paths:
+  /api/v1/browser-game/game-core:
+    get:
+      operationId: browser.game.game.core.list
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: page_size, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
+      responses:
+        '200': { description: Authorized world collection }
+    post:
+      operationId: browser.game.game.core.create
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WorldRequest' }
+      responses:
+        '201': { description: World created }
+  /api/v1/browser-game/game-core/{world}:
+    get:
+      operationId: browser.game.game.core.get
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }]
+      responses: { '200': { description: Authorized world overview } }
+    patch:
+      operationId: browser.game.game.core.update
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WorldUpdateRequest' }
+      responses: { '200': { description: World updated } }
+components:
+  securitySchemes:
+    sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
+  parameters:
+    WorldId: { name: world, in: path, required: true, schema: { type: string, format: uuid } }
+  schemas:
+    WorldRequest:
+      type: object
+      required: [name, slug]
+      properties:
+        name: { type: string, maxLength: 120 }
+        slug: { type: string, pattern: '^[A-Za-z0-9_-]+$' }
+        metadata: { type: object, additionalProperties: true }
+    WorldUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/WorldRequest'
+        - type: object
+          required: [status]
+          properties:
+            status: { type: string, enum: [draft, active, archived] }

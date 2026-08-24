@@ -1,0 +1,20 @@
+{
+  "name": "liberusoftware/module-browser-game-game-core-api",
+  "description": "HTTP API adapter for Browser Game Game Core.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "illuminate/http": "^13.0",
+    "illuminate/routing": "^13.0",
+    "illuminate/support": "^13.0",
+    "liberusoftware/module-browser-game-game-core": "^1.0"
+  },
+  "autoload": {"psr-4": {"Liberu\\BrowserGame\\GameCoreApi\\": "src/"}},
+  "autoload-dev": {"psr-4": {"Liberu\\BrowserGame\\GameCoreApi\\Tests\\": "tests/"}},
+  "extra": {"liberu": {"name": "browser-game-game-core-api"}},
+  "version": "1.0.0",
+  "require-dev": {"liberusoftware/package-testbench": "^1.5", "pestphp/pest": "^5.0"},
+  "scripts": {"test": "pest"},
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+}

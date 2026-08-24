@@ -203,6 +203,26 @@
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/theme-base.git"
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core-livewire",
+            "options": {"symlink": false}
         }
     ],
     "require": {
@@ -233,6 +253,10 @@
         "liberusoftware/developer-experience": "^1.0",
         "liberusoftware/feature-flags": "^1.0",
         "liberusoftware/files-media": "^1.0",
+        "liberusoftware/module-browser-game-game-core": "^1.0",
+        "liberusoftware/module-browser-game-game-core-api": "^1.0",
+        "liberusoftware/module-browser-game-game-core-filament": "^1.0",
+        "liberusoftware/module-browser-game-game-core-livewire": "^1.0",
         "liberusoftware/module-manager-filament": "^1.1",
         "liberusoftware/identity-core": "^1.0",
         "liberusoftware/identity-core-filament": "^1.0",

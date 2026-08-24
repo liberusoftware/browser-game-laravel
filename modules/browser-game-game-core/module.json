@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-game-core",
+  "display_name": "Browser Game Game Core",
+  "description": "World and shard lifecycle, authoritative game clocks, versioned rules and content, feature flags, and maintenance state.",
+  "version": "1.0.0",
+  "category": "capability",
+  "provider": "Liberu\\BrowserGame\\GameCore\\GameCoreServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0"
+  },
+  "suggests": {
+    "liberusoftware/audit": "^1.0",
+    "liberusoftware/observability": "^1.0"
+  },
+  "capabilities": [
+    "browser-game.game-core"
+  ],
+  "default_enabled": false,
+  "features": [
+    "Worlds and shards",
+    "Authoritative game clocks",
+    "Versioned rulesets",
+    "Content versions",
+    "Feature flags",
+    "Maintenance state"
+  ]
+}

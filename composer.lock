@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "74ffdc61ae0d132be5da6fccc8c7149e",
+    "content-hash": "65adbb8f42380f4fd094acde8a0123db",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6295,6 +6295,197 @@
                 "issues": "https://github.com/liberusoftware/module-localization-mymemory/issues"
             },
             "time": "2026-08-07T14:25:31+00:00"
+        },
+        {
+            "name": "liberusoftware/module-browser-game-game-core",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-game-core",
+                "reference": "32285d9e07fde7c444d8562a0c968a8408905a28"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-game-core"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCore\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCore\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Browser Game worlds, clocks, rulesets, content versions, feature flags, and maintenance state.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-game-core-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-game-core-api",
+                "reference": "c6bae44b75940d2f58159a3c5b641b9ca93982e8"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-browser-game-game-core": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-game-core-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCoreApi\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCoreApi\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Browser Game Game Core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-game-core-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-game-core-filament",
+                "reference": "d388f214846e52d85507dc6aea6ef69bdbbe0fd7"
+            },
+            "require": {
+                "filament/filament": "^5.1",
+                "liberusoftware/module-browser-game-game-core": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-game-core-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCoreFilament\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCoreFilament\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Browser Game Game Core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-browser-game-game-core-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/browser-game-game-core-livewire",
+                "reference": "39296e3e5035e18e7f845323dfb616e934110fae"
+            },
+            "require": {
+                "liberusoftware/module-browser-game-game-core": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "browser-game-game-core-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCoreLivewire\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\BrowserGame\\GameCoreLivewire\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Browser Game Game Core.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/module-manager",

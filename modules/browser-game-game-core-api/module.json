@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-game-core-api",
+  "display_name": "Browser Game Game Core API",
+  "description": "Versioned, authenticated HTTP resources for Browser Game Game Core.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\GameCoreApi\\GameCoreApiServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-game-core": "^1.0"}},
+  "capabilities": ["browser-game.game-core.api"],
+  "default_enabled": false,
+  "features": ["Scoped world resources", "Ruleset and content lifecycle reads", "Problem-detail validation responses"]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-game-core-livewire",
+  "display_name": "Browser Game Game Core Livewire",
+  "description": "Accessible server-driven world status and maintenance surface.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\GameCoreLivewire\\GameCoreLivewireServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-game-core": "^1.0"}},
+  "capabilities": ["browser-game.game-core.livewire"],
+  "default_enabled": false,
+  "features": ["World status", "Maintenance status", "Accessible loading and empty states"]
+}
