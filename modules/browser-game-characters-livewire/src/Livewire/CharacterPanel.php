@@ -103,7 +103,8 @@ final class CharacterPanel extends Component
         return GameCharacter::query()
             ->whereKey($this->characterId)
             ->where('player_id', (string) auth()->id())
-            ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))
+            ->where('tenant_id', auth()->user()?->currentTeam?->getAttribute('tenant_id'))
+            ->where('team_id', $teamId)
             ->firstOrFail();
     }
 }

@@ -19,7 +19,7 @@ final class CreateCharacter extends CreateRecord
         $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
         abort_unless($team !== null, 403);
 
-        return array_merge($data, ['team_id' => $team?->getKey()]);
+        return array_merge($data, ['tenant_id' => $team?->getAttribute('tenant_id'), 'team_id' => $team?->getKey()]);
     }
 
     protected function handleRecordCreation(array $data): GameCharacter
@@ -34,6 +34,7 @@ final class CreateCharacter extends CreateRecord
             $data['skills'] ?? [],
             $data['world_id'] ?? null,
             $data['team_id'] ?? null,
+            $data['tenant_id'] ?? null,
         );
     }
 }

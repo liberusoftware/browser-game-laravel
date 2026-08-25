@@ -18,21 +18,21 @@ final class CharactersManager
 {
     public function __construct(private readonly CharacterQuery $query) {}
 
-    public function create(string $playerId, string $name, string $race, string $class, ?string $background = null, array $statistics = [], array $skills = [], ?string $worldId = null, ?string $teamId = null): GameCharacter
+    public function create(string $playerId, string $name, string $race, string $class, ?string $background = null, array $statistics = [], array $skills = [], ?string $worldId = null, ?string $teamId = null, ?string $tenantId = null): GameCharacter
     {
         foreach (['player_id' => $playerId, 'name' => $name, 'race' => $race, 'class' => $class] as $field => $value) {
             if (trim($value) === '') {
                 throw ValidationException::withMessages([$field => 'This value is required.']);
             }
         }
-        if (GameCharacter::query()->where('player_id', $playerId)->where('name', $name)->exists()) {
+        if (GameCharacter::query()->where('player_id', $playerId)->where('name', $name)->where('tenant_id', $tenantId)->where('team_id', $teamId)->exists()) {
             throw ValidationException::withMessages(['name' => 'A character with this name already exists.']);
         }
 
         $health = (int) config('browser-game.characters.starting_health', 100);
         $mana = (int) config('browser-game.characters.starting_mana', 50);
         $character = DB::transaction(fn (): GameCharacter => GameCharacter::query()->create([
-            'id' => (string) Str::uuid(), 'player_id' => $playerId, 'world_id' => $worldId, 'team_id' => $teamId,
+            'id' => (string) Str::uuid(), 'player_id' => $playerId, 'world_id' => $worldId, 'tenant_id' => $tenantId, 'team_id' => $teamId,
             'name' => $name, 'race' => $race, 'class' => $class, 'background' => $background,
             'statistics' => $statistics, 'skills' => $skills, 'experience' => 0, 'level' => 1,
             'health' => $health, 'max_health' => $health, 'mana' => $mana, 'max_mana' => $mana,
@@ -199,7 +199,7 @@ final class CharactersManager
                 throw ValidationException::withMessages([$field => 'This value is required.']);
             }
         }
-        $duplicate = GameCharacter::query()->where('player_id', $character->player_id)->where('name', $name)->where('id', '!=', $character->getKey())->exists();
+        $duplicate = GameCharacter::query()->where('player_id', $character->player_id)->where('name', $name)->where('tenant_id', $character->tenant_id)->where('team_id', $character->team_id)->where('id', '!=', $character->getKey())->exists();
         if ($duplicate) {
             throw ValidationException::withMessages(['name' => 'A character with this name already exists.']);
         }
