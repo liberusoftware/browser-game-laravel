@@ -7,7 +7,7 @@
         <button type="submit">Travel</button>
     </form>
     @forelse ($entities as $entity)
-        <article><h3>{{ $entity->name }}</h3><p>{{ $entity->kind }}</p></article>
+        <article><h3>{{ $entity->name }}</h3><p>{{ $entity->kind }}</p>@if($entity->unlock_key)<button type="button" wire:click="unlock('{{ $entity->getKey() }}')">Unlock</button>@endif</article>
     @empty
         <p role="status">No world content is available.</p>
     @endforelse

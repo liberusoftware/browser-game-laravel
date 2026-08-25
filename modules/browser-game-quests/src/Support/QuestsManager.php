@@ -34,7 +34,7 @@ final class QuestsManager
         if ($quest->status !== 'active') {
             throw ValidationException::withMessages(['quest' => 'The quest is not available.']);
         }
-        $completed = array_map('strval', (array) ($context['completed_quests'] ?? []));
+        $completed = $this->completedQuestKeys($quest, $actorId);
         $existingProgress = QuestProgress::query()->where(['quest_id' => $quest->getKey(), 'actor_id' => $actorId])->first();
         foreach ((array) ($quest->prerequisites ?? []) as $prerequisite) {
             if (! in_array((string) (is_array($prerequisite) ? ($prerequisite['quest'] ?? '') : $prerequisite), $completed, true) && ! ($quest->repeatable && (int) ($existingProgress?->completion_count ?? 0) > 0)) {
@@ -94,6 +94,9 @@ final class QuestsManager
         $completionCount = 0;
         $result = DB::transaction(function () use ($quest, $actorId, $idempotencyKey, $progress, &$rewards, &$completionCount): QuestProgress {
             $record = QuestProgress::query()->where(['quest_id' => $quest->getKey(), 'actor_id' => $actorId])->lockForUpdate()->firstOrFail();
+            if ($idempotencyKey !== null && $record->status === 'completed' && $record->last_operation_key === $idempotencyKey) {
+                return $record;
+            }
             if ($record->status === 'completed' && ! $quest->repeatable) {
                 return $record;
             }
@@ -144,6 +147,23 @@ final class QuestsManager
         }
 
         return true;
+    }
+
+    /** @return list<string> */
+    private function completedQuestKeys(Quest $quest, string $actorId): array
+    {
+        $completedIds = QuestProgress::query()
+            ->where('actor_id', $actorId)
+            ->where('status', 'completed')
+            ->select('quest_id');
+
+        $completed = Quest::query()
+            ->whereIn('id', $completedIds)
+            ->where(fn ($query) => $query->whereNull('tenant_id')->orWhere('tenant_id', $quest->tenant_id))
+            ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $quest->team_id))
+            ->get(['id', 'slug']);
+
+        return $completed->flatMap(fn (Quest $completedQuest): array => [(string) $completedQuest->getKey(), (string) $completedQuest->slug])->values()->all();
     }
 
     private function assertActor(string $actorId): void

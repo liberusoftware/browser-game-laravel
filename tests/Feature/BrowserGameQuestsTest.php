@@ -32,13 +32,32 @@ it('accepts quests, validates objectives, and records reward completion evidence
 
 it('enforces prerequisites and permits a repeatable quest to be completed again', function (): void {
     $manager = app(QuestsManager::class);
+    $prior = $manager->define('Prior Quest', 'prior-quest', ['done' => 1]);
     $quest = $manager->define('Repeat Hunt', 'repeat-hunt', ['wins' => 1], [], true);
     $quest->update(['prerequisites' => ['prior-quest']]);
 
     expect(fn (): mixed => $manager->accept($quest, 'player-2'))->toThrow(ValidationException::class);
-    $manager->accept($quest, 'player-2', ['completed_quests' => ['prior-quest']]);
+    $manager->accept($prior, 'player-2');
+    $manager->progress($prior, 'player-2', ['done' => 1], 'completed', 'prior-complete');
+    $manager->accept($quest, 'player-2');
     $first = $manager->progress($quest, 'player-2', ['wins' => 1], 'completed', 'complete-a');
     $second = $manager->progress($quest, 'player-2', ['wins' => 1], 'completed', 'complete-b');
 
     expect($first->completion_count)->toBe(1)->and($second->completion_count)->toBe(2);
+});
+
+it('does not trust client supplied prerequisite completion and keeps completion retries idempotent', function (): void {
+    $manager = app(QuestsManager::class);
+    $quest = $manager->define('Protected Hunt', 'protected-hunt', ['wins' => 1], [], true);
+    $quest->update(['prerequisites' => ['missing-quest']]);
+
+    expect(fn (): mixed => $manager->accept($quest, 'player-3', ['completed_quests' => ['missing-quest']]))
+        ->toThrow(ValidationException::class);
+
+    $quest->update(['prerequisites' => []]);
+    $manager->accept($quest, 'player-3');
+    $first = $manager->progress($quest, 'player-3', ['wins' => 1], 'completed', 'same-completion');
+    $retry = $manager->complete($quest, 'player-3', 'same-completion');
+
+    expect($retry->getKey())->toBe($first->getKey())->and($retry->completion_count)->toBe(1);
 });

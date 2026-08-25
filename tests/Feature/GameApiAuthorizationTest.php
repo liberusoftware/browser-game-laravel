@@ -26,6 +26,9 @@ use Liberu\BrowserGame\EconomyApi\EconomyApiServiceProvider;
 use Liberu\BrowserGame\Quests\Models\Quest;
 use Liberu\BrowserGame\Quests\QuestsServiceProvider;
 use Liberu\BrowserGame\QuestsApi\QuestsApiServiceProvider;
+use Liberu\BrowserGame\World\Support\WorldManager;
+use Liberu\BrowserGame\World\WorldServiceProvider;
+use Liberu\BrowserGame\WorldApi\WorldApiServiceProvider;
 use Tests\TestCase;
 
 class GameApiAuthorizationTest extends TestCase
@@ -210,5 +213,28 @@ class GameApiAuthorizationTest extends TestCase
 
         $this->postJson('/api/v1/browser-game/commerce/checkout', ['lines' => [['product_id' => $hidden->getKey(), 'quantity' => 1]]])
             ->assertNotFound();
+    }
+
+    public function test_browser_game_world_unlocks_are_required_for_gated_travel(): void
+    {
+        $this->app->register(WorldServiceProvider::class);
+        $this->app->register(WorldApiServiceProvider::class);
+        $this->artisan('migrate');
+
+        $user = User::factory()->create();
+        $team = Team::factory()->create(['user_id' => $user->id]);
+        $user->forceFill(['current_team_id' => $team->getKey()])->save();
+        $manager = app(WorldManager::class);
+        $origin = $manager->define(null, (string) $team->getKey(), 'location', 'Origin', 'origin', worldId: 'world-1');
+        $destination = $manager->define(null, (string) $team->getKey(), 'location', 'Locked', 'locked', worldId: 'world-1', unlockKey: 'world.locked');
+        Sanctum::actingAs($user);
+        $this->postJson('/api/v1/browser-game/world/travel', ['origin_id' => $origin->getKey(), 'destination_id' => $destination->getKey(), 'metadata' => ['unlocked' => true]])
+            ->assertUnprocessable();
+        $unlock = $this->postJson('/api/v1/browser-game/world/'.$destination->getKey().'/unlock', ['idempotency_key' => 'api-unlock-1'])
+            ->assertCreated()
+            ->json('data.id');
+        $this->postJson('/api/v1/browser-game/world/travel', ['origin_id' => $origin->getKey(), 'destination_id' => $destination->getKey(), 'idempotency_key' => 'api-travel-1'])
+            ->assertCreated();
+        $this->deleteJson('/api/v1/browser-game/world/unlocks/'.$unlock)->assertOk()->assertJsonPath('data.attributes.status', 'revoked');
     }
 }
