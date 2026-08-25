@@ -14,6 +14,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Items\Models\ItemsRecord;
+use Liberu\BrowserGame\ItemsFilament\Resources\ItemsResource\Pages\CreateItem;
+use Liberu\BrowserGame\ItemsFilament\Resources\ItemsResource\Pages\EditItem;
+use Liberu\BrowserGame\ItemsFilament\Resources\ItemsResource\Pages\ListItems;
 
 final class ItemsResource extends Resource
 {
@@ -56,9 +59,9 @@ final class ItemsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListItems::route('/'),
-            'create' => Pages\CreateItem::route('/create'),
-            'edit' => Pages\EditItem::route('/{record}/edit'),
+            'index' => ListItems::route('/'),
+            'create' => CreateItem::route('/create'),
+            'edit' => EditItem::route('/{record}/edit'),
         ];
     }
 

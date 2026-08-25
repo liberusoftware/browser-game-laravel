@@ -15,6 +15,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Collections\Models\CollectionsRecord;
+use Liberu\BrowserGame\CollectionsFilament\Resources\CollectionsResource\Pages\CreateCollections;
+use Liberu\BrowserGame\CollectionsFilament\Resources\CollectionsResource\Pages\EditCollections;
+use Liberu\BrowserGame\CollectionsFilament\Resources\CollectionsResource\Pages\ListCollections;
 
 final class CollectionsResource extends Resource
 {
@@ -49,9 +52,9 @@ final class CollectionsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Resources\CollectionsResource\Pages\ListCollections::route('/'),
-            'create' => Resources\CollectionsResource\Pages\CreateCollections::route('/create'),
-            'edit' => Resources\CollectionsResource\Pages\EditCollections::route('/{record}/edit'),
+            'index' => ListCollections::route('/'),
+            'create' => CreateCollections::route('/create'),
+            'edit' => EditCollections::route('/{record}/edit'),
         ];
     }
 

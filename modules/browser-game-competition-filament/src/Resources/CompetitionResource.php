@@ -15,6 +15,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Competition\Models\CompetitionRecord;
+use Liberu\BrowserGame\CompetitionFilament\Resources\CompetitionResource\Pages\CreateCompetition;
+use Liberu\BrowserGame\CompetitionFilament\Resources\CompetitionResource\Pages\EditCompetition;
+use Liberu\BrowserGame\CompetitionFilament\Resources\CompetitionResource\Pages\ListCompetitions;
 
 final class CompetitionResource extends Resource
 {
@@ -44,7 +47,7 @@ final class CompetitionResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\CompetitionResource\Pages\ListCompetitions::route('/'), 'create' => Resources\CompetitionResource\Pages\CreateCompetition::route('/create'), 'edit' => Resources\CompetitionResource\Pages\EditCompetition::route('/{record}/edit')];
+        return ['index' => ListCompetitions::route('/'), 'create' => CreateCompetition::route('/create'), 'edit' => EditCompetition::route('/{record}/edit')];
     }
 
     public static function getEloquentQuery(): Builder

@@ -17,6 +17,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\LiveOps\Models\LiveOpsRecord;
 use Liberu\BrowserGame\LiveOps\Support\LiveOpsManager;
+use Liberu\BrowserGame\LiveOpsFilament\Resources\LiveOpsResource\Pages\CreateLiveOps;
+use Liberu\BrowserGame\LiveOpsFilament\Resources\LiveOpsResource\Pages\EditLiveOps;
+use Liberu\BrowserGame\LiveOpsFilament\Resources\LiveOpsResource\Pages\ListLiveOps;
 
 final class LiveOpsResource extends Resource
 {
@@ -51,7 +54,7 @@ final class LiveOpsResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\LiveOpsResource\Pages\ListLiveOps::route('/'), 'create' => Resources\LiveOpsResource\Pages\CreateLiveOps::route('/create'), 'edit' => Resources\LiveOpsResource\Pages\EditLiveOps::route('/{record}/edit')];
+        return ['index' => ListLiveOps::route('/'), 'create' => CreateLiveOps::route('/create'), 'edit' => EditLiveOps::route('/{record}/edit')];
     }
 
     public static function getEloquentQuery(): Builder

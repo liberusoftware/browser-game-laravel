@@ -17,6 +17,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\GameCore\Models\GameFeatureFlag;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameFeatureFlagResource\Pages\CreateGameFeatureFlag;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameFeatureFlagResource\Pages\EditGameFeatureFlag;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameFeatureFlagResource\Pages\ListGameFeatureFlags;
 
 final class GameFeatureFlagResource extends Resource
 {
@@ -63,6 +66,6 @@ final class GameFeatureFlagResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\GameFeatureFlagResource\Pages\ListGameFeatureFlags::route('/'), 'create' => Resources\GameFeatureFlagResource\Pages\CreateGameFeatureFlag::route('/create'), 'edit' => Resources\GameFeatureFlagResource\Pages\EditGameFeatureFlag::route('/{record}/edit')];
+        return ['index' => ListGameFeatureFlags::route('/'), 'create' => CreateGameFeatureFlag::route('/create'), 'edit' => EditGameFeatureFlag::route('/{record}/edit')];
     }
 }

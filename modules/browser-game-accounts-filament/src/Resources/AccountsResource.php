@@ -17,6 +17,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Accounts\Models\AccountsRecord;
 use Liberu\BrowserGame\Accounts\Support\AccountsManager;
+use Liberu\BrowserGame\AccountsFilament\Resources\AccountsResource\Pages\CreateAccount;
+use Liberu\BrowserGame\AccountsFilament\Resources\AccountsResource\Pages\EditAccount;
+use Liberu\BrowserGame\AccountsFilament\Resources\AccountsResource\Pages\ListAccounts;
 
 final class AccountsResource extends Resource
 {
@@ -56,9 +59,9 @@ final class AccountsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAccounts::route('/'),
-            'create' => Pages\CreateAccount::route('/create'),
-            'edit' => Pages\EditAccount::route('/{record}/edit'),
+            'index' => ListAccounts::route('/'),
+            'create' => CreateAccount::route('/create'),
+            'edit' => EditAccount::route('/{record}/edit'),
         ];
     }
 

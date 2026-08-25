@@ -16,6 +16,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\World\Models\WorldEntity;
 use Liberu\BrowserGame\World\Support\WorldManager;
+use Liberu\BrowserGame\WorldFilament\Resources\WorldEntityResource\Pages\CreateWorldEntity;
+use Liberu\BrowserGame\WorldFilament\Resources\WorldEntityResource\Pages\EditWorldEntity;
+use Liberu\BrowserGame\WorldFilament\Resources\WorldEntityResource\Pages\ListWorldEntities;
 
 final class WorldEntityResource extends Resource
 {
@@ -58,6 +61,6 @@ final class WorldEntityResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\WorldEntityResource\Pages\ListWorldEntities::route('/'), 'create' => Resources\WorldEntityResource\Pages\CreateWorldEntity::route('/create'), 'edit' => Resources\WorldEntityResource\Pages\EditWorldEntity::route('/{record}/edit')];
+        return ['index' => ListWorldEntities::route('/'), 'create' => CreateWorldEntity::route('/create'), 'edit' => EditWorldEntity::route('/{record}/edit')];
     }
 }

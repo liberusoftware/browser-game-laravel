@@ -17,6 +17,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\ModerationAndAnalytics\Models\ModerationAndAnalyticsRecord;
 use Liberu\BrowserGame\ModerationAndAnalytics\Support\ModerationAndAnalyticsManager;
+use Liberu\BrowserGame\ModerationAndAnalyticsFilament\Resources\ModerationAndAnalyticsResource\Pages\CreateModerationAndAnalytics;
+use Liberu\BrowserGame\ModerationAndAnalyticsFilament\Resources\ModerationAndAnalyticsResource\Pages\EditModerationAndAnalytics;
+use Liberu\BrowserGame\ModerationAndAnalyticsFilament\Resources\ModerationAndAnalyticsResource\Pages\ListModerationAndAnalytics;
 
 final class ModerationAndAnalyticsResource extends Resource
 {
@@ -42,7 +45,7 @@ final class ModerationAndAnalyticsResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\ModerationAndAnalyticsResource\Pages\ListModerationAndAnalytics::route('/'), 'create' => Resources\ModerationAndAnalyticsResource\Pages\CreateModerationAndAnalytics::route('/create'), 'edit' => Resources\ModerationAndAnalyticsResource\Pages\EditModerationAndAnalytics::route('/{record}/edit')];
+        return ['index' => ListModerationAndAnalytics::route('/'), 'create' => CreateModerationAndAnalytics::route('/create'), 'edit' => EditModerationAndAnalytics::route('/{record}/edit')];
     }
 
     public static function getEloquentQuery(): Builder

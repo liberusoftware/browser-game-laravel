@@ -14,6 +14,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Commerce\Models\CommerceRecord;
+use Liberu\BrowserGame\CommerceFilament\Resources\CommerceResource\Pages\CreateCommerce;
+use Liberu\BrowserGame\CommerceFilament\Resources\CommerceResource\Pages\EditCommerce;
+use Liberu\BrowserGame\CommerceFilament\Resources\CommerceResource\Pages\ListCommerce;
 
 final class CommerceResource extends Resource
 {
@@ -40,9 +43,9 @@ final class CommerceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Resources\CommerceResource\Pages\ListCommerce::route('/'),
-            'create' => Resources\CommerceResource\Pages\CreateCommerce::route('/create'),
-            'edit' => Resources\CommerceResource\Pages\EditCommerce::route('/{record}/edit'),
+            'index' => ListCommerce::route('/'),
+            'create' => CreateCommerce::route('/create'),
+            'edit' => EditCommerce::route('/{record}/edit'),
         ];
     }
 
