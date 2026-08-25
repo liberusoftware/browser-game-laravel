@@ -8,9 +8,8 @@ This package provides the core domain implementation for the Browser Game applic
 composer require liberusoftware/module-browser-game-combat
 ```
 
-The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. 
+The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. Defined ability effects and power are authoritative; untrusted client effect payloads never alter a resolved action.
 
 ## License
 
 MIT. See [LICENSE](LICENSE.md).
-
