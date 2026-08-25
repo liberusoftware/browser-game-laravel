@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Enforce tenant/team scope for collection entry and progress mutations across API, Livewire, and domain callers.
+
 ## 1.0.0 - 2026-08-24
 
 - Hardened authorized presentation access and explicit progress serialization.

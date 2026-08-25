@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\Collections\Models\CollectionProgress;
 use Liberu\BrowserGame\Collections\Support\CollectionsManager;
 
@@ -56,4 +57,13 @@ it('exposes typed collection definitions for every documented category', functio
         ->and($manager->defineMount('Mount')->kind)->toBe('mount')
         ->and($manager->defineHousing('Housing')->kind)->toBe('housing')
         ->and($manager->defineCosmetic('Cosmetic')->kind)->toBe('cosmetic');
+});
+
+it('rejects scoped collection progress outside the caller scope', function (): void {
+    $manager = app(CollectionsManager::class);
+    $collection = $manager->defineAchievement('Team achievement', teamId: 'team-1');
+    $entry = $manager->addEntry($collection, 'wins', 'Wins');
+
+    expect(fn (): mixed => $manager->record('player-1', $collection, $entry->entry_key, tenantId: 'tenant-1', teamId: 'team-2'))
+        ->toThrow(ValidationException::class);
 });

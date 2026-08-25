@@ -21,7 +21,7 @@ final class CollectionsCatalog extends Component
             ->whereKey($collectionId)
             ->where('status', 'active')
             ->firstOrFail();
-        app(CollectionsManager::class)->record((string) auth()->id(), $collection, $entryKey, 1, 'livewire:'.auth()->id().':'.$collectionId.':'.$entryKey.':'.now()->toDateString());
+        app(CollectionsManager::class)->record((string) auth()->id(), $collection, $entryKey, 1, 'livewire:'.auth()->id().':'.$collectionId.':'.$entryKey.':'.now()->toDateString(), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
         $this->message = 'Collection progress recorded.';
     }
 
