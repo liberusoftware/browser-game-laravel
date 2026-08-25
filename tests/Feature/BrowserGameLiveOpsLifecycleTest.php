@@ -47,6 +47,14 @@ it('rejects invalid publication windows and empty rollback actors', function ():
         ->toThrow(ValidationException::class);
 });
 
+it('does not replay a Live Ops idempotency key across scopes', function (): void {
+    $manager = app(LiveOpsManager::class);
+    $manager->create('Team One Event', 'event', teamId: 'team-1', idempotencyKey: 'scoped-live-ops-1');
+
+    expect(fn (): mixed => $manager->create('Team Two Event', 'event', teamId: 'team-2', idempotencyKey: 'scoped-live-ops-1'))
+        ->toThrow(ValidationException::class);
+});
+
 it('provides typed live operations for daily activities, events, seasons, schedules, announcements, and grants', function (): void {
     $manager = app(LiveOpsManager::class);
 
