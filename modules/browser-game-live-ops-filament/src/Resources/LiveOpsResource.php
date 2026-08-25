@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -47,6 +48,9 @@ final class LiveOpsResource extends Resource
     {
         return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('status')->badge(), TextColumn::make('team_id')])->actions([
             Action::make('publish')->requiresConfirmation()->action(fn (LiveOpsRecord $record): LiveOpsRecord => app(LiveOpsManager::class)->publish($record))->visible(fn (LiveOpsRecord $record): bool => in_array($record->status, ['draft', 'paused'], true)),
+            Action::make('rollback')->requiresConfirmation()->form([
+                Textarea::make('reason')->required()->maxLength(1000),
+            ])->action(fn (LiveOpsRecord $record, array $data): LiveOpsRecord => app(LiveOpsManager::class)->rollback($record, (string) auth()->id(), $data['reason']))->visible(fn (LiveOpsRecord $record): bool => $record->status !== 'rolled_back'),
             EditAction::make(),
             DeleteAction::make(),
         ]);
