@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\GameCore\Events;
 
+use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final readonly class GameClockChanged
+final readonly class GameClockChanged implements ShouldDispatchAfterCommit
 {
     use Dispatchable, SerializesModels;
 

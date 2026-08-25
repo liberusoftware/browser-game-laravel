@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Liberu\BrowserGame\Accounts\Models\AccountBan;
+use Liberu\BrowserGame\Accounts\Models\AccountPrivacy;
 use Liberu\BrowserGame\Accounts\Models\AccountSession;
 use Liberu\BrowserGame\Accounts\Models\AccountsRecord;
 use Liberu\BrowserGame\Accounts\Queries\AccountsQuery;
@@ -17,18 +19,32 @@ final class AccountsController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        $items = app(AccountsQuery::class)->visible(null, $teamId)->latest()->paginate(min($request->integer('page_size', 25), 100));
+        $team = $request->user()?->currentTeam;
+        $items = app(AccountsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'username' => ['nullable', 'string', 'min:3', 'max:50', 'regex:/^[A-Za-z0-9_.-]+$/'],
+            'data' => ['array'],
+        ]);
+        $team = $request->user()?->currentTeam;
+        $account = app(AccountsManager::class)->define($data['name'], array_merge($data['data'] ?? [], ['email' => $data['email'] ?? null, 'username' => $data['username'] ?? null]), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+
+        return response()->json(['data' => $this->resource($account)], 201);
+    }
+
     public function show(Request $request, AccountsRecord $account): JsonResponse
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        abort_unless($teamId !== null, 404);
+        $team = $request->user()?->currentTeam;
+        abort_unless($team?->getKey() !== null, 404);
 
-        $account = app(AccountsQuery::class)->visible(null, (string) $teamId)
+        $account = app(AccountsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey())
             ->whereKey($account->getKey())
             ->firstOrFail();
 
@@ -68,6 +84,40 @@ final class AccountsController extends Controller
         return response()->json(['data' => $this->resource(app(AccountsManager::class)->verifyEmail($account))]);
     }
 
+    public function suspend(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+
+        return response()->json(['data' => $this->resource(app(AccountsManager::class)->suspend($account, (string) $request->user()->getAuthIdentifier()))]);
+    }
+
+    public function reactivate(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+
+        return response()->json(['data' => $this->resource(app(AccountsManager::class)->reactivate($account, (string) $request->user()->getAuthIdentifier()))]);
+    }
+
+    public function ban(Request $request, AccountsRecord $account): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $data = $request->validate([
+            'reason' => ['required', 'string', 'max:1000'],
+            'ends_at' => ['nullable', 'date', 'after:now'],
+        ]);
+        $ban = app(AccountsManager::class)->ban($account, $data['reason'], $data['ends_at'] ?? null, (string) $request->user()->getAuthIdentifier());
+
+        return response()->json(['data' => $this->banResource($ban)], 201);
+    }
+
+    public function liftBan(Request $request, AccountsRecord $account, AccountBan $ban): JsonResponse
+    {
+        $account = $this->visibleAccount($request, $account);
+        $lifted = app(AccountsManager::class)->liftBan($account, $ban, (string) $request->user()->getAuthIdentifier());
+
+        return response()->json(['data' => $this->banResource($lifted)]);
+    }
+
     public function privacy(Request $request, AccountsRecord $account): JsonResponse
     {
         $account = $this->visibleAccount($request, $account);
@@ -78,7 +128,7 @@ final class AccountsController extends Controller
         ]);
         $privacy = app(AccountsManager::class)->updatePrivacy($account, $data['profile_visibility'], (bool) $data['marketing_consent'], (bool) $data['analytics_consent']);
 
-        return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
+        return response()->json(['data' => $this->privacyResource($privacy)]);
     }
 
     public function requestDeletion(Request $request, AccountsRecord $account): JsonResponse
@@ -86,7 +136,7 @@ final class AccountsController extends Controller
         $account = $this->visibleAccount($request, $account);
         $privacy = app(AccountsManager::class)->requestDeletion($account);
 
-        return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
+        return response()->json(['data' => $this->privacyResource($privacy)]);
     }
 
     public function completeDeletion(Request $request, AccountsRecord $account): JsonResponse
@@ -94,7 +144,7 @@ final class AccountsController extends Controller
         $account = $this->visibleAccount($request, $account);
         $privacy = app(AccountsManager::class)->completeDeletion($account, (string) $request->user()->getAuthIdentifier());
 
-        return response()->json(['data' => ['type' => 'browser-game-account-privacy', 'id' => (string) $privacy->getKey(), 'attributes' => $privacy->toArray()]]);
+        return response()->json(['data' => $this->privacyResource($privacy)]);
     }
 
     public function revokeSession(Request $request, AccountsRecord $account, AccountSession $session): JsonResponse
@@ -162,10 +212,26 @@ final class AccountsController extends Controller
 
     private function visibleAccount(Request $request, AccountsRecord $account): AccountsRecord
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        abort_unless($teamId !== null, 404);
+        $team = $request->user()?->currentTeam;
+        abort_unless($team?->getKey() !== null, 404);
 
-        return app(AccountsQuery::class)->visible(null, (string) $teamId)
+        return app(AccountsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey())
             ->whereKey($account->getKey())->firstOrFail();
+    }
+
+    private function privacyResource(AccountPrivacy $privacy): array
+    {
+        return ['id' => (string) $privacy->getKey(), 'type' => 'browser-game-account-privacy', 'attributes' => [
+            'profile_visibility' => $privacy->profile_visibility,
+            'marketing_consent' => (bool) $privacy->marketing_consent,
+            'analytics_consent' => (bool) $privacy->analytics_consent,
+            'deletion_requested_at' => $privacy->deletion_requested_at?->toISOString(),
+            'deletion_completed_at' => $privacy->deletion_completed_at?->toISOString(),
+        ]];
+    }
+
+    private function banResource(AccountBan $ban): array
+    {
+        return ['id' => (string) $ban->getKey(), 'type' => 'browser-game-account-ban', 'attributes' => $ban->only(['account_id', 'reason', 'scope', 'starts_at', 'ends_at', 'revoked_at', 'issued_by'])];
     }
 }

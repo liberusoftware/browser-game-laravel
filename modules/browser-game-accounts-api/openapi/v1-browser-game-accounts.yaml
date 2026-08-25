@@ -24,6 +24,20 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: browser.game.accounts.create
+      summary: Create an account in the authenticated team context
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityRequest'
+      responses:
+        '201': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/accounts/{id}:
     get:
       operationId: browser.game.accounts.get
@@ -174,6 +188,44 @@ paths:
       security: [{ sanctum: [] }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [token], properties: { token: { type: string }, password: { type: string, format: password } } } } } }
       responses: { '200': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/suspend:
+    post:
+      operationId: browser.game.accounts.suspend
+      summary: Suspend an authorized account
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/{account}/reactivate:
+    post:
+      operationId: browser.game.accounts.reactivate
+      summary: Reactivate an authorized account
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/{account}/ban:
+    post:
+      operationId: browser.game.accounts.ban
+      summary: Issue an account ban
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, maxLength: 1000 }
+                ends_at: { type: string, format: date-time, nullable: true }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/bans/{ban}/lift:
+    post:
+      operationId: browser.game.accounts.bans.lift
+      summary: Lift an account ban
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { name: ban, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
 components:
   parameters:
     Id:
@@ -185,7 +237,7 @@ components:
         type: string
         format: uuid
     PageSize:
-      name: page_size
+      name: page[size]
       in: query
       required: false
       schema:

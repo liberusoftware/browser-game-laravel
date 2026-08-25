@@ -13,4 +13,20 @@
     @empty
         <p role="status">No crafting recipes are available.</p>
     @endforelse
+
+    <h3>My crafting queues</h3>
+    @forelse($queues as $queue)
+        <article wire:key="queue-{{ $queue->getKey() }}">
+            <p>{{ $queue->recipe?->name ?? 'Crafting job' }}: {{ $queue->quantity }} item(s), {{ $queue->status }}</p>
+            @if ($queue->completes_at)<p>Completes {{ $queue->completes_at->toDateTimeString() }}</p>@endif
+            @if ($queue->status === 'queued')
+                <button type="button" wire:click="complete('{{ $queue->getKey() }}')">Complete</button>
+                <button type="button" wire:click="cancel('{{ $queue->getKey() }}')">Cancel</button>
+            @elseif (in_array($queue->status, ['completed', 'failed'], true))
+                <button type="button" wire:click="salvage('{{ $queue->getKey() }}')">Salvage</button>
+            @endif
+        </article>
+    @empty
+        <p role="status">No crafting queues found.</p>
+    @endforelse
 </section>

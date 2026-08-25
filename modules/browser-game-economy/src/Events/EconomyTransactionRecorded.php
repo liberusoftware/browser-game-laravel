@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\Economy\Events;
 
+use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 
-final readonly class EconomyTransactionRecorded
+final readonly class EconomyTransactionRecorded implements ShouldDispatchAfterCommit
 {
     use Dispatchable;
 

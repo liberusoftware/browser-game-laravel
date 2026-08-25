@@ -29,3 +29,12 @@ it('normalizes currencies, rejects negative credits, and enforces vendor limits 
         ->and(EconomyWallet::query()->where('actor_id', 'player-1')->value('balance'))->toBe(80);
     expect(fn (): mixed => $manager->credit('player-1', 'gold', -1))->toThrow(ValidationException::class);
 });
+
+it('rejects idempotency keys reused by another economy operation', function (): void {
+    $manager = app(EconomyManager::class);
+    $manager->define('Gold', ['code' => 'GOLD']);
+    $manager->credit('player-1', 'gold', 10, idempotencyKey: 'ledger-1');
+
+    expect(fn (): mixed => $manager->credit('player-2', 'gold', 10, idempotencyKey: 'ledger-1'))
+        ->toThrow(ValidationException::class);
+});

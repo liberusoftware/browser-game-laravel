@@ -100,9 +100,10 @@ final class CraftingManager
         });
     }
 
-    public function discover(string $actorId, CraftingRecord $recipe): CraftingDiscovery
+    public function discover(string $actorId, CraftingRecord $recipe, ?string $tenantId = null, ?string $teamId = null): CraftingDiscovery
     {
         $this->required($actorId, 'actor_id');
+        $this->assertRecipeScope($recipe, $tenantId, $teamId);
         $created = false;
         $discovery = DB::transaction(function () use ($actorId, $recipe, &$created): CraftingDiscovery {
             $discovery = CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->lockForUpdate()->first();
@@ -120,8 +121,9 @@ final class CraftingManager
         return $discovery;
     }
 
-    public function queueCraft(string $actorId, CraftingRecord $recipe, int $quantity = 1, int $quality = 100, ?string $idempotencyKey = null, int $actorLevel = 1): CraftingQueue
+    public function queueCraft(string $actorId, CraftingRecord $recipe, int $quantity = 1, int $quality = 100, ?string $idempotencyKey = null, int $actorLevel = 1, ?string $tenantId = null, ?string $teamId = null): CraftingQueue
     {
+        $this->assertRecipeScope($recipe, $tenantId, $teamId);
         if ($quantity < 1 || $quantity > 1000) {
             throw ValidationException::withMessages(['quantity' => 'Quantity must be between 1 and 1000.']);
         }
@@ -286,6 +288,13 @@ final class CraftingManager
         }
 
         return array_map('intval', $materials);
+    }
+
+    private function assertRecipeScope(CraftingRecord $recipe, ?string $tenantId, ?string $teamId): void
+    {
+        if (($recipe->tenant_id !== null && $recipe->tenant_id !== $tenantId) || ($recipe->team_id !== null && (string) $recipe->team_id !== (string) $teamId)) {
+            throw ValidationException::withMessages(['recipe' => 'The recipe is not available in the current context.']);
+        }
     }
 
     private function percentage(mixed $value): int|float

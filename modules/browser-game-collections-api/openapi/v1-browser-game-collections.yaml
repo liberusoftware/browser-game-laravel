@@ -24,6 +24,43 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: browser.game.collections.create
+      summary: Create a collection in the authenticated team context
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string, maxLength: 255 }
+                kind: { type: string, enum: [achievement, title, reputation, pet, mount, housing, cosmetic] }
+                repeatable: { type: boolean, default: false }
+                data: { type: object, additionalProperties: true }
+      responses:
+        '201': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/collections/progress:
+    get:
+      operationId: browser.game.collections.progress.list
+      summary: List authenticated actor collection progress
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /api/v1/browser-game/collections/{id}:
     get:
       operationId: browser.game.collections.get
@@ -60,7 +97,7 @@ components:
         type: string
         format: uuid
     PageSize:
-      name: page_size
+      name: page[size]
       in: query
       required: false
       schema:

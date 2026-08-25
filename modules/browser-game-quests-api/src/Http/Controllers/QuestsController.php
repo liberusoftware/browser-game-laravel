@@ -16,18 +16,22 @@ final class QuestsController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $items = app(QuestQuery::class)->visible(null, null)->latest()->paginate(min($request->integer('page_size', 25), 100));
+        $team = $request->user()?->currentTeam;
+        $items = app(QuestQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $items->through(fn (Quest $item): array => $this->resource($item))]);
     }
 
-    public function show(Quest $quest): JsonResponse
+    public function show(Request $request, Quest $quest): JsonResponse
     {
+        $quest = $this->authorizedQuest($request, $quest);
+
         return response()->json(['data' => $this->resource($quest)]);
     }
 
     public function progress(Request $request, Quest $quest): JsonResponse
     {
+        $quest = $this->authorizedQuest($request, $quest);
         $validated = $request->validate(['progress' => ['required', 'array'], 'status' => ['nullable', 'in:in_progress,completed'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
         $result = app(QuestsManager::class)->progress($quest, (string) $request->user()->getKey(), $validated['progress'], $validated['status'] ?? 'in_progress', $validated['idempotency_key'] ?? $request->header('Idempotency-Key'));
 
@@ -36,6 +40,7 @@ final class QuestsController extends Controller
 
     public function accept(Request $request, Quest $quest): JsonResponse
     {
+        $quest = $this->authorizedQuest($request, $quest);
         $data = $request->validate(['completed_quests' => ['array'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
 
         return response()->json(['data' => $this->progressResource(app(QuestsManager::class)->accept($quest, (string) $request->user()->getKey(), $data, $data['idempotency_key'] ?? $request->header('Idempotency-Key')))], 201);
@@ -43,6 +48,7 @@ final class QuestsController extends Controller
 
     public function complete(Request $request, Quest $quest): JsonResponse
     {
+        $quest = $this->authorizedQuest($request, $quest);
         $data = $request->validate(['progress' => ['nullable', 'array'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
 
         return response()->json(['data' => $this->progressResource(app(QuestsManager::class)->complete($quest, (string) $request->user()->getKey(), $data['idempotency_key'] ?? $request->header('Idempotency-Key'), $data['progress'] ?? null))]);
@@ -50,7 +56,16 @@ final class QuestsController extends Controller
 
     public function abandon(Request $request, Quest $quest): JsonResponse
     {
+        $quest = $this->authorizedQuest($request, $quest);
+
         return response()->json(['data' => $this->progressResource(app(QuestsManager::class)->abandon($quest, (string) $request->user()->getKey()))]);
+    }
+
+    private function authorizedQuest(Request $request, Quest $quest): Quest
+    {
+        $team = $request->user()?->currentTeam;
+
+        return app(QuestQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($quest->getKey())->firstOrFail();
     }
 
     private function resource(Model $quest): array

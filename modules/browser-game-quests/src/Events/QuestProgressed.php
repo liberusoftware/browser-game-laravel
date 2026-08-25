@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\Quests\Events;
 
+use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 
-final readonly class QuestProgressed
+final readonly class QuestProgressed implements ShouldDispatchAfterCommit
 {
     use Dispatchable;
 

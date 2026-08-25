@@ -8,6 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Liberu\BrowserGame\GameCore\Contracts\GameCoreContext;
+use Liberu\BrowserGame\GameCore\Models\GameClock;
+use Liberu\BrowserGame\GameCore\Models\GameContentVersion;
+use Liberu\BrowserGame\GameCore\Models\GameFeatureFlag;
+use Liberu\BrowserGame\GameCore\Models\GameMaintenanceState;
+use Liberu\BrowserGame\GameCore\Models\GameRuleset;
 use Liberu\BrowserGame\GameCore\Models\GameWorld;
 use Liberu\BrowserGame\GameCore\Queries\GameCoreOverview;
 use Liberu\BrowserGame\GameCore\Support\ArrayGameCoreContext;
@@ -22,7 +27,7 @@ final class GameCoreController extends Controller
             ->where(fn ($query) => $query->whereNull('tenant_id')->orWhere('tenant_id', $context->tenantId()))
             ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $context->teamId()))
             ->latest()
-            ->paginate(min($request->integer('page_size', 25), 100));
+            ->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $worlds->through(fn (GameWorld $world): array => $this->resource($world))]);
     }
@@ -54,35 +59,35 @@ final class GameCoreController extends Controller
     {
         $v = $request->validate(['current_at' => ['required', 'date'], 'speed' => ['required', 'numeric', 'min:0'], 'paused' => ['boolean']]);
 
-        return response()->json(['data' => app(GameCoreManager::class)->setClock($this->context($request), $world, $v['current_at'], (string) $v['speed'], (bool) ($v['paused'] ?? false))]);
+        return response()->json(['data' => $this->clockResource(app(GameCoreManager::class)->setClock($this->context($request), $world, $v['current_at'], (string) $v['speed'], (bool) ($v['paused'] ?? false)))]);
     }
 
     public function ruleset(Request $request, GameWorld $world): JsonResponse
     {
         $v = $request->validate(['version' => ['required', 'integer', 'min:1'], 'rules' => ['required', 'array']]);
 
-        return response()->json(['data' => app(GameCoreManager::class)->publishRuleset($this->context($request), $world, $v['version'], $v['rules'])], 201);
+        return response()->json(['data' => $this->rulesetResource(app(GameCoreManager::class)->publishRuleset($this->context($request), $world, $v['version'], $v['rules']))], 201);
     }
 
     public function content(Request $request, GameWorld $world): JsonResponse
     {
         $v = $request->validate(['version' => ['required', 'integer', 'min:1'], 'content_hash' => ['required', 'string', 'max:128'], 'manifest' => ['required', 'array']]);
 
-        return response()->json(['data' => app(GameCoreManager::class)->publishContentVersion($this->context($request), $world, $v['version'], $v['content_hash'], $v['manifest'])], 201);
+        return response()->json(['data' => $this->contentResource(app(GameCoreManager::class)->publishContentVersion($this->context($request), $world, $v['version'], $v['content_hash'], $v['manifest']))], 201);
     }
 
     public function flag(Request $request, GameWorld $world, string $key): JsonResponse
     {
         $v = $request->validate(['enabled' => ['required', 'boolean'], 'rollout_percentage' => ['integer', 'min:0', 'max:100'], 'constraints' => ['array']]);
 
-        return response()->json(['data' => app(GameCoreManager::class)->setFeatureFlag($this->context($request), $world, $key, $v['enabled'], $v['rollout_percentage'] ?? 100, $v['constraints'] ?? [])]);
+        return response()->json(['data' => $this->flagResource(app(GameCoreManager::class)->setFeatureFlag($this->context($request), $world, $key, $v['enabled'], $v['rollout_percentage'] ?? 100, $v['constraints'] ?? []))]);
     }
 
     public function maintenance(Request $request, GameWorld $world): JsonResponse
     {
         $v = $request->validate(['status' => ['required', 'in:scheduled,active,resolved'], 'message' => ['nullable', 'string', 'max:2000']]);
 
-        return response()->json(['data' => app(GameCoreManager::class)->setMaintenance($this->context($request), $world, $v['status'], $v['message'] ?? null)]);
+        return response()->json(['data' => $this->maintenanceResource(app(GameCoreManager::class)->setMaintenance($this->context($request), $world, $v['status'], $v['message'] ?? null))]);
     }
 
     private function context(Request $request): GameCoreContext
@@ -101,8 +106,39 @@ final class GameCoreController extends Controller
     {
         return ['id' => $world->getKey(), 'type' => 'browser-game-game-core', 'attributes' => [
             'name' => $world->name, 'slug' => $world->slug, 'status' => $world->status,
-            'metadata' => $world->metadata, 'overview' => $overview,
+            'metadata' => $world->metadata, 'overview' => $overview === null ? null : [
+                'clock' => $overview['clock'] instanceof GameClock ? $this->clockResource($overview['clock']) : null,
+                'ruleset' => $overview['ruleset'] instanceof GameRuleset ? $this->rulesetResource($overview['ruleset']) : null,
+                'content_version' => $overview['content_version'] instanceof GameContentVersion ? $this->contentResource($overview['content_version']) : null,
+                'maintenance' => $overview['maintenance'] instanceof GameMaintenanceState ? $this->maintenanceResource($overview['maintenance']) : null,
+                'feature_flags' => collect($overview['feature_flags'])->map(fn (GameFeatureFlag $flag): array => $this->flagResource($flag))->values()->all(),
+            ],
             'created_at' => $world->created_at?->toISOString(), 'updated_at' => $world->updated_at?->toISOString(),
         ]];
+    }
+
+    private function clockResource(GameClock $clock): array
+    {
+        return ['id' => (string) $clock->getKey(), 'type' => 'browser-game-game-clock', 'attributes' => ['world_id' => (string) $clock->world_id, 'current_at' => $clock->current_at?->toISOString(), 'speed' => (string) $clock->speed, 'paused' => (bool) $clock->paused, 'updated_by' => $clock->updated_by, 'created_at' => $clock->created_at?->toISOString(), 'updated_at' => $clock->updated_at?->toISOString()]];
+    }
+
+    private function rulesetResource(GameRuleset $ruleset): array
+    {
+        return ['id' => (string) $ruleset->getKey(), 'type' => 'browser-game-game-ruleset', 'attributes' => ['world_id' => (string) $ruleset->world_id, 'version' => (int) $ruleset->version, 'status' => $ruleset->status, 'rules' => $ruleset->rules, 'published_at' => $ruleset->published_at?->toISOString(), 'published_by' => $ruleset->published_by, 'created_at' => $ruleset->created_at?->toISOString(), 'updated_at' => $ruleset->updated_at?->toISOString()]];
+    }
+
+    private function contentResource(GameContentVersion $content): array
+    {
+        return ['id' => (string) $content->getKey(), 'type' => 'browser-game-game-content-version', 'attributes' => ['world_id' => (string) $content->world_id, 'version' => (int) $content->version, 'status' => $content->status, 'content_hash' => $content->content_hash, 'manifest' => $content->manifest, 'published_at' => $content->published_at?->toISOString(), 'published_by' => $content->published_by, 'created_at' => $content->created_at?->toISOString(), 'updated_at' => $content->updated_at?->toISOString()]];
+    }
+
+    private function flagResource(GameFeatureFlag $flag): array
+    {
+        return ['id' => (string) $flag->getKey(), 'type' => 'browser-game-game-feature-flag', 'attributes' => ['world_id' => $flag->world_id, 'key' => $flag->key, 'enabled' => (bool) $flag->enabled, 'rollout_percentage' => (int) $flag->rollout_percentage, 'constraints' => $flag->constraints, 'changed_by' => $flag->changed_by, 'created_at' => $flag->created_at?->toISOString(), 'updated_at' => $flag->updated_at?->toISOString()]];
+    }
+
+    private function maintenanceResource(GameMaintenanceState $maintenance): array
+    {
+        return ['id' => (string) $maintenance->getKey(), 'type' => 'browser-game-game-maintenance-state', 'attributes' => ['world_id' => (string) $maintenance->world_id, 'status' => $maintenance->status, 'message' => $maintenance->message, 'starts_at' => $maintenance->starts_at?->toISOString(), 'ends_at' => $maintenance->ends_at?->toISOString(), 'changed_by' => $maintenance->changed_by, 'created_at' => $maintenance->created_at?->toISOString(), 'updated_at' => $maintenance->updated_at?->toISOString()]];
     }
 }

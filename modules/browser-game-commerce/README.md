@@ -8,7 +8,7 @@ This package provides the core domain implementation for the Browser Game applic
 composer require liberusoftware/module-browser-game-commerce
 ```
 
-The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. It provides catalog products, stock and per-player limits, transactional checkout, idempotent orders, entitlement delivery, completion, and entitlement-revoking refunds. Currency debits and payment-provider settlement remain explicit integration boundaries for the Economy and payment adapters.
+The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. It provides catalog products, stock and per-player limits, transactional checkout, idempotent orders, entitlement delivery, completion, and entitlement-revoking refunds. Products and orders may be shared or scoped to a tenant/team; all scoped operations reject cross-scope access. Currency debits and payment-provider settlement remain explicit integration boundaries for the Economy and payment adapters.
 
 ## License
 

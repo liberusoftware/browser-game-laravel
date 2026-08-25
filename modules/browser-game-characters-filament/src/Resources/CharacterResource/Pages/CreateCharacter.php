@@ -13,6 +13,15 @@ final class CreateCharacter extends CreateRecord
 {
     protected static string $resource = CharacterResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $user = auth()->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+        abort_unless($team !== null, 403);
+
+        return array_merge($data, ['team_id' => $team?->getKey()]);
+    }
+
     protected function handleRecordCreation(array $data): GameCharacter
     {
         return app(CharactersManager::class)->create(

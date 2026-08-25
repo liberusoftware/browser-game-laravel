@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\QuestsFilament\Resources;
 
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -11,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Quests\Models\Quest;
 
 final class QuestResource extends Resource
@@ -28,11 +31,19 @@ final class QuestResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('slug'), TextColumn::make('status')->badge()]);
+        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('slug'), TextColumn::make('status')->badge()])->actions([EditAction::make(), DeleteAction::make()]);
     }
 
     public static function getPages(): array
     {
         return ['index' => Resources\QuestResource\Pages\ListQuests::route('/'), 'create' => Resources\QuestResource\Pages\CreateQuest::route('/create'), 'edit' => Resources\QuestResource\Pages\EditQuest::route('/{record}/edit')];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+
+        return parent::getEloquentQuery()->where(fn (Builder $query): Builder => $query->whereNull('tenant_id')->orWhere('tenant_id', $team?->getAttribute('tenant_id')))->where(fn (Builder $query): Builder => $query->whereNull('team_id')->orWhere('team_id', $team?->getKey()));
     }
 }

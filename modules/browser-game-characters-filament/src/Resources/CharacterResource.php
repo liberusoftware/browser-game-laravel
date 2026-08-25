@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\CharactersFilament\Resources;
 
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Characters\Models\GameCharacter;
 
 final class CharacterResource extends Resource
@@ -53,7 +56,7 @@ final class CharacterResource extends Resource
             TextColumn::make('experience')->numeric()->sortable(),
             TextColumn::make('health')->numeric()->label('Health'),
             TextColumn::make('available_skill_points')->numeric()->label('Skill points'),
-        ])->defaultSort('level', 'desc');
+        ])->actions([EditAction::make(), DeleteAction::make()])->defaultSort('level', 'desc');
     }
 
     public static function getPages(): array
@@ -63,5 +66,13 @@ final class CharacterResource extends Resource
             'create' => Pages\CreateCharacter::route('/create'),
             'edit' => Pages\EditCharacter::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+
+        return parent::getEloquentQuery()->where(fn (Builder $query): Builder => $query->whereNull('team_id')->orWhere('team_id', $team?->getKey()));
     }
 }

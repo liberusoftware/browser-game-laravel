@@ -9,6 +9,16 @@
         <dt>Mana</dt><dd>{{ $character->mana }} / {{ $character->max_mana }}</dd>
         <dt>Stat points</dt><dd>{{ $character->stat_points }}</dd>
     </dl>
+    <form wire:submit="updateProfile">
+        <fieldset>
+            <legend>Character profile</legend>
+            <label>Name <input wire:model="name" required></label>
+            <label>Race <input wire:model="race" required></label>
+            <label>Class <input wire:model="class" required></label>
+            <label>Background <input wire:model="background"></label>
+            <button type="submit">Save profile</button>
+        </fieldset>
+    </form>
     <form wire:submit="spendStats">
         <fieldset>
             <legend>Spend statistics</legend>

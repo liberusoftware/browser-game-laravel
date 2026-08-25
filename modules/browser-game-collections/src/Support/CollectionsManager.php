@@ -54,6 +54,41 @@ final class CollectionsManager
         return $collection->fresh();
     }
 
+    public function defineAchievement(string $name, array $data = [], bool $repeatable = false, ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'achievement', $data, $repeatable, $tenantId, $teamId);
+    }
+
+    public function defineTitle(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'title', $data, false, $tenantId, $teamId);
+    }
+
+    public function defineReputation(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'reputation', $data, true, $tenantId, $teamId);
+    }
+
+    public function definePet(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'pet', $data, false, $tenantId, $teamId);
+    }
+
+    public function defineMount(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'mount', $data, false, $tenantId, $teamId);
+    }
+
+    public function defineHousing(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'housing', $data, false, $tenantId, $teamId);
+    }
+
+    public function defineCosmetic(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): CollectionsRecord
+    {
+        return $this->defineCollection($name, 'cosmetic', $data, false, $tenantId, $teamId);
+    }
+
     public function record(string $actorId, CollectionsRecord $collection, string $entryKey, int $quantity = 1, ?string $idempotencyKey = null): CollectionProgress
     {
         if (trim($actorId) === '' || trim($entryKey) === '' || $quantity < 1) {

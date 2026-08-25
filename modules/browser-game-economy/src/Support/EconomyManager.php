@@ -77,15 +77,16 @@ final class EconomyManager
         });
     }
 
-    public function createVendor(string $name, array $data = []): EconomyVendor
+    public function createVendor(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null): EconomyVendor
     {
         $this->required($name, 'name');
 
-        return EconomyVendor::query()->create(['name' => $name, 'data' => $data, 'status' => 'active']);
+        return EconomyVendor::query()->create(['name' => $name, 'data' => $data, 'tenant_id' => $tenantId, 'team_id' => $teamId, 'status' => 'active']);
     }
 
-    public function addOffer(EconomyVendor $vendor, string $itemKey, string $currencyCode, int $unitPrice, ?int $stock = null, ?int $maxPerActor = null): EconomyVendorOffer
+    public function addOffer(EconomyVendor $vendor, string $itemKey, string $currencyCode, int $unitPrice, ?int $stock = null, ?int $maxPerActor = null, ?string $tenantId = null, ?string $teamId = null): EconomyVendorOffer
     {
+        $this->assertScope($vendor, $tenantId, $teamId);
         $this->required($itemKey, 'item_key');
         $this->currency($currencyCode);
         if ($unitPrice < 1 || ($stock !== null && $stock < 0)) {
@@ -98,14 +99,16 @@ final class EconomyManager
         );
     }
 
-    public function purchaseOffer(string $actorId, EconomyVendorOffer $offer, int $quantity = 1): EconomyVendorOffer
+    public function purchaseOffer(string $actorId, EconomyVendorOffer $offer, int $quantity = 1, ?string $tenantId = null, ?string $teamId = null): EconomyVendorOffer
     {
+        $this->assertScope($offer->vendor()->firstOrFail(), $tenantId, $teamId);
         if ($quantity < 1 || ($offer->stock !== null && $offer->stock < $quantity)) {
             throw ValidationException::withMessages(['quantity' => 'The requested vendor quantity is unavailable.']);
         }
 
-        return DB::transaction(function () use ($actorId, $offer, $quantity): EconomyVendorOffer {
+        return DB::transaction(function () use ($actorId, $offer, $quantity, $tenantId, $teamId): EconomyVendorOffer {
             $offer = EconomyVendorOffer::query()->lockForUpdate()->findOrFail($offer->getKey());
+            $this->assertScope($offer->vendor()->firstOrFail(), $tenantId, $teamId);
             if ($quantity < 1 || ($offer->stock !== null && $offer->stock < $quantity)) {
                 throw ValidationException::withMessages(['quantity' => 'The requested vendor quantity is unavailable.']);
             }
@@ -126,7 +129,7 @@ final class EconomyManager
         });
     }
 
-    public function createListing(string $sellerId, string $itemKey, string $currencyCode, int $quantity, int $unitPrice, array $assetReference = [], ?string $idempotencyKey = null): EconomyListing
+    public function createListing(string $sellerId, string $itemKey, string $currencyCode, int $quantity, int $unitPrice, array $assetReference = [], ?string $idempotencyKey = null, ?string $tenantId = null, ?string $teamId = null): EconomyListing
     {
         $this->required($sellerId, 'seller_id');
         $this->required($itemKey, 'item_key');
@@ -135,6 +138,10 @@ final class EconomyManager
             throw ValidationException::withMessages(['listing' => 'Listing quantity and price must be positive.']);
         }
         if ($idempotencyKey !== null && ($existing = EconomyListing::query()->where('idempotency_key', $idempotencyKey)->first()) !== null) {
+            if ($existing->seller_id !== $sellerId || $existing->item_key !== $itemKey || $existing->currency_code !== strtolower(trim($currencyCode)) || (int) $existing->quantity !== $quantity || (int) $existing->unit_price !== $unitPrice || $existing->tenant_id !== $tenantId || (string) $existing->team_id !== (string) $teamId) {
+                throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another listing.']);
+            }
+
             return $existing;
         }
 
@@ -145,14 +152,17 @@ final class EconomyManager
         return EconomyListing::query()->create([
             'seller_id' => $sellerId, 'item_key' => $itemKey, 'currency_code' => strtolower(trim($currencyCode)),
             'quantity' => $quantity, 'unit_price' => $unitPrice, 'fee' => $fee,
-            'asset_reference' => $assetReference, 'idempotency_key' => $idempotencyKey, 'status' => 'active',
+            'asset_reference' => $assetReference, 'idempotency_key' => $idempotencyKey, 'tenant_id' => $tenantId, 'team_id' => $teamId, 'status' => 'active',
         ]);
     }
 
-    public function purchaseListing(string $buyerId, EconomyListing $listing, ?string $idempotencyKey = null): EconomyListing
+    public function purchaseListing(string $buyerId, EconomyListing $listing, ?string $idempotencyKey = null, ?string $tenantId = null, ?string $teamId = null): EconomyListing
     {
-        return DB::transaction(function () use ($buyerId, $listing, $idempotencyKey): EconomyListing {
+        $this->assertScope($listing, $tenantId, $teamId);
+
+        return DB::transaction(function () use ($buyerId, $listing, $idempotencyKey, $tenantId, $teamId): EconomyListing {
             $listing = EconomyListing::query()->lockForUpdate()->findOrFail($listing->getKey());
+            $this->assertScope($listing, $tenantId, $teamId);
             if ($listing->status !== 'active') {
                 throw ValidationException::withMessages(['listing' => 'The listing is no longer active.']);
             }
@@ -172,9 +182,10 @@ final class EconomyManager
         });
     }
 
-    public function cancelListing(string $sellerId, EconomyListing $listing): EconomyListing
+    public function cancelListing(string $sellerId, EconomyListing $listing, ?string $tenantId = null, ?string $teamId = null): EconomyListing
     {
         $listing = EconomyListing::query()->whereKey($listing->getKey())->firstOrFail();
+        $this->assertScope($listing, $tenantId, $teamId);
         if ($listing->seller_id !== $sellerId || $listing->status !== 'active') {
             throw ValidationException::withMessages(['listing' => 'The listing cannot be cancelled.']);
         }
@@ -192,6 +203,10 @@ final class EconomyManager
 
         return DB::transaction(function () use ($actorId, $currencyCode, $amount, $entryType, $source, $idempotencyKey, $metadata): EconomyLedgerEntry {
             if ($idempotencyKey !== null && ($existing = EconomyLedgerEntry::query()->where('idempotency_key', $idempotencyKey)->first()) !== null) {
+                if ($existing->actor_id !== $actorId || $existing->currency_code !== $currencyCode || (int) $existing->amount !== $amount || $existing->entry_type !== $entryType) {
+                    throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another ledger operation.']);
+                }
+
                 return $existing;
             }
             $wallet = EconomyWallet::query()->lockForUpdate()->firstOrCreate(
@@ -235,6 +250,13 @@ final class EconomyManager
     {
         if (trim($value) === '') {
             throw ValidationException::withMessages([$field => 'A value is required.']);
+        }
+    }
+
+    private function assertScope(object $record, ?string $tenantId, ?string $teamId): void
+    {
+        if (($record->tenant_id !== null && (string) $record->tenant_id !== (string) $tenantId) || ($record->team_id !== null && (string) $record->team_id !== (string) $teamId)) {
+            throw ValidationException::withMessages(['scope' => 'The economy resource is not available in this scope.']);
         }
     }
 }

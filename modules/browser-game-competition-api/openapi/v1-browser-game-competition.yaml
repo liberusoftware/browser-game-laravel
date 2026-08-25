@@ -56,6 +56,35 @@ paths:
       parameters: [{ name: competition, in: path, required: true, schema: { type: string, format: uuid } }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [player_a, player_b], properties: { player_a: { type: string }, player_b: { type: string } } } } } }
       responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/competition/{competition}/leaderboard:
+    get:
+      operationId: browser.game.competition.leaderboard
+      summary: Read the authorized competition leaderboard
+      security: [{ sanctum: [] }]
+      parameters: [{ name: competition, in: path, required: true, schema: { type: string, format: uuid } }, { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 100 } }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/competition/{competition}/rewards:
+    get:
+      operationId: browser.game.competition.rewards
+      summary: List the authenticated player's competition rewards
+      security: [{ sanctum: [] }]
+      parameters: [{ name: competition, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/competition/{competition}/flags:
+    post:
+      operationId: browser.game.competition.flag
+      summary: Submit an anti-collusion flag
+      security: [{ sanctum: [] }]
+      parameters: [{ name: competition, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [reason], properties: { reason: { type: string, maxLength: 1000 }, match_id: { type: string, format: uuid, nullable: true } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/Problem' } }
+  /api/v1/browser-game/competition/rewards/{reward}/claim:
+    post:
+      operationId: browser.game.competition.reward.claim
+      summary: Claim an owned competition reward
+      security: [{ sanctum: [] }]
+      parameters: [{ name: reward, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
   /api/v1/browser-game/competition/matches/{match}/resolve:
     post:
       operationId: browser.game.competition.resolve
@@ -75,7 +104,7 @@ components:
         type: string
         format: uuid
     PageSize:
-      name: page_size
+      name: page[size]
       in: query
       required: false
       schema:

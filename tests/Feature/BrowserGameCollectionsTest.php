@@ -45,3 +45,15 @@ it('resets repeatable collection progress for the next completion', function ():
         ->and($second->completion_count)->toBe(2)
         ->and($second->completed_at)->not->toBeNull();
 });
+
+it('exposes typed collection definitions for every documented category', function (): void {
+    $manager = app(CollectionsManager::class);
+
+    expect($manager->defineAchievement('Achievement')->kind)->toBe('achievement')
+        ->and($manager->defineTitle('Title')->kind)->toBe('title')
+        ->and($manager->defineReputation('Reputation')->kind)->toBe('reputation')
+        ->and($manager->definePet('Pet')->kind)->toBe('pet')
+        ->and($manager->defineMount('Mount')->kind)->toBe('mount')
+        ->and($manager->defineHousing('Housing')->kind)->toBe('housing')
+        ->and($manager->defineCosmetic('Cosmetic')->kind)->toBe('cosmetic');
+});

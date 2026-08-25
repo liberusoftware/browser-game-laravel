@@ -79,7 +79,7 @@ components:
         type: string
         format: uuid
     PageSize:
-      name: page_size
+      name: page[size]
       in: query
       required: false
       schema:

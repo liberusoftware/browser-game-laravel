@@ -17,18 +17,18 @@ final class ItemsController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        $items = app(ItemsQuery::class)->visible(null, $teamId)->latest()->paginate(min($request->integer('page_size', 25), 100));
+        $team = $request->user()?->currentTeam;
+        $items = app(ItemsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $items->through(fn (Model $item): array => $this->resource($item))]);
     }
 
     public function show(Request $request, ItemsRecord $items): JsonResponse
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        abort_unless($teamId !== null, 404);
+        $team = $request->user()?->currentTeam;
+        abort_unless($team?->getKey() !== null, 404);
 
-        $items = app(ItemsQuery::class)->visible(null, (string) $teamId)
+        $items = app(ItemsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey())
             ->whereKey($items->getKey())
             ->firstOrFail();
 

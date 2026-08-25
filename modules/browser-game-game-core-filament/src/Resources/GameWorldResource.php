@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\GameCoreFilament\Resources;
 
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\GameCore\Models\GameWorld;
 
 final class GameWorldResource extends Resource
@@ -37,7 +40,17 @@ final class GameWorldResource extends Resource
             TextColumn::make('slug')->searchable(),
             TextColumn::make('status')->badge(),
             TextColumn::make('updated_at')->dateTime()->sortable(),
-        ])->defaultSort('updated_at', 'desc');
+        ])->actions([EditAction::make(), DeleteAction::make()])->defaultSort('updated_at', 'desc');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+
+        return parent::getEloquentQuery()
+            ->where(fn (Builder $query): Builder => $query->whereNull('tenant_id')->orWhere('tenant_id', $team?->getAttribute('tenant_id')))
+            ->where(fn (Builder $query): Builder => $query->whereNull('team_id')->orWhere('team_id', $team?->getKey()));
     }
 
     public static function getPages(): array

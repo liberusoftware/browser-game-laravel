@@ -39,6 +39,29 @@ it('resolves combat actions from server definitions and persists terminal state'
         ->and($completed->state['health']['opponent'])->toBe(0);
 });
 
+it('provides typed combat modes and definition actions', function (): void {
+    $manager = app(CombatManager::class);
+    $ability = $manager->defineAbility('power-strike', 'Power Strike', data: ['power' => 30]);
+    $enemy = $manager->defineEnemy('goblin', 'Goblin');
+    $boss = $manager->defineBoss('dragon', 'Dragon');
+    $battle = $manager->startPve('player-1', 'enemy-1', idempotencyKey: 'pve-1');
+    $pvp = $manager->startPvp('player-1', 'player-2', idempotencyKey: 'pvp-1');
+
+    expect($ability->kind)->toBe('ability')
+        ->and($enemy->kind)->toBe('enemy')
+        ->and($boss->kind)->toBe('boss')
+        ->and($battle->state['mode'])->toBe('pve')
+        ->and($pvp->state['mode'])->toBe('pvp');
+});
+
+it('rejects a combat idempotency key reused for another battle', function (): void {
+    $manager = app(CombatManager::class);
+    $manager->start('player-1', 'player-2', idempotencyKey: 'battle-1');
+
+    expect(fn (): mixed => $manager->start('player-1', 'player-3', idempotencyKey: 'battle-1'))
+        ->toThrow(ValidationException::class);
+});
+
 it('produces deterministic simulation output and rejects identical combatants', function (): void {
     $manager = app(CombatManager::class);
     $actions = [['action' => 'attack', 'value' => 20], ['action' => 'attack', 'value' => 90]];

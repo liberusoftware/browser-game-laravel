@@ -22,6 +22,14 @@ final class CharacterPanel extends Component
 
     public int $mana = 0;
 
+    public string $name = '';
+
+    public string $race = '';
+
+    public string $class = '';
+
+    public ?string $background = null;
+
     public ?string $statusMessage = null;
 
     public function mount(string $characterId): void
@@ -30,6 +38,10 @@ final class CharacterPanel extends Component
         $character = $this->ownedCharacter();
         $this->health = (int) $character->health;
         $this->mana = (int) $character->mana;
+        $this->name = (string) $character->name;
+        $this->race = (string) $character->race;
+        $this->class = (string) $character->class;
+        $this->background = $character->background;
     }
 
     public function respec(): void
@@ -68,6 +80,15 @@ final class CharacterPanel extends Component
         $this->dispatch('character-updated');
     }
 
+    public function updateProfile(): void
+    {
+        $character = $this->ownedCharacter();
+        $this->validate(['name' => ['required', 'string', 'max:255'], 'race' => ['required', 'string', 'max:80'], 'class' => ['required', 'string', 'max:80'], 'background' => ['nullable', 'string', 'max:255']]);
+        app(CharactersManager::class)->updateProfile($character, $this->name, $this->race, $this->class, $this->background);
+        $this->statusMessage = 'Character profile updated.';
+        $this->dispatch('character-updated');
+    }
+
     public function render(): mixed
     {
         $character = $this->ownedCharacter();
@@ -77,6 +98,12 @@ final class CharacterPanel extends Component
 
     private function ownedCharacter(): GameCharacter
     {
-        return GameCharacter::query()->whereKey($this->characterId)->where('player_id', (string) auth()->id())->firstOrFail();
+        $teamId = auth()->user()?->currentTeam?->getKey();
+
+        return GameCharacter::query()
+            ->whereKey($this->characterId)
+            ->where('player_id', (string) auth()->id())
+            ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))
+            ->firstOrFail();
     }
 }

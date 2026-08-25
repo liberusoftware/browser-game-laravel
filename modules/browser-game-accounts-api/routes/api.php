@@ -6,8 +6,13 @@ use Liberu\BrowserGame\AccountsApi\Http\Controllers\AccountsController;
 
 Route::prefix('api/v1/browser-game/accounts')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
     Route::get('/', [AccountsController::class, 'index'])->name('browser-game.accounts.index');
+    Route::post('/', [AccountsController::class, 'store'])->name('browser-game.accounts.store');
     Route::patch('/{account}', [AccountsController::class, 'update'])->name('browser-game.accounts.update');
     Route::post('/{account}/verify-email', [AccountsController::class, 'verifyEmail'])->name('browser-game.accounts.verify-email');
+    Route::post('/{account}/suspend', [AccountsController::class, 'suspend'])->name('browser-game.accounts.suspend');
+    Route::post('/{account}/reactivate', [AccountsController::class, 'reactivate'])->name('browser-game.accounts.reactivate');
+    Route::post('/{account}/ban', [AccountsController::class, 'ban'])->name('browser-game.accounts.ban');
+    Route::post('/{account}/bans/{ban}/lift', [AccountsController::class, 'liftBan'])->name('browser-game.accounts.bans.lift');
     Route::post('/{account}/age-region', [AccountsController::class, 'ageRegion'])->name('browser-game.accounts.age-region');
     Route::put('/{account}/privacy', [AccountsController::class, 'privacy'])->name('browser-game.accounts.privacy');
     Route::post('/{account}/deletion-request', [AccountsController::class, 'requestDeletion'])->name('browser-game.accounts.deletion-request');

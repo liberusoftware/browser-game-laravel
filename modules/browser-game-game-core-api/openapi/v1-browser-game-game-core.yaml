@@ -13,7 +13,7 @@ paths:
       operationId: browser.game.game.core.list
       summary: List authorized game worlds
       security: [{ sanctum: [] }]
-      parameters: [{ name: page_size, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }]
+      parameters: [{ name: page[size], in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }]
       responses:
         '200': { description: Authorized world collection }
         '401': { $ref: '#/components/responses/Unauthorized' }

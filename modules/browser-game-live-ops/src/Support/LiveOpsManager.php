@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\LiveOps\Support;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -35,17 +36,65 @@ final class LiveOpsManager
 
     public function create(string $name, string $kind, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
     {
+        if (trim($name) === '') {
+            throw ValidationException::withMessages(['name' => 'A name is required.']);
+        }
         $allowed = ['daily_activity', 'event', 'season', 'schedule', 'announcement', 'grant'];
         if (! in_array($kind, $allowed, true)) {
             throw ValidationException::withMessages(['kind' => 'Unsupported Live Ops kind.']);
         }
-        if ($idempotencyKey !== null && ($existing = LiveOpsRecord::query()->where('idempotency_key', $idempotencyKey)->first())) {
-            return $existing;
-        }
-        $record = $this->define($name, $data, $tenantId, $teamId);
-        $record->forceFill(['kind' => $kind, 'status' => 'draft', 'idempotency_key' => $idempotencyKey, 'starts_at' => $data['starts_at'] ?? null, 'ends_at' => $data['ends_at'] ?? null])->save();
+        $record = DB::transaction(function () use ($name, $kind, $data, $tenantId, $teamId, $idempotencyKey): LiveOpsRecord {
+            if ($idempotencyKey !== null && ($existing = LiveOpsRecord::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
+                return $existing;
+            }
+            $record = LiveOpsRecord::query()->create([
+                'id' => (string) Str::uuid(),
+                'name' => $name,
+                'data' => $data,
+                'tenant_id' => $tenantId,
+                'team_id' => $teamId,
+                'kind' => $kind,
+                'status' => 'draft',
+                'idempotency_key' => $idempotencyKey,
+                'starts_at' => $data['starts_at'] ?? null,
+                'ends_at' => $data['ends_at'] ?? null,
+            ]);
+            LiveOpsDefined::dispatch((string) $record->getKey());
+
+            return $record;
+        });
 
         return $record->fresh();
+    }
+
+    public function createDailyActivity(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
+    {
+        return $this->create($name, 'daily_activity', $data, $tenantId, $teamId, $idempotencyKey);
+    }
+
+    public function createEvent(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
+    {
+        return $this->create($name, 'event', $data, $tenantId, $teamId, $idempotencyKey);
+    }
+
+    public function createSeason(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
+    {
+        return $this->create($name, 'season', $data, $tenantId, $teamId, $idempotencyKey);
+    }
+
+    public function createSchedule(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
+    {
+        return $this->create($name, 'schedule', $data, $tenantId, $teamId, $idempotencyKey);
+    }
+
+    public function createAnnouncement(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
+    {
+        return $this->create($name, 'announcement', $data, $tenantId, $teamId, $idempotencyKey);
+    }
+
+    public function createGrant(string $name, array $data = [], ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null): LiveOpsRecord
+    {
+        return $this->create($name, 'grant', $data, $tenantId, $teamId, $idempotencyKey);
     }
 
     public function publish(LiveOpsRecord $record): LiveOpsRecord
@@ -56,16 +105,25 @@ final class LiveOpsManager
         if ($record->ends_at !== null && $record->starts_at !== null && $record->ends_at->lessThanOrEqualTo($record->starts_at)) {
             throw ValidationException::withMessages(['ends_at' => 'The end must be after the start.']);
         }
-        $record->update(['status' => 'published']);
 
-        return $record->fresh();
+        return DB::transaction(function () use ($record): LiveOpsRecord {
+            $record = LiveOpsRecord::query()->lockForUpdate()->findOrFail($record->getKey());
+            if (! in_array($record->status, ['draft', 'paused'], true)) {
+                throw ValidationException::withMessages(['status' => 'Only draft or paused records can be published.']);
+            }
+            if ($record->ends_at !== null && $record->starts_at !== null && $record->ends_at->lessThanOrEqualTo($record->starts_at)) {
+                throw ValidationException::withMessages(['ends_at' => 'The end must be after the start.']);
+            }
+            $record->update(['status' => 'published']);
+
+            return $record->fresh();
+        });
     }
 
     public function claim(string $actorId, LiveOpsRecord $record, string $claimKey = 'default'): LiveOpsClaim
     {
         $this->required($actorId, 'actor_id');
         $this->required($claimKey, 'claim_key');
-        $this->assertAvailable($record);
 
         $created = false;
         $claim = DB::transaction(function () use ($actorId, $record, $claimKey, &$created): LiveOpsClaim {
@@ -138,7 +196,7 @@ final class LiveOpsManager
 
     private function dailyStreak(string $actorId, LiveOpsRecord $record, string $claimKey, ?string $timezone, bool $includeCurrent = true): int
     {
-        $date = \Carbon\CarbonImmutable::parse($claimKey, $timezone ?: config('app.timezone', 'UTC'));
+        $date = CarbonImmutable::parse($claimKey, $timezone ?: config('app.timezone', 'UTC'));
         if (! $includeCurrent) {
             $date = $date->subDay();
         }
@@ -175,6 +233,7 @@ final class LiveOpsManager
 
     public function rollback(LiveOpsRecord $record, string $actorId, string $reason): LiveOpsRecord
     {
+        $this->required($actorId, 'actor_id');
         if (trim($reason) === '') {
             throw ValidationException::withMessages(['reason' => 'A rollback reason is required.']);
         }

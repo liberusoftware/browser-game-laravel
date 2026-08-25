@@ -34,4 +34,14 @@ final class CompetitionRecord extends Model
     {
         return $this->hasMany(CompetitionMatch::class, 'competition_id');
     }
+
+    public function rewards(): HasMany
+    {
+        return $this->hasMany(CompetitionReward::class, 'competition_id');
+    }
+
+    public function flags(): HasMany
+    {
+        return $this->hasMany(CompetitionFlag::class, 'competition_id');
+    }
 }

@@ -41,6 +41,45 @@ paths:
       responses:
         '200': { description: Transfer recorded }
         '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/wallet/credit:
+    post:
+      operationId: browser.game.economy.wallet.credit
+      summary: Credit authenticated actor currency
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/LedgerRequest' } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/wallet/debit:
+    post:
+      operationId: browser.game.economy.wallet.debit
+      summary: Debit authenticated actor currency
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/LedgerRequest' } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/vendors:
+    get:
+      operationId: browser.game.economy.vendors
+      summary: List active vendors and offers
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' } }
+    post:
+      operationId: browser.game.economy.vendors.create
+      summary: Create a vendor
+      security: [{ sanctum: [] }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/vendors/{vendor}/offers:
+    post:
+      operationId: browser.game.economy.vendors.offers.create
+      summary: Add or update a vendor offer
+      security: [{ sanctum: [] }]
+      parameters: [{ name: vendor, in: path, required: true, schema: { type: integer } }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/offers/{offer}/purchase:
+    post:
+      operationId: browser.game.economy.offers.purchase
+      summary: Purchase a vendor offer
+      security: [{ sanctum: [] }]
+      parameters: [{ name: offer, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/economy/listings:
     get:
       operationId: browser.game.economy.listings
@@ -107,7 +146,7 @@ components:
         type: string
         format: uuid
     PageSize:
-      name: page_size
+      name: page[size]
       in: query
       required: false
       schema:
@@ -121,6 +160,15 @@ components:
       scheme: bearer
       bearerFormat: Sanctum
   schemas:
+    LedgerRequest:
+      type: object
+      required: [currency_code, amount]
+      properties:
+        currency_code: { type: string, maxLength: 30 }
+        amount: { type: integer, minimum: 1 }
+        source: { type: string, maxLength: 80 }
+        idempotency_key: { type: string, maxLength: 120, nullable: true }
+        metadata: { type: object, additionalProperties: true }
     Resource:
       type: object
       required: [id, type, attributes]

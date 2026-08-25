@@ -18,18 +18,18 @@ final class CraftingController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        $items = app(CraftingQuery::class)->visible(null, $teamId)->latest()->paginate(min($request->integer('page_size', 25), 100));
+        $team = $request->user()?->currentTeam;
+        $items = app(CraftingQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $items->through(fn (CraftingRecord $item): array => $this->resource($item))]);
     }
 
     public function show(Request $request, CraftingRecord $crafting): JsonResponse
     {
-        $teamId = $request->user()?->currentTeam?->getKey();
-        abort_unless($teamId !== null, 404);
+        $team = $request->user()?->currentTeam;
+        abort_unless($team?->getKey() !== null, 404);
 
-        $crafting = app(CraftingQuery::class)->visible(null, (string) $teamId)
+        $crafting = app(CraftingQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey())
             ->whereKey($crafting->getKey())
             ->firstOrFail();
 
@@ -44,15 +44,16 @@ final class CraftingController extends Controller
             'quality' => ['nullable', 'integer', 'min:0', 'max:100'],
             'idempotency_key' => ['nullable', 'string', 'max:191'],
         ]);
-        $recipe = CraftingRecord::query()->whereKey($data['recipe_id'])->where('status', 'active')->firstOrFail();
-        $queue = app(CraftingManager::class)->queueCraft((string) $request->user()->getAuthIdentifier(), $recipe, (int) $data['quantity'], (int) ($data['quality'] ?? 100), $this->operationKey($request, $data['idempotency_key'] ?? null));
+        $team = $this->team($request);
+        $recipe = app(CraftingQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($data['recipe_id'])->where('status', 'active')->firstOrFail();
+        $queue = app(CraftingManager::class)->queueCraft((string) $request->user()->getAuthIdentifier(), $recipe, (int) $data['quantity'], (int) ($data['quality'] ?? 100), $this->operationKey($request, $data['idempotency_key'] ?? null), 1, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
         return response()->json(['data' => $this->queueResource($queue)], 202);
     }
 
     public function queues(Request $request): JsonResponse
     {
-        $queues = CraftingQueue::query()->with('recipe')->where('actor_id', (string) $request->user()->getAuthIdentifier())->latest()->paginate(min($request->integer('page_size', 25), 100));
+        $queues = CraftingQueue::query()->with('recipe')->where('actor_id', (string) $request->user()->getAuthIdentifier())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $queues->through(fn (CraftingQueue $queue): array => $this->queueResource($queue))]);
     }
@@ -83,7 +84,9 @@ final class CraftingController extends Controller
 
     public function discover(Request $request, CraftingRecord $crafting): JsonResponse
     {
-        $discovery = app(CraftingManager::class)->discover((string) $request->user()->getAuthIdentifier(), $crafting);
+        $team = $this->team($request);
+        $crafting = app(CraftingQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($crafting->getKey())->firstOrFail();
+        $discovery = app(CraftingManager::class)->discover((string) $request->user()->getAuthIdentifier(), $crafting, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
         return response()->json(['data' => ['id' => (string) $discovery->getKey(), 'type' => 'browser-game-crafting-discovery', 'attributes' => ['recipe_id' => $discovery->recipe_id, 'discovered_at' => $discovery->discovered_at]]], 201);
     }
@@ -128,6 +131,13 @@ final class CraftingController extends Controller
     private function assertOwner(Request $request, CraftingQueue $queue): void
     {
         abort_unless($queue->actor_id === (string) $request->user()->getAuthIdentifier(), 404);
+    }
+
+    private function team(Request $request): mixed
+    {
+        $user = $request->user();
+
+        return is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
     }
 
     private function operationKey(Request $request, ?string $bodyKey = null): ?string

@@ -17,6 +17,41 @@ use Liberu\BrowserGame\Combat\Models\CombatDefinition;
 
 final class CombatManager
 {
+    public function startPve(string $actorId, string $opponentId, ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null, array $state = []): CombatBattle
+    {
+        return $this->start($actorId, $opponentId, $tenantId, $teamId, $idempotencyKey, array_replace(['mode' => 'pve'], $state));
+    }
+
+    public function startPvp(string $actorId, string $opponentId, ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null, array $state = []): CombatBattle
+    {
+        return $this->start($actorId, $opponentId, $tenantId, $teamId, $idempotencyKey, array_replace(['mode' => 'pvp'], $state));
+    }
+
+    public function defineAbility(string $slug, string $name, array $effects = [], array $data = [], int $cooldown = 0): CombatDefinition
+    {
+        return $this->define('ability', $slug, $name, $effects, $data, $cooldown);
+    }
+
+    public function defineEffect(string $slug, string $name, array $effects = [], array $data = [], int $cooldown = 0): CombatDefinition
+    {
+        return $this->define('effect', $slug, $name, $effects, $data, $cooldown);
+    }
+
+    public function defineEnemy(string $slug, string $name, array $effects = [], array $data = [], int $cooldown = 0): CombatDefinition
+    {
+        return $this->define('enemy', $slug, $name, $effects, $data, $cooldown);
+    }
+
+    public function defineBoss(string $slug, string $name, array $effects = [], array $data = [], int $cooldown = 0): CombatDefinition
+    {
+        return $this->define('boss', $slug, $name, $effects, $data, $cooldown);
+    }
+
+    public function defineLoot(string $slug, string $name, array $effects = [], array $data = [], int $cooldown = 0): CombatDefinition
+    {
+        return $this->define('loot', $slug, $name, $effects, $data, $cooldown);
+    }
+
     public function start(string $actorId, string $opponentId, ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null, array $state = []): CombatBattle
     {
         if (trim($actorId) === '' || trim($opponentId) === '' || $actorId === $opponentId) {
@@ -27,10 +62,17 @@ final class CombatManager
             'cooldowns' => [],
             'loot' => [],
         ], $state);
-        $battle = DB::transaction(fn (): CombatBattle => CombatBattle::query()->firstOrCreate(
-            ['actor_id' => $actorId, 'idempotency_key' => $idempotencyKey],
-            ['id' => (string) Str::uuid(), 'tenant_id' => $tenantId, 'team_id' => $teamId, 'opponent_id' => $opponentId, 'status' => 'active', 'seed' => Str::uuid()->toString(), 'state' => $initialState, 'created_at' => now(), 'updated_at' => now()]
-        ));
+        $battle = DB::transaction(function () use ($actorId, $opponentId, $tenantId, $teamId, $idempotencyKey, $initialState): CombatBattle {
+            if ($idempotencyKey !== null && ($existing = CombatBattle::query()->where('actor_id', $actorId)->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
+                if ($existing->opponent_id !== $opponentId || $existing->tenant_id !== $tenantId || (string) $existing->team_id !== (string) $teamId) {
+                    throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another battle.']);
+                }
+
+                return $existing;
+            }
+
+            return CombatBattle::query()->create(['id' => (string) Str::uuid(), 'actor_id' => $actorId, 'idempotency_key' => $idempotencyKey, 'tenant_id' => $tenantId, 'team_id' => $teamId, 'opponent_id' => $opponentId, 'status' => 'active', 'seed' => Str::uuid()->toString(), 'state' => $initialState, 'created_at' => now(), 'updated_at' => now()]);
+        });
         if ($battle->wasRecentlyCreated) {
             CombatBattleStarted::dispatch((string) $battle->getKey(), $actorId, $opponentId);
         }
