@@ -41,7 +41,7 @@ final class QuestsController extends Controller
     public function accept(Request $request, Quest $quest): JsonResponse
     {
         $quest = $this->authorizedQuest($request, $quest);
-        $data = $request->validate(['completed_quests' => ['array'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
+        $data = $request->validate(['idempotency_key' => ['nullable', 'string', 'max:128']]);
 
         return response()->json(['data' => $this->progressResource(app(QuestsManager::class)->accept($quest, (string) $request->user()->getKey(), $data, $data['idempotency_key'] ?? $request->header('Idempotency-Key')))], 201);
     }
