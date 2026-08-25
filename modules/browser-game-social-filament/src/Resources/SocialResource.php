@@ -15,6 +15,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Social\Models\SocialRecord;
+use Liberu\BrowserGame\SocialFilament\Resources\SocialResource\Pages\CreateSocial;
+use Liberu\BrowserGame\SocialFilament\Resources\SocialResource\Pages\EditSocial;
+use Liberu\BrowserGame\SocialFilament\Resources\SocialResource\Pages\ListSocial;
 
 final class SocialResource extends Resource
 {
@@ -36,7 +39,7 @@ final class SocialResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\SocialResource\Pages\ListSocial::route('/'), 'create' => Resources\SocialResource\Pages\CreateSocial::route('/create'), 'edit' => Resources\SocialResource\Pages\EditSocial::route('/{record}/edit')];
+        return ['index' => ListSocial::route('/'), 'create' => CreateSocial::route('/create'), 'edit' => EditSocial::route('/{record}/edit')];
     }
 
     public static function getEloquentQuery(): Builder
