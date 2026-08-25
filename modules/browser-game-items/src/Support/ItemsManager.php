@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\Items\Support;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -38,14 +39,14 @@ final class ItemsManager
         return $record;
     }
 
-    public function addToInventory(string|int $playerId, ItemsRecord|string $item, int $quantity = 1, array $provenance = []): InventoryEntry
+    public function addToInventory(string|int $playerId, ItemsRecord|string $item, int $quantity = 1, array $provenance = [], ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
         if ($quantity < 1) {
             throw ValidationException::withMessages(['quantity' => 'Quantity must be at least one.']);
         }
 
         $itemId = $item instanceof ItemsRecord ? (string) $item->getKey() : $item;
-        $record = ItemsRecord::query()->findOrFail($itemId);
+        $record = $this->visibleItems($tenantId, $teamId)->findOrFail($itemId);
         if ($record->status !== 'active') {
             throw ValidationException::withMessages(['item' => 'The item is not available.']);
         }
@@ -70,13 +71,14 @@ final class ItemsManager
         });
     }
 
-    public function removeFromInventory(string|int $playerId, ItemsRecord|string $item, int $quantity = 1): bool
+    public function removeFromInventory(string|int $playerId, ItemsRecord|string $item, int $quantity = 1, ?string $tenantId = null, ?string $teamId = null): bool
     {
         if ($quantity < 1) {
             throw ValidationException::withMessages(['quantity' => 'Quantity must be at least one.']);
         }
 
         $itemId = $item instanceof ItemsRecord ? (string) $item->getKey() : $item;
+        $this->visibleItems($tenantId, $teamId)->whereKey($itemId)->firstOrFail();
 
         return DB::transaction(function () use ($playerId, $itemId, $quantity): bool {
             $entry = InventoryEntry::query()->lockForUpdate()
@@ -94,15 +96,16 @@ final class ItemsManager
         });
     }
 
-    public function inventory(string|int $playerId): Collection
+    public function inventory(string|int $playerId, ?string $tenantId = null, ?string $teamId = null): Collection
     {
-        return InventoryEntry::query()->with('item')->where('player_id', (string) $playerId)->get();
+        return InventoryEntry::query()->with('item')->where('player_id', (string) $playerId)
+            ->whereHas('item', fn ($query) => $this->scope($query, $tenantId, $teamId))->get();
     }
 
-    public function equip(string|int $playerId, InventoryEntry|int $entry, ?string $slot = null): InventoryEntry
+    public function equip(string|int $playerId, InventoryEntry|int $entry, ?string $slot = null, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
-        return DB::transaction(function () use ($playerId, $entry, $slot): InventoryEntry {
-            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry);
+        return DB::transaction(function () use ($playerId, $entry, $slot, $tenantId, $teamId): InventoryEntry {
+            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry, $tenantId, $teamId);
             $equipmentSlot = $slot ?? $inventoryEntry->item?->getAttribute('slot');
             if ($equipmentSlot !== null) {
                 InventoryEntry::query()->where('player_id', (string) $playerId)
@@ -121,40 +124,40 @@ final class ItemsManager
         });
     }
 
-    public function unequip(string|int $playerId, InventoryEntry|int $entry): InventoryEntry
+    public function unequip(string|int $playerId, InventoryEntry|int $entry, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
-        return DB::transaction(function () use ($playerId, $entry): InventoryEntry {
-            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry);
+        return DB::transaction(function () use ($playerId, $entry, $tenantId, $teamId): InventoryEntry {
+            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry, $tenantId, $teamId);
             $inventoryEntry->update(['equipment_slot' => null, 'equipped_at' => null]);
 
             return $inventoryEntry->fresh('item');
         });
     }
 
-    public function bind(string|int $playerId, InventoryEntry|int $entry): InventoryEntry
+    public function bind(string|int $playerId, InventoryEntry|int $entry, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
-        return DB::transaction(function () use ($playerId, $entry): InventoryEntry {
-            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry);
+        return DB::transaction(function () use ($playerId, $entry, $tenantId, $teamId): InventoryEntry {
+            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry, $tenantId, $teamId);
             $inventoryEntry->update(['is_bound' => true, 'bound_at' => $inventoryEntry->bound_at ?? now()]);
 
             return $inventoryEntry->fresh('item');
         });
     }
 
-    public function setProvenance(string|int $playerId, InventoryEntry|int $entry, array $provenance): InventoryEntry
+    public function setProvenance(string|int $playerId, InventoryEntry|int $entry, array $provenance, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
-        return DB::transaction(function () use ($playerId, $entry, $provenance): InventoryEntry {
-            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry);
+        return DB::transaction(function () use ($playerId, $entry, $provenance, $tenantId, $teamId): InventoryEntry {
+            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry, $tenantId, $teamId);
             $inventoryEntry->update(['provenance' => $provenance]);
 
             return $inventoryEntry->fresh('item');
         });
     }
 
-    public function adjustDurability(string|int $playerId, InventoryEntry|int $entry, int $delta): InventoryEntry
+    public function adjustDurability(string|int $playerId, InventoryEntry|int $entry, int $delta, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
-        return DB::transaction(function () use ($playerId, $entry, $delta): InventoryEntry {
-            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry);
+        return DB::transaction(function () use ($playerId, $entry, $delta, $tenantId, $teamId): InventoryEntry {
+            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry, $tenantId, $teamId);
             $max = (int) ($inventoryEntry->max_durability ?? 0);
             if ($max < 1) {
                 throw ValidationException::withMessages(['durability' => 'This item does not use durability.']);
@@ -167,11 +170,11 @@ final class ItemsManager
         });
     }
 
-    public function putInContainer(string|int $playerId, InventoryEntry|int $entry, InventoryEntry|int $container): InventoryEntry
+    public function putInContainer(string|int $playerId, InventoryEntry|int $entry, InventoryEntry|int $container, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
-        return DB::transaction(function () use ($playerId, $entry, $container): InventoryEntry {
-            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry);
-            $containerEntry = $this->lockedOwnedEntry($playerId, $container);
+        return DB::transaction(function () use ($playerId, $entry, $container, $tenantId, $teamId): InventoryEntry {
+            $inventoryEntry = $this->lockedOwnedEntry($playerId, $entry, $tenantId, $teamId);
+            $containerEntry = $this->lockedOwnedEntry($playerId, $container, $tenantId, $teamId);
             if ($inventoryEntry->is($containerEntry)) {
                 throw ValidationException::withMessages(['container' => 'An item cannot contain itself.']);
             }
@@ -202,10 +205,27 @@ final class ItemsManager
             ->firstOrFail();
     }
 
-    private function lockedOwnedEntry(string|int $playerId, InventoryEntry|int $entry): InventoryEntry
+    private function lockedOwnedEntry(string|int $playerId, InventoryEntry|int $entry, ?string $tenantId = null, ?string $teamId = null): InventoryEntry
     {
         return InventoryEntry::query()->with('item')->where('player_id', (string) $playerId)
             ->whereKey($entry instanceof InventoryEntry ? $entry->getKey() : $entry)
+            ->whereHas('item', fn ($query) => $this->scope($query, $tenantId, $teamId))
             ->lockForUpdate()->firstOrFail();
+    }
+
+    private function visibleItems(?string $tenantId, ?string $teamId): Builder
+    {
+        return $this->scope(ItemsRecord::query(), $tenantId, $teamId);
+    }
+
+    private function scope(Builder $query, ?string $tenantId, ?string $teamId): Builder
+    {
+        if ($tenantId === null && $teamId === null) {
+            return $query;
+        }
+
+        return $query
+            ->where(fn ($nested) => $nested->whereNull('tenant_id')->orWhere('tenant_id', $tenantId))
+            ->where(fn ($nested) => $nested->whereNull('team_id')->orWhere('team_id', $teamId));
     }
 }

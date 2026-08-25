@@ -37,13 +37,16 @@ final class ItemsController extends Controller
 
     public function inventory(Request $request): JsonResponse
     {
-        return response()->json(['data' => app(ItemsManager::class)->inventory((string) $request->user()->getAuthIdentifier())->map(fn (InventoryEntry $entry): array => $this->inventoryResource($entry))->values()]);
+        [$tenantId, $teamId] = $this->scope($request);
+
+        return response()->json(['data' => app(ItemsManager::class)->inventory((string) $request->user()->getAuthIdentifier(), $tenantId, $teamId)->map(fn (InventoryEntry $entry): array => $this->inventoryResource($entry))->values()]);
     }
 
     public function addToInventory(Request $request, ItemsRecord $item): JsonResponse
     {
         $data = $request->validate(['quantity' => ['required', 'integer', 'min:1', 'max:100000']]);
-        $entry = app(ItemsManager::class)->addToInventory((string) $request->user()->getAuthIdentifier(), $item, (int) $data['quantity']);
+        [$tenantId, $teamId] = $this->scope($request);
+        $entry = app(ItemsManager::class)->addToInventory((string) $request->user()->getAuthIdentifier(), $item, (int) $data['quantity'], tenantId: $tenantId, teamId: $teamId);
 
         return response()->json(['data' => $this->inventoryResource($entry)], 201);
     }
@@ -51,7 +54,8 @@ final class ItemsController extends Controller
     public function removeFromInventory(Request $request, ItemsRecord $item): JsonResponse
     {
         $data = $request->validate(['quantity' => ['required', 'integer', 'min:1', 'max:100000']]);
-        abort_unless(app(ItemsManager::class)->removeFromInventory((string) $request->user()->getAuthIdentifier(), $item, (int) $data['quantity']), 422, 'Insufficient inventory.');
+        [$tenantId, $teamId] = $this->scope($request);
+        abort_unless(app(ItemsManager::class)->removeFromInventory((string) $request->user()->getAuthIdentifier(), $item, (int) $data['quantity'], $tenantId, $teamId), 422, 'Insufficient inventory.');
 
         return response()->json(['data' => ['removed' => true]]);
     }
@@ -59,21 +63,24 @@ final class ItemsController extends Controller
     public function equip(Request $request, InventoryEntry $entry): JsonResponse
     {
         $data = $request->validate(['slot' => ['nullable', 'string', 'max:100']]);
-        $equipped = app(ItemsManager::class)->equip((string) $request->user()->getAuthIdentifier(), $entry, $data['slot'] ?? null);
+        [$tenantId, $teamId] = $this->scope($request);
+        $equipped = app(ItemsManager::class)->equip((string) $request->user()->getAuthIdentifier(), $entry, $data['slot'] ?? null, $tenantId, $teamId);
 
         return response()->json(['data' => $this->inventoryResource($equipped)]);
     }
 
     public function unequip(Request $request, InventoryEntry $entry): JsonResponse
     {
-        $equipped = app(ItemsManager::class)->unequip((string) $request->user()->getAuthIdentifier(), $entry);
+        [$tenantId, $teamId] = $this->scope($request);
+        $equipped = app(ItemsManager::class)->unequip((string) $request->user()->getAuthIdentifier(), $entry, $tenantId, $teamId);
 
         return response()->json(['data' => $this->inventoryResource($equipped)]);
     }
 
     public function bind(Request $request, InventoryEntry $entry): JsonResponse
     {
-        $bound = app(ItemsManager::class)->bind((string) $request->user()->getAuthIdentifier(), $entry);
+        [$tenantId, $teamId] = $this->scope($request);
+        $bound = app(ItemsManager::class)->bind((string) $request->user()->getAuthIdentifier(), $entry, $tenantId, $teamId);
 
         return response()->json(['data' => $this->inventoryResource($bound)]);
     }
@@ -81,7 +88,8 @@ final class ItemsController extends Controller
     public function durability(Request $request, InventoryEntry $entry): JsonResponse
     {
         $data = $request->validate(['delta' => ['required', 'integer', 'between:-100000,100000']]);
-        $updated = app(ItemsManager::class)->adjustDurability((string) $request->user()->getAuthIdentifier(), $entry, (int) $data['delta']);
+        [$tenantId, $teamId] = $this->scope($request);
+        $updated = app(ItemsManager::class)->adjustDurability((string) $request->user()->getAuthIdentifier(), $entry, (int) $data['delta'], $tenantId, $teamId);
 
         return response()->json(['data' => $this->inventoryResource($updated)]);
     }
@@ -89,7 +97,8 @@ final class ItemsController extends Controller
     public function container(Request $request, InventoryEntry $entry): JsonResponse
     {
         $data = $request->validate(['container_id' => ['required', 'integer', 'min:1']]);
-        $updated = app(ItemsManager::class)->putInContainer((string) $request->user()->getAuthIdentifier(), $entry, (int) $data['container_id']);
+        [$tenantId, $teamId] = $this->scope($request);
+        $updated = app(ItemsManager::class)->putInContainer((string) $request->user()->getAuthIdentifier(), $entry, (int) $data['container_id'], $tenantId, $teamId);
 
         return response()->json(['data' => $this->inventoryResource($updated)]);
     }
@@ -97,7 +106,8 @@ final class ItemsController extends Controller
     public function provenance(Request $request, InventoryEntry $entry): JsonResponse
     {
         $data = $request->validate(['provenance' => ['required', 'array']]);
-        $updated = app(ItemsManager::class)->setProvenance((string) $request->user()->getAuthIdentifier(), $entry, $data['provenance']);
+        [$tenantId, $teamId] = $this->scope($request);
+        $updated = app(ItemsManager::class)->setProvenance((string) $request->user()->getAuthIdentifier(), $entry, $data['provenance'], $tenantId, $teamId);
 
         return response()->json(['data' => $this->inventoryResource($updated)]);
     }
@@ -137,5 +147,13 @@ final class ItemsController extends Controller
             'provenance' => $entry->provenance,
             'item' => $entry->item?->only(['id', 'name', 'type', 'rarity']),
         ]];
+    }
+
+    /** @return array{0: ?string, 1: ?string} */
+    private function scope(Request $request): array
+    {
+        $team = $request->user()?->currentTeam;
+
+        return [$team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey()];
     }
 }
