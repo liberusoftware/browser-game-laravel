@@ -61,3 +61,16 @@ it('does not trust client supplied prerequisite completion and keeps completion 
 
     expect($retry->getKey())->toBe($first->getKey())->and($retry->completion_count)->toBe(1);
 });
+
+it('keeps quest progress isolated by tenant and team', function (): void {
+    $manager = app(QuestsManager::class);
+    $teamOne = $manager->define('Shared Quest', 'shared-quest-one', ['wins' => 1], teamId: 'team-1', tenantId: 'tenant-1');
+    $teamTwo = $manager->define('Shared Quest', 'shared-quest-two', ['wins' => 1], teamId: 'team-2', tenantId: 'tenant-2');
+
+    $manager->accept($teamOne, 'player-1');
+    $manager->progress($teamOne, 'player-1', ['wins' => 1], 'completed', 'scoped-completion');
+    $other = $manager->accept($teamTwo, 'player-1');
+
+    expect($other->getKey())->not->toBeNull()
+        ->and($other->status)->toBe('in_progress');
+});
