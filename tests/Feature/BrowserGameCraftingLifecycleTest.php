@@ -62,3 +62,18 @@ it('refunds cancellation once and salvages a terminal queue once', function (): 
     expect(CraftingResource::query()->where('actor_id', 'player-2')->where('resource_key', 'herb')->value('quantity'))->toBe(4);
     expect(fn (): mixed => $manager->queueCraft('player-2', $recipe, 99))->toThrow(ValidationException::class);
 });
+
+it('keeps player crafting state and idempotency scoped by team', function (): void {
+    $manager = app(CraftingManager::class);
+    $teamOneRecipe = $manager->define('Team One Recipe', ['materials' => ['ore' => 1]], teamId: 'team-1');
+    $teamTwoRecipe = $manager->define('Team Two Recipe', ['materials' => ['ore' => 1]], teamId: 'team-2');
+    $manager->grantResource('player-1', 'ore', 1, teamId: 'team-1');
+    $manager->grantResource('player-1', 'ore', 1, teamId: 'team-2');
+
+    $first = $manager->queueCraft('player-1', $teamOneRecipe, idempotencyKey: 'scoped-queue', teamId: 'team-1');
+    $second = $manager->queueCraft('player-1', $teamTwoRecipe, idempotencyKey: 'scoped-queue', teamId: 'team-2');
+
+    expect($second->getKey())->not->toBe($first->getKey())
+        ->and(CraftingResource::query()->where('actor_id', 'player-1')->where('team_id', 'team-1')->exists())->toBeFalse()
+        ->and(CraftingResource::query()->where('actor_id', 'player-1')->where('team_id', 'team-2')->exists())->toBeFalse();
+});

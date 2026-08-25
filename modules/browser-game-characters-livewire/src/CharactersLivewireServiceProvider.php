@@ -14,5 +14,6 @@ final class CharactersLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-characters-livewire');
         Livewire::component('browser-game.characters.character-panel', CharacterPanel::class);
+        Livewire::addNamespace('module-browser-game-characters', classNamespace: 'Liberu\\BrowserGame\\CharactersLivewire\\Livewire');
     }
 }

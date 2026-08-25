@@ -17,13 +17,14 @@ beforeEach(function (): void {
 
 it('resolves combat actions from server definitions and persists terminal state', function (): void {
     $manager = app(CombatManager::class);
-    $manager->define('ability', 'power-strike', 'Power Strike', [], ['power' => 30], 2);
+    $manager->define('ability', 'power-strike', 'Power Strike', ['damage' => 30], ['power' => 30], 2);
     $battle = $manager->start('player-1', 'player-2', state: ['health' => ['actor' => 100, 'opponent' => 40], 'loot' => ['gold' => 10]]);
 
     $action = $manager->resolve($battle, 'player-1', 'power-strike', 999, 'combat-action-1');
     $battle = $battle->fresh();
 
     expect($action->value)->toBe(30)
+        ->and($action->effects)->toBe(['damage' => 30])
         ->and($battle->turn)->toBe(2)
         ->and($battle->status)->toBe('active')
         ->and($battle->state['health']['opponent'])->toBe(10)

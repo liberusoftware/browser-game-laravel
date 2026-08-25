@@ -7,6 +7,7 @@ namespace Liberu\BrowserGame\CombatFilament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\BrowserGame\CombatFilament\Resources\CombatBattleResource;
+use Liberu\BrowserGame\CombatFilament\Resources\CombatDefinitionResource;
 
 final class CombatFilamentPlugin implements Plugin
 {
@@ -22,7 +23,7 @@ final class CombatFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([CombatBattleResource::class]);
+        $panel->resources([CombatBattleResource::class, CombatDefinitionResource::class]);
     }
 
     public function boot(Panel $panel): void {}

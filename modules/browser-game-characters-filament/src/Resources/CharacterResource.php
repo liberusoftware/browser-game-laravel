@@ -13,6 +13,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Characters\Models\GameCharacter;
+use Liberu\BrowserGame\CharactersFilament\Resources\CharacterResource\Pages\CreateCharacter;
+use Liberu\BrowserGame\CharactersFilament\Resources\CharacterResource\Pages\EditCharacter;
+use Liberu\BrowserGame\CharactersFilament\Resources\CharacterResource\Pages\ListCharacters;
 
 final class CharacterResource extends Resource
 {
@@ -62,9 +65,9 @@ final class CharacterResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCharacters::route('/'),
-            'create' => Pages\CreateCharacter::route('/create'),
-            'edit' => Pages\EditCharacter::route('/{record}/edit'),
+            'index' => ListCharacters::route('/'),
+            'create' => CreateCharacter::route('/create'),
+            'edit' => EditCharacter::route('/{record}/edit'),
         ];
     }
 

@@ -13,6 +13,7 @@ final class CombatLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Livewire::component('browser-game.combat.panel', CombatPanel::class);
+        Livewire::addNamespace('module-browser-game-combat', classNamespace: 'Liberu\\BrowserGame\\CombatLivewire\\Livewire');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-combat-livewire');
     }
 }

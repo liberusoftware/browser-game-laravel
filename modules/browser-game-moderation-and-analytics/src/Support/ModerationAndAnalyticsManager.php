@@ -44,7 +44,7 @@ final class ModerationAndAnalyticsManager
         }
         $record = DB::transaction(function () use ($kind, $name, $actorId, $targetId, $data, $tenantId, $teamId, $idempotencyKey): ModerationAndAnalyticsRecord {
             if ($idempotencyKey !== null && ($existing = ModerationAndAnalyticsRecord::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
-                if ((string) $existing->actor_id !== (string) $actorId || (string) $existing->team_id !== (string) $teamId) {
+                if ((string) $existing->actor_id !== (string) $actorId || (string) $existing->tenant_id !== (string) $tenantId || (string) $existing->team_id !== (string) $teamId) {
                     throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another moderation or analytics operation.']);
                 }
 

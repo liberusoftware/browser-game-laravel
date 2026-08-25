@@ -34,8 +34,9 @@ final class CollectionsManager
         return $record;
     }
 
-    public function addEntry(CollectionsRecord $collection, string $entryKey, string $name, int $requiredQuantity = 1, array $reward = [], array $data = []): mixed
+    public function addEntry(CollectionsRecord $collection, string $entryKey, string $name, int $requiredQuantity = 1, array $reward = [], array $data = [], ?string $tenantId = null, ?string $teamId = null): mixed
     {
+        $this->assertScope($collection, $tenantId, $teamId);
         if (trim($entryKey) === '' || trim($name) === '' || $requiredQuantity < 1) {
             throw ValidationException::withMessages(['entry' => 'A valid collection entry is required.']);
         }
@@ -89,8 +90,9 @@ final class CollectionsManager
         return $this->defineCollection($name, 'cosmetic', $data, false, $tenantId, $teamId);
     }
 
-    public function record(string $actorId, CollectionsRecord $collection, string $entryKey, int $quantity = 1, ?string $idempotencyKey = null): CollectionProgress
+    public function record(string $actorId, CollectionsRecord $collection, string $entryKey, int $quantity = 1, ?string $idempotencyKey = null, ?string $tenantId = null, ?string $teamId = null): CollectionProgress
     {
+        $this->assertScope($collection, $tenantId, $teamId);
         if (trim($actorId) === '' || trim($entryKey) === '' || $quantity < 1) {
             throw ValidationException::withMessages(['quantity' => 'Quantity must be positive.']);
         }
@@ -154,5 +156,14 @@ final class CollectionsManager
         }
 
         return $progress;
+    }
+
+    private function assertScope(CollectionsRecord $collection, ?string $tenantId, ?string $teamId): void
+    {
+        if (($tenantId === null && $teamId === null) || (($collection->tenant_id === null || (string) $collection->tenant_id === (string) $tenantId) && ($collection->team_id === null || (string) $collection->team_id === (string) $teamId))) {
+            return;
+        }
+
+        throw ValidationException::withMessages(['collection' => 'The collection is not available in this scope.']);
     }
 }

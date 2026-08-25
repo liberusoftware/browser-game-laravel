@@ -45,6 +45,10 @@ final class LiveOpsManager
         }
         $record = DB::transaction(function () use ($name, $kind, $data, $tenantId, $teamId, $idempotencyKey): LiveOpsRecord {
             if ($idempotencyKey !== null && ($existing = LiveOpsRecord::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
+                if ((string) $existing->tenant_id !== (string) $tenantId || (string) $existing->team_id !== (string) $teamId) {
+                    throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another Live Ops scope.']);
+                }
+
                 return $existing;
             }
             $record = LiveOpsRecord::query()->create([

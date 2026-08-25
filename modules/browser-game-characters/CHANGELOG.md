@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Scope character identity and player-facing reads by tenant and team context.
+
 ## 1.0.0 - Unreleased
 
 - Add the Browser Game Characters domain boundary.

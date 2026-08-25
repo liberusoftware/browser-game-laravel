@@ -21,7 +21,7 @@ final class CollectionsCatalog extends Component
             ->whereKey($collectionId)
             ->where('status', 'active')
             ->firstOrFail();
-        app(CollectionsManager::class)->record((string) auth()->id(), $collection, $entryKey, 1, 'livewire:'.auth()->id().':'.$collectionId.':'.$entryKey.':'.now()->toDateString());
+        app(CollectionsManager::class)->record((string) auth()->id(), $collection, $entryKey, 1, 'livewire:'.auth()->id().':'.$collectionId.':'.$entryKey.':'.now()->toDateString(), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
         $this->message = 'Collection progress recorded.';
     }
 
@@ -30,7 +30,10 @@ final class CollectionsCatalog extends Component
         $team = auth()->user()?->currentTeam;
         $collections = app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->where('status', 'active')->with('entries')->latest()->limit(25)->get();
         $progress = auth()->check()
-            ? CollectionProgress::query()->where('actor_id', (string) auth()->id())->whereIn('collection_id', $collections->modelKeys())->get()->keyBy(fn (CollectionProgress $item): string => $item->collection_id.':'.$item->entry_key)
+            ? CollectionProgress::query()->where('actor_id', (string) auth()->id())
+                ->where('tenant_id', $team?->getAttribute('tenant_id'))
+                ->where('team_id', $team?->getKey())
+                ->whereIn('collection_id', $collections->modelKeys())->get()->keyBy(fn (CollectionProgress $item): string => $item->collection_id.':'.$item->entry_key)
             : collect();
 
         return resolve('view')->make('browser-game-collections-livewire::collections-catalog', ['collections' => $collections, 'progress' => $progress]);

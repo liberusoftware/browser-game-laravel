@@ -13,6 +13,7 @@ final class CraftingLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Livewire::component('browser-game.crafting.catalog', CraftingCatalog::class);
+        Livewire::addNamespace('module-browser-game-crafting', classNamespace: 'Liberu\\BrowserGame\\CraftingLivewire\\Livewire');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-crafting-livewire');
     }
 }

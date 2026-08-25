@@ -53,7 +53,8 @@ final class CraftingController extends Controller
 
     public function queues(Request $request): JsonResponse
     {
-        $queues = CraftingQueue::query()->with('recipe')->where('actor_id', (string) $request->user()->getAuthIdentifier())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
+        $team = $this->team($request);
+        $queues = CraftingQueue::query()->with('recipe')->where('actor_id', (string) $request->user()->getAuthIdentifier())->where('tenant_id', $team?->getAttribute('tenant_id'))->where('team_id', $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $queues->through(fn (CraftingQueue $queue): array => $this->queueResource($queue))]);
     }
@@ -93,12 +94,15 @@ final class CraftingController extends Controller
 
     public function professions(Request $request): JsonResponse
     {
-        return response()->json(['data' => CraftingProfession::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->get()->map(fn (CraftingProfession $profession): array => ['id' => (string) $profession->getKey(), 'type' => 'browser-game-crafting-profession', 'attributes' => $profession->only(['profession', 'level', 'experience'])])->values()]);
+        $team = $this->team($request);
+
+        return response()->json(['data' => CraftingProfession::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->where('tenant_id', $team?->getAttribute('tenant_id'))->where('team_id', $team?->getKey())->get()->map(fn (CraftingProfession $profession): array => ['id' => (string) $profession->getKey(), 'type' => 'browser-game-crafting-profession', 'attributes' => $profession->only(['profession', 'level', 'experience'])])->values()]);
     }
 
     public function resources(Request $request): JsonResponse
     {
-        $resources = CraftingResource::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->orderBy('resource_key')->get();
+        $team = $this->team($request);
+        $resources = CraftingResource::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->where('tenant_id', $team?->getAttribute('tenant_id'))->where('team_id', $team?->getKey())->orderBy('resource_key')->get();
 
         return response()->json(['data' => $resources->map(fn (CraftingResource $resource): array => [
             'id' => (string) $resource->getKey(),
@@ -130,7 +134,10 @@ final class CraftingController extends Controller
 
     private function assertOwner(Request $request, CraftingQueue $queue): void
     {
-        abort_unless($queue->actor_id === (string) $request->user()->getAuthIdentifier(), 404);
+        $team = $this->team($request);
+        abort_unless($queue->actor_id === (string) $request->user()->getAuthIdentifier()
+            && (string) $queue->tenant_id === (string) $team?->getAttribute('tenant_id')
+            && (string) $queue->team_id === (string) $team?->getKey(), 404);
     }
 
     private function team(Request $request): mixed

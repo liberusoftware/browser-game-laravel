@@ -29,6 +29,10 @@ final class AccountsCatalog extends Component
 
     public bool $ageVerified = false;
 
+    public string $banReason = '';
+
+    public ?string $banEndsAt = null;
+
     public ?string $message = null;
 
     public function updateIdentity(string $accountId): void
@@ -55,6 +59,36 @@ final class AccountsCatalog extends Component
         $account = $this->visibleAccount($accountId)->firstOrFail();
         app(AccountsManager::class)->verifyEmail($account);
         $this->message = 'Email verified.';
+    }
+
+    public function suspend(string $accountId): void
+    {
+        abort_unless(auth()->check(), 403);
+        app(AccountsManager::class)->suspend($this->visibleAccount($accountId)->firstOrFail(), (string) auth()->id());
+        $this->message = 'Account suspended.';
+    }
+
+    public function reactivate(string $accountId): void
+    {
+        abort_unless(auth()->check(), 403);
+        app(AccountsManager::class)->reactivate($this->visibleAccount($accountId)->firstOrFail(), (string) auth()->id());
+        $this->message = 'Account reactivated.';
+    }
+
+    public function ban(string $accountId): void
+    {
+        abort_unless(auth()->check(), 403);
+        $this->validate(['banReason' => ['required', 'string', 'max:1000'], 'banEndsAt' => ['nullable', 'date', 'after:now']]);
+        app(AccountsManager::class)->ban($this->visibleAccount($accountId)->firstOrFail(), $this->banReason, $this->banEndsAt, (string) auth()->id());
+        $this->message = 'Account banned.';
+    }
+
+    public function liftBan(string $accountId, int $banId): void
+    {
+        abort_unless(auth()->check(), 403);
+        $account = $this->visibleAccount($accountId)->firstOrFail();
+        app(AccountsManager::class)->liftBan($account, $account->bans()->whereKey($banId)->firstOrFail(), (string) auth()->id());
+        $this->message = 'Account ban lifted.';
     }
 
     public function updateAgeRegion(string $accountId): void
@@ -103,7 +137,7 @@ final class AccountsCatalog extends Component
     public function render(): mixed
     {
         $team = auth()->user()?->currentTeam;
-        $accounts = app(AccountsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->with('privacy')->latest()->limit(25)->get();
+        $accounts = app(AccountsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->with(['privacy', 'bans'])->latest()->limit(25)->get();
 
         return resolve('view')->make('browser-game-accounts-livewire::accounts-catalog', ['accounts' => $accounts]);
     }

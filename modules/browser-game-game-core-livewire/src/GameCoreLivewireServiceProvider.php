@@ -14,5 +14,6 @@ final class GameCoreLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-game-core-livewire');
         Livewire::component('browser-game.game-core.world-overview', WorldOverview::class);
+        Livewire::addNamespace('module-browser-game-game-core', classNamespace: 'Liberu\\BrowserGame\\GameCoreLivewire\\Livewire');
     }
 }

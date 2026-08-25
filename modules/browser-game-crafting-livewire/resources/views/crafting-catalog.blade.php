@@ -8,6 +8,9 @@
             <h3>{{ $recipe->name }}</h3>
             <p>{{ $recipe->description }}</p>
             <p>Requires level {{ $recipe->min_level }}; success {{ $recipe->success_rate }}%.</p>
+            @if($recipe->discovery_requirements)
+                <button type="button" wire:click="discover('{{ $recipe->getKey() }}')">Discover recipe</button>
+            @endif
             <button type="button" wire:click="queue('{{ $recipe->getKey() }}')">Start crafting</button>
         </article>
     @empty

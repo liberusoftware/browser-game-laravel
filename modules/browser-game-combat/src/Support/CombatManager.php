@@ -87,7 +87,7 @@ final class CombatManager
         }
         $completed = false;
         $loot = [];
-        $result = DB::transaction(function () use ($battle, $actorId, $action, $value, $idempotencyKey, $effects, &$completed, &$loot): CombatAction {
+        $result = DB::transaction(function () use ($battle, $actorId, $action, $value, $idempotencyKey, &$completed, &$loot): CombatAction {
             $battle = CombatBattle::query()->lockForUpdate()->findOrFail($battle->getKey());
             if ($battle->status !== 'active') {
                 throw ValidationException::withMessages(['battle' => 'The battle is not active.']);
@@ -107,7 +107,7 @@ final class CombatManager
                 throw ValidationException::withMessages(['action' => 'This ability is on cooldown.']);
             }
             $resolvedValue = $definition === null ? $value : max(0, (int) (($definition->data ?? [])['power'] ?? $value));
-            $resolvedEffects = array_merge((array) ($definition?->effects ?? []), $effects);
+            $resolvedEffects = (array) ($definition?->effects ?? []);
             $actionRecord = CombatAction::query()->create([
                 'id' => (string) Str::uuid(), 'combat_id' => $battle->getKey(), 'turn' => (int) $battle->turn,
                 'actor_id' => $actorId, 'action' => $action, 'value' => $resolvedValue,

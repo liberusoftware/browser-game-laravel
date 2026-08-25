@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\Items\Support\ItemsManager;
@@ -54,4 +55,18 @@ it('rejects deep container cycles while preserving provenance updates', function
     expect($updated->provenance['source'])->toBe('verified-drop');
     expect(fn (): mixed => $manager->putInContainer('player-2', $bag, $chest))
         ->toThrow(ValidationException::class);
+});
+
+it('enforces item scope for inventory mutations', function (): void {
+    $manager = app(ItemsManager::class);
+    $visible = $manager->define('Visible potion', tenantId: 'tenant-1', teamId: 'team-1');
+    $hidden = $manager->define('Hidden potion', tenantId: 'tenant-2', teamId: 'team-2');
+
+    $entry = $manager->addToInventory('player-3', $visible, tenantId: 'tenant-1', teamId: 'team-1');
+
+    expect($entry->item_id)->toBe($visible->getKey())
+        ->and(fn (): mixed => $manager->addToInventory('player-3', $hidden, tenantId: 'tenant-1', teamId: 'team-1'))
+        ->toThrow(ModelNotFoundException::class)
+        ->and($manager->inventory('player-3', 'tenant-1', 'team-1'))->toHaveCount(1)
+        ->and($manager->inventory('player-3', 'tenant-2', 'team-2'))->toHaveCount(0);
 });

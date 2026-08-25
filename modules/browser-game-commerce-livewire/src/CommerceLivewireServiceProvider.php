@@ -13,6 +13,7 @@ final class CommerceLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Livewire::component('browser-game.commerce.catalog', CommerceCatalog::class);
+        Livewire::addNamespace('module-browser-game-commerce', classNamespace: 'Liberu\\BrowserGame\\CommerceLivewire\\Livewire');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-commerce-livewire');
     }
 }

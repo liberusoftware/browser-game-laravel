@@ -44,7 +44,7 @@ final class SocialManager
         }
         $record = DB::transaction(function () use ($name, $kind, $ownerId, $data, $tenantId, $teamId, $idempotencyKey, $targetId): SocialRecord {
             if ($idempotencyKey !== null && ($existing = SocialRecord::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
-                if ((string) $existing->owner_id !== $ownerId || (string) $existing->team_id !== (string) $teamId) {
+                if ((string) $existing->owner_id !== $ownerId || (string) $existing->tenant_id !== (string) $tenantId || (string) $existing->team_id !== (string) $teamId) {
                     throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another social operation.']);
                 }
 
@@ -184,7 +184,7 @@ final class SocialManager
 
         return DB::transaction(function () use ($actorId, $targetId, $reason, $data, $tenantId, $teamId, $idempotencyKey): SocialRecord {
             if ($idempotencyKey !== null && ($existing = SocialRecord::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
-                if ((string) $existing->owner_id !== $actorId || (string) $existing->team_id !== (string) $teamId) {
+                if ((string) $existing->owner_id !== $actorId || (string) $existing->tenant_id !== (string) $tenantId || (string) $existing->team_id !== (string) $teamId) {
                     throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another social report.']);
                 }
 

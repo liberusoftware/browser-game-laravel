@@ -28,10 +28,20 @@ final class CraftingCatalog extends Component
         $this->dispatch('crafting-queued');
     }
 
+    public function discover(string $recipeId): void
+    {
+        abort_unless(auth()->check(), 403);
+        $team = $this->team();
+        $recipe = app(CraftingQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($recipeId)->firstOrFail();
+        app(CraftingManager::class)->discover((string) auth()->id(), $recipe, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+        $this->statusMessage = 'Recipe discovered.';
+        $this->dispatch('crafting-discovered');
+    }
+
     public function complete(string $queueId): void
     {
         abort_unless(auth()->check(), 403);
-        $queue = CraftingQueue::query()->whereKey($queueId)->where('actor_id', (string) auth()->id())->firstOrFail();
+        $queue = $this->ownedQueue($queueId);
         app(CraftingManager::class)->complete($queue);
         $this->statusMessage = 'Crafting completed.';
         $this->dispatch('crafting-completed');
@@ -40,7 +50,7 @@ final class CraftingCatalog extends Component
     public function cancel(string $queueId): void
     {
         abort_unless(auth()->check(), 403);
-        $queue = CraftingQueue::query()->whereKey($queueId)->where('actor_id', (string) auth()->id())->firstOrFail();
+        $queue = $this->ownedQueue($queueId);
         app(CraftingManager::class)->cancel($queue);
         $this->statusMessage = 'Crafting cancelled and materials refunded.';
         $this->dispatch('crafting-cancelled');
@@ -49,7 +59,7 @@ final class CraftingCatalog extends Component
     public function salvage(string $queueId): void
     {
         abort_unless(auth()->check(), 403);
-        $queue = CraftingQueue::query()->whereKey($queueId)->where('actor_id', (string) auth()->id())->firstOrFail();
+        $queue = $this->ownedQueue($queueId);
         app(CraftingManager::class)->salvage($queue);
         $this->statusMessage = 'Crafting output salvaged.';
         $this->dispatch('crafting-salvaged');
@@ -60,7 +70,10 @@ final class CraftingCatalog extends Component
         $team = $this->team();
         $crafting = app(CraftingQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->where('status', 'active')->latest()->limit(25)->get();
         $queues = auth()->check()
-            ? CraftingQueue::query()->with('recipe')->where('actor_id', (string) auth()->id())->latest()->limit(25)->get()
+            ? CraftingQueue::query()->with('recipe')->where('actor_id', (string) auth()->id())
+                ->where('tenant_id', $team?->getAttribute('tenant_id'))
+                ->where('team_id', $team?->getKey())
+                ->latest()->limit(25)->get()
             : collect();
 
         return resolve('view')->make('browser-game-crafting-livewire::crafting-catalog', ['crafting' => $crafting, 'queues' => $queues]);
@@ -71,5 +84,16 @@ final class CraftingCatalog extends Component
         $user = auth()->user();
 
         return is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+    }
+
+    private function ownedQueue(string $queueId): CraftingQueue
+    {
+        $team = $this->team();
+
+        return CraftingQueue::query()->whereKey($queueId)
+            ->where('actor_id', (string) auth()->id())
+            ->where('tenant_id', $team?->getAttribute('tenant_id'))
+            ->where('team_id', $team?->getKey())
+            ->firstOrFail();
     }
 }

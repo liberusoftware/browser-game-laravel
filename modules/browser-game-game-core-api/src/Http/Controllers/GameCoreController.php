@@ -83,6 +83,19 @@ final class GameCoreController extends Controller
         return response()->json(['data' => $this->flagResource(app(GameCoreManager::class)->setFeatureFlag($this->context($request), $world, $key, $v['enabled'], $v['rollout_percentage'] ?? 100, $v['constraints'] ?? []))]);
     }
 
+    public function evaluateFlag(Request $request, GameWorld $world, string $key): JsonResponse
+    {
+        $attributes = $request->validate(['attributes' => ['nullable', 'array']])['attributes'] ?? [];
+        $context = $this->context($request);
+        abort_unless($this->worldAvailable($world, $context), 404);
+        app(GameCoreOverview::class)->forWorld($context, (string) $world->getKey());
+
+        return response()->json(['data' => [
+            'type' => 'browser-game-game-feature-evaluation',
+            'attributes' => ['world_id' => (string) $world->getKey(), 'key' => $key, 'enabled' => app(GameCoreOverview::class)->isEnabled($context, $world, $key, $attributes)],
+        ]]);
+    }
+
     public function maintenance(Request $request, GameWorld $world): JsonResponse
     {
         $v = $request->validate(['status' => ['required', 'in:scheduled,active,resolved'], 'message' => ['nullable', 'string', 'max:2000']]);
@@ -140,5 +153,11 @@ final class GameCoreController extends Controller
     private function maintenanceResource(GameMaintenanceState $maintenance): array
     {
         return ['id' => (string) $maintenance->getKey(), 'type' => 'browser-game-game-maintenance-state', 'attributes' => ['world_id' => (string) $maintenance->world_id, 'status' => $maintenance->status, 'message' => $maintenance->message, 'starts_at' => $maintenance->starts_at?->toISOString(), 'ends_at' => $maintenance->ends_at?->toISOString(), 'changed_by' => $maintenance->changed_by, 'created_at' => $maintenance->created_at?->toISOString(), 'updated_at' => $maintenance->updated_at?->toISOString()]];
+    }
+
+    private function worldAvailable(GameWorld $world, GameCoreContext $context): bool
+    {
+        return ($world->tenant_id === null || (string) $world->tenant_id === (string) $context->tenantId())
+            && ($world->team_id === null || (string) $world->team_id === (string) $context->teamId());
     }
 }

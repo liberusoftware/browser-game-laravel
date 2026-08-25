@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Ignore client-supplied combat effects and persist only server-defined effects during action resolution.
+
 ## 1.0.0 - 2026-08-24
 
 - Initial Browser Game Combat package release.

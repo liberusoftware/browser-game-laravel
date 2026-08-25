@@ -15,6 +15,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Combat\Models\CombatBattle;
+use Liberu\BrowserGame\CombatFilament\Resources\CombatBattleResource\Pages\CreateCombatBattle;
+use Liberu\BrowserGame\CombatFilament\Resources\CombatBattleResource\Pages\EditCombatBattle;
+use Liberu\BrowserGame\CombatFilament\Resources\CombatBattleResource\Pages\ListCombatBattles;
 
 final class CombatBattleResource extends Resource
 {
@@ -41,7 +44,7 @@ final class CombatBattleResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\CombatBattleResource\Pages\ListCombatBattles::route('/'), 'create' => Resources\CombatBattleResource\Pages\CreateCombatBattle::route('/create'), 'edit' => Resources\CombatBattleResource\Pages\EditCombatBattle::route('/{record}/edit')];
+        return ['index' => ListCombatBattles::route('/'), 'create' => CreateCombatBattle::route('/create'), 'edit' => EditCombatBattle::route('/{record}/edit')];
     }
 
     public static function getEloquentQuery(): Builder

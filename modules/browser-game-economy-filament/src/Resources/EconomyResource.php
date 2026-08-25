@@ -15,6 +15,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Economy\Models\EconomyRecord;
+use Liberu\BrowserGame\EconomyFilament\Resources\EconomyResource\Pages\CreateEconomy;
+use Liberu\BrowserGame\EconomyFilament\Resources\EconomyResource\Pages\EditEconomy;
+use Liberu\BrowserGame\EconomyFilament\Resources\EconomyResource\Pages\ListEconomy;
 
 final class EconomyResource extends Resource
 {
@@ -46,9 +49,9 @@ final class EconomyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEconomy::route('/'),
-            'create' => Pages\CreateEconomy::route('/create'),
-            'edit' => Pages\EditEconomy::route('/{record}/edit'),
+            'index' => ListEconomy::route('/'),
+            'create' => CreateEconomy::route('/create'),
+            'edit' => EditEconomy::route('/{record}/edit'),
         ];
     }
 

@@ -14,7 +14,7 @@ paths:
       summary: List authorized browser-game characters
       security: [{ sanctum: [] }]
       responses:
-        '200': { description: Authorized character collection }
+        '200': { $ref: '#/components/responses/CharacterCollection' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
     post:
@@ -27,10 +27,20 @@ paths:
           application/json:
             schema: { $ref: '#/components/schemas/CharacterRequest' }
       responses:
-        '201': { description: Character created }
+        '201': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}:
+    get:
+      operationId: browser.game.characters.get
+      summary: Retrieve an authorized character
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
     patch:
       operationId: browser.game.characters.update
       summary: Update an authorized character profile
@@ -44,7 +54,7 @@ paths:
           application/json:
             schema: { $ref: '#/components/schemas/CharacterProfileRequest' }
       responses:
-        '200': { description: Character updated }
+        '200': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
@@ -56,7 +66,7 @@ paths:
       parameters:
         - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
-        '200': { description: Character respecified }
+        '200': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
@@ -78,7 +88,7 @@ paths:
               properties:
                 skills: { type: object, additionalProperties: { type: integer, minimum: 0 } }
       responses:
-        '200': { description: Skills allocated }
+        '200': { $ref: '#/components/responses/Resource' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}/experience:
@@ -99,7 +109,7 @@ paths:
               properties:
                 amount: { type: integer, minimum: 0 }
       responses:
-        '200': { description: Experience awarded }
+        '200': { $ref: '#/components/responses/Resource' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}/vitals:
@@ -120,7 +130,7 @@ paths:
                 health: { type: integer, minimum: 0 }
                 mana: { type: integer, minimum: 0 }
       responses:
-        '200': { description: Vitals updated }
+        '200': { $ref: '#/components/responses/Resource' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/characters/{character}/stats:
@@ -140,7 +150,7 @@ paths:
               properties:
                 statistics: { type: object, additionalProperties: { type: integer, minimum: 0 } }
       responses:
-        '200': { description: Character statistics updated }
+        '200': { $ref: '#/components/responses/Resource' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
 components:
@@ -171,6 +181,47 @@ components:
         race: { type: string, maxLength: 80 }
         class: { type: string, maxLength: 80 }
         background: { type: [string, 'null'] }
+    Resource:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/CharacterResource' }
+    CharacterCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/CharacterResource' }
+        links: { type: object, additionalProperties: true }
+        meta: { type: object, additionalProperties: true }
+    CharacterResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, const: browser-game-characters }
+        attributes:
+          type: object
+          required: [name, race, class, experience, level, health, max_health, mana, max_mana]
+          properties:
+            name: { type: string }
+            race: { type: string }
+            class: { type: string }
+            background: { type: [string, 'null'] }
+            statistics: { type: object, additionalProperties: true }
+            skills: { type: object, additionalProperties: true }
+            experience: { type: integer, minimum: 0 }
+            level: { type: integer, minimum: 1 }
+            health: { type: integer, minimum: 0 }
+            max_health: { type: integer, minimum: 0 }
+            mana: { type: integer, minimum: 0 }
+            max_mana: { type: integer, minimum: 0 }
+            base_stats: { type: object, additionalProperties: { type: integer } }
+            stat_points: { type: integer, minimum: 0 }
+            available_skill_points: { type: integer, minimum: 0 }
+            respec_count: { type: integer, minimum: 0 }
+            last_action_at: { type: [string, 'null'], format: date-time }
     Problem:
       type: object
       required: [title, status]
@@ -179,6 +230,12 @@ components:
         status: { type: integer, minimum: 400, maximum: 599 }
         detail: { type: string }
   responses:
+    Resource:
+      description: A single authorized character resource.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Resource' } } }
+    CharacterCollection:
+      description: A paginated collection of authorized characters.
+      content: { application/json: { schema: { $ref: '#/components/schemas/CharacterCollection' } } }
     Unauthorized:
       description: Authentication is required.
       content:

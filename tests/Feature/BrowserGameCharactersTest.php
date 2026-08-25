@@ -47,3 +47,13 @@ it('enforces respec budgets, updates profiles, and bounds vitals', function (): 
     $vitals = $manager->updateVitals($profile, 40, 12);
     expect($vitals->health)->toBe(40)->and($vitals->mana)->toBe(12);
 });
+
+it('scopes duplicate character names by tenant and team', function (): void {
+    $manager = app(CharactersManager::class);
+    $first = $manager->create('player-1', 'Shared Name', 'human', 'mage', teamId: 'team-1', tenantId: 'tenant-1');
+    $second = $manager->create('player-1', 'Shared Name', 'human', 'mage', teamId: 'team-2', tenantId: 'tenant-2');
+
+    expect($second->getKey())->not->toBe($first->getKey())
+        ->and(fn (): mixed => $manager->create('player-1', 'Shared Name', 'human', 'mage', teamId: 'team-1', tenantId: 'tenant-1'))
+        ->toThrow(ValidationException::class);
+});

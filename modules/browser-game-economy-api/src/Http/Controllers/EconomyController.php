@@ -39,7 +39,9 @@ final class EconomyController extends Controller
 
     public function wallet(Request $request): JsonResponse
     {
-        $wallets = EconomyWallet::query()->where('actor_id', (string) $request->user()->getAuthIdentifier())->get();
+        $team = $request->user()?->currentTeam;
+        $wallets = $this->scoped(EconomyWallet::query(), $team)
+            ->where('actor_id', (string) $request->user()->getAuthIdentifier())->get();
 
         return response()->json(['data' => $wallets->map(fn (EconomyWallet $wallet): array => $this->walletResource($wallet))->values()]);
     }
@@ -47,7 +49,8 @@ final class EconomyController extends Controller
     public function transfer(Request $request): JsonResponse
     {
         $data = $request->validate(['recipient_id' => ['required', 'string', 'max:120'], 'currency_code' => ['required', 'string', 'max:30'], 'amount' => ['required', 'integer', 'min:1'], 'idempotency_key' => ['nullable', 'string', 'max:120']]);
-        $result = app(EconomyManager::class)->transfer((string) $request->user()->getAuthIdentifier(), $data['recipient_id'], $data['currency_code'], (int) $data['amount'], $data['idempotency_key'] ?? null);
+        $team = $request->user()?->currentTeam;
+        $result = app(EconomyManager::class)->transfer((string) $request->user()->getAuthIdentifier(), $data['recipient_id'], $data['currency_code'], (int) $data['amount'], $data['idempotency_key'] ?? null, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
         return response()->json(['data' => ['debit' => $this->walletResource($result['debit']), 'credit' => $this->walletResource($result['credit'])]]);
     }
@@ -55,7 +58,8 @@ final class EconomyController extends Controller
     public function credit(Request $request): JsonResponse
     {
         $data = $request->validate(['currency_code' => ['required', 'string', 'max:30'], 'amount' => ['required', 'integer', 'min:1'], 'source' => ['nullable', 'string', 'max:80'], 'idempotency_key' => ['nullable', 'string', 'max:120'], 'metadata' => ['array']]);
-        $entry = app(EconomyManager::class)->credit((string) $request->user()->getAuthIdentifier(), $data['currency_code'], (int) $data['amount'], $data['source'] ?? 'faucet', $data['idempotency_key'] ?? null, $data['metadata'] ?? []);
+        $team = $request->user()?->currentTeam;
+        $entry = app(EconomyManager::class)->credit((string) $request->user()->getAuthIdentifier(), $data['currency_code'], (int) $data['amount'], $data['source'] ?? 'faucet', $data['idempotency_key'] ?? null, $data['metadata'] ?? [], $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
         return response()->json(['data' => $this->ledgerResource($entry)], 201);
     }
@@ -63,7 +67,8 @@ final class EconomyController extends Controller
     public function debit(Request $request): JsonResponse
     {
         $data = $request->validate(['currency_code' => ['required', 'string', 'max:30'], 'amount' => ['required', 'integer', 'min:1'], 'source' => ['nullable', 'string', 'max:80'], 'idempotency_key' => ['nullable', 'string', 'max:120'], 'metadata' => ['array']]);
-        $entry = app(EconomyManager::class)->debit((string) $request->user()->getAuthIdentifier(), $data['currency_code'], (int) $data['amount'], $data['source'] ?? 'sink', $data['idempotency_key'] ?? null, $data['metadata'] ?? []);
+        $team = $request->user()?->currentTeam;
+        $entry = app(EconomyManager::class)->debit((string) $request->user()->getAuthIdentifier(), $data['currency_code'], (int) $data['amount'], $data['source'] ?? 'sink', $data['idempotency_key'] ?? null, $data['metadata'] ?? [], $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
         return response()->json(['data' => $this->ledgerResource($entry)], 201);
     }

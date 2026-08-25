@@ -65,7 +65,10 @@ final class CompetitionCatalog extends Component
     public function claimReward(int $rewardId): void
     {
         abort_unless(auth()->check(), 403);
-        $reward = CompetitionReward::query()->whereKey($rewardId)->where('actor_id', (string) auth()->id())->firstOrFail();
+        $team = auth()->user()?->currentTeam;
+        $visible = app(CompetitionQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+        $reward = CompetitionReward::query()->whereKey($rewardId)->where('actor_id', (string) auth()->id())
+            ->whereIn('competition_id', $visible->select('id'))->firstOrFail();
         app(CompetitionManager::class)->claimReward((string) auth()->id(), $reward);
         $this->error = '';
     }

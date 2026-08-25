@@ -15,7 +15,8 @@ final class CharactersController extends Controller
     public function index(Request $request): JsonResponse
     {
         $playerId = (string) $request->user()->getAuthIdentifier();
-        $characters = GameCharacter::query()->where('player_id', $playerId)->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
+        $team = $request->user()?->currentTeam;
+        $characters = GameCharacter::query()->where('player_id', $playerId)->where('tenant_id', $team?->getAttribute('tenant_id'))->where('team_id', $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
         return response()->json(['data' => $characters->through(fn (GameCharacter $character): array => $this->resource($character))]);
     }
@@ -23,7 +24,8 @@ final class CharactersController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate(['name' => ['required', 'string', 'max:120'], 'race' => ['required', 'string', 'max:80'], 'class' => ['required', 'string', 'max:80'], 'background' => ['nullable', 'string', 'max:120'], 'statistics' => ['array'], 'skills' => ['array']]);
-        $character = app(CharactersManager::class)->create((string) $request->user()->getAuthIdentifier(), $data['name'], $data['race'], $data['class'], $data['background'] ?? null, $data['statistics'] ?? [], $data['skills'] ?? [], null, $request->user()?->currentTeam?->getKey());
+        $team = $request->user()?->currentTeam;
+        $character = app(CharactersManager::class)->create((string) $request->user()->getAuthIdentifier(), $data['name'], $data['race'], $data['class'], $data['background'] ?? null, $data['statistics'] ?? [], $data['skills'] ?? [], null, $team?->getKey(), $team?->getAttribute('tenant_id'));
 
         return response()->json(['data' => $this->resource($character)], 201);
     }
@@ -114,7 +116,8 @@ final class CharactersController extends Controller
         $authorized = GameCharacter::query()
             ->whereKey($character->getKey())
             ->where('player_id', (string) $request->user()->getAuthIdentifier())
-            ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))
+            ->where('tenant_id', $request->user()?->currentTeam?->getAttribute('tenant_id'))
+            ->where('team_id', $teamId)
             ->first();
         abort_unless($authorized !== null, 404);
 

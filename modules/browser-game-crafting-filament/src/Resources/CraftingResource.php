@@ -14,6 +14,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\Crafting\Models\CraftingRecord;
+use Liberu\BrowserGame\CraftingFilament\Resources\CraftingResource\Pages\CreateCrafting;
+use Liberu\BrowserGame\CraftingFilament\Resources\CraftingResource\Pages\EditCrafting;
+use Liberu\BrowserGame\CraftingFilament\Resources\CraftingResource\Pages\ListCrafting;
 
 final class CraftingResource extends Resource
 {
@@ -48,9 +51,9 @@ final class CraftingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCrafting::route('/'),
-            'create' => Pages\CreateCrafting::route('/create'),
-            'edit' => Pages\EditCrafting::route('/{record}/edit'),
+            'index' => ListCrafting::route('/'),
+            'create' => CreateCrafting::route('/create'),
+            'edit' => EditCrafting::route('/{record}/edit'),
         ];
     }
 

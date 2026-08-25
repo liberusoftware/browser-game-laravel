@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Scoped vendors and auction listings by tenant/team and rejected cross-scope marketplace operations.
+- Scoped currency resolution, wallets, ledgers, and API faucet/transfer operations by tenant/team.
 
 ## 1.0.0 - 2026-08-24
 

@@ -49,7 +49,7 @@ final class CraftingManager
         return $record;
     }
 
-    public function grantResource(string $actorId, string $resourceKey, int $quantity): CraftingResource
+    public function grantResource(string $actorId, string $resourceKey, int $quantity, ?string $tenantId = null, ?string $teamId = null): CraftingResource
     {
         $this->required($actorId, 'actor_id');
         $this->required($resourceKey, 'resource_key');
@@ -57,10 +57,10 @@ final class CraftingManager
             throw ValidationException::withMessages(['quantity' => 'Quantity must be positive.']);
         }
 
-        return DB::transaction(function () use ($actorId, $resourceKey, $quantity): CraftingResource {
+        return DB::transaction(function () use ($actorId, $resourceKey, $quantity, $tenantId, $teamId): CraftingResource {
             $resource = CraftingResource::query()->lockForUpdate()->firstOrCreate(
-                ['actor_id' => $actorId, 'resource_key' => $resourceKey],
-                ['quantity' => 0],
+                ['actor_id' => $actorId, 'resource_key' => $resourceKey, 'tenant_id' => $tenantId, 'team_id' => $teamId],
+                ['quantity' => 0, 'tenant_id' => $tenantId, 'team_id' => $teamId],
             );
             $resource->increment('quantity', $quantity);
 
@@ -68,7 +68,7 @@ final class CraftingManager
         });
     }
 
-    public function setProfession(string $actorId, string $profession, int $level = 1, int $experience = 0): CraftingProfession
+    public function setProfession(string $actorId, string $profession, int $level = 1, int $experience = 0, ?string $tenantId = null, ?string $teamId = null): CraftingProfession
     {
         $this->required($actorId, 'actor_id');
         $this->required($profession, 'profession');
@@ -77,8 +77,8 @@ final class CraftingManager
         }
 
         return CraftingProfession::query()->updateOrCreate(
-            ['actor_id' => $actorId, 'profession' => $profession],
-            ['level' => $level, 'experience' => $experience],
+            ['actor_id' => $actorId, 'profession' => $profession, 'tenant_id' => $tenantId, 'team_id' => $teamId],
+            ['level' => $level, 'experience' => $experience, 'tenant_id' => $tenantId, 'team_id' => $teamId],
         );
     }
 
@@ -105,14 +105,14 @@ final class CraftingManager
         $this->required($actorId, 'actor_id');
         $this->assertRecipeScope($recipe, $tenantId, $teamId);
         $created = false;
-        $discovery = DB::transaction(function () use ($actorId, $recipe, &$created): CraftingDiscovery {
-            $discovery = CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->lockForUpdate()->first();
+        $discovery = DB::transaction(function () use ($actorId, $recipe, $tenantId, $teamId, &$created): CraftingDiscovery {
+            $discovery = CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->where('tenant_id', $tenantId)->where('team_id', $teamId)->lockForUpdate()->first();
             if ($discovery !== null) {
                 return $discovery;
             }
             $created = true;
 
-            return CraftingDiscovery::query()->create(['actor_id' => $actorId, 'recipe_id' => $recipe->getKey(), 'discovered_at' => now()]);
+            return CraftingDiscovery::query()->create(['actor_id' => $actorId, 'recipe_id' => $recipe->getKey(), 'tenant_id' => $tenantId, 'team_id' => $teamId, 'discovered_at' => now()]);
         });
         if ($created) {
             CraftingDiscovered::dispatch((string) $recipe->getKey(), $actorId);
@@ -131,25 +131,27 @@ final class CraftingManager
             throw ValidationException::withMessages(['recipe' => 'The recipe is unavailable at the current level.']);
         }
         $requirements = (array) $recipe->discovery_requirements;
-        if (($requirements['required'] ?? false) && ! CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->exists()) {
+        if (($requirements['required'] ?? false) && ! CraftingDiscovery::query()->where('actor_id', $actorId)->where('recipe_id', $recipe->getKey())->where('tenant_id', $tenantId)->where('team_id', $teamId)->exists()) {
             throw ValidationException::withMessages(['recipe' => 'The recipe has not been discovered.']);
         }
 
-        return DB::transaction(function () use ($actorId, $recipe, $quantity, $quality, $idempotencyKey): CraftingQueue {
+        return DB::transaction(function () use ($actorId, $recipe, $quantity, $quality, $idempotencyKey, $tenantId, $teamId): CraftingQueue {
             if ($idempotencyKey !== null) {
-                $existing = CraftingQueue::query()->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first();
+                $existing = CraftingQueue::query()->where('actor_id', $actorId)->where('idempotency_key', $idempotencyKey)->where('tenant_id', $tenantId)->where('team_id', $teamId)->lockForUpdate()->first();
                 if ($existing !== null) {
                     return $existing->load('recipe');
                 }
             }
             $materials = (array) $recipe->materials;
             foreach ($materials as $key => $required) {
-                $this->consumeResource($actorId, (string) $key, (int) $required * $quantity);
+                $this->consumeResource($actorId, (string) $key, (int) $required * $quantity, $tenantId, $teamId);
             }
             $now = now();
             $queue = CraftingQueue::query()->create([
                 'id' => (string) Str::uuid(),
                 'actor_id' => $actorId,
+                'tenant_id' => $tenantId,
+                'team_id' => $teamId,
                 'recipe_id' => $recipe->getKey(),
                 'quantity' => $quantity,
                 'status' => 'queued',
@@ -197,7 +199,7 @@ final class CraftingManager
                 ]);
             }
             $queue->update(['status' => 'completed', 'completed_at' => now()]);
-            $this->gainProfessionExperienceLocked($queue->actor_id, (string) ($queue->recipe->profession ?? 'general'), $queue->quantity);
+            $this->gainProfessionExperienceLocked($queue->actor_id, (string) ($queue->recipe->profession ?? 'general'), $queue->quantity, $queue->tenant_id, $queue->team_id);
             $outcome = 'completed';
 
             return $queue->refresh();
@@ -220,7 +222,7 @@ final class CraftingManager
                 return $queue;
             }
             foreach ((array) (($queue->metadata ?? [])['materials'] ?? []) as $key => $amount) {
-                $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity);
+                $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity, $queue->tenant_id, $queue->team_id);
             }
             $queue->update(['status' => 'cancelled', 'completed_at' => now()]);
             $cancelled = true;
@@ -246,7 +248,7 @@ final class CraftingManager
                 throw ValidationException::withMessages(['queue' => 'Only completed or failed crafting can be salvaged.']);
             }
             foreach ((array) $queue->recipe->salvage as $key => $amount) {
-                $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity);
+                $this->grantResource($queue->actor_id, (string) $key, (int) $amount * $queue->quantity, $queue->tenant_id, $queue->team_id);
             }
             $queue->update(['status' => 'salvaged']);
             $salvaged = true;
@@ -260,19 +262,19 @@ final class CraftingManager
         return $updated;
     }
 
-    private function gainProfessionExperienceLocked(string $actorId, string $profession, int $amount): void
+    private function gainProfessionExperienceLocked(string $actorId, string $profession, int $amount, ?string $tenantId = null, ?string $teamId = null): void
     {
-        $current = CraftingProfession::query()->where('actor_id', $actorId)->where('profession', $profession)->lockForUpdate()->first();
+        $current = CraftingProfession::query()->where('actor_id', $actorId)->where('profession', $profession)->where('tenant_id', $tenantId)->where('team_id', $teamId)->lockForUpdate()->first();
         if ($current === null) {
-            $current = CraftingProfession::query()->create(['actor_id' => $actorId, 'profession' => $profession, 'level' => 1, 'experience' => 0]);
+            $current = CraftingProfession::query()->create(['actor_id' => $actorId, 'profession' => $profession, 'tenant_id' => $tenantId, 'team_id' => $teamId, 'level' => 1, 'experience' => 0]);
         }
         $experience = (int) $current->experience + $amount;
         $current->update(['experience' => $experience, 'level' => max(1, intdiv($experience, 100) + 1)]);
     }
 
-    private function consumeResource(string $actorId, string $resourceKey, int $quantity): void
+    private function consumeResource(string $actorId, string $resourceKey, int $quantity, ?string $tenantId = null, ?string $teamId = null): void
     {
-        $resource = CraftingResource::query()->where('actor_id', $actorId)->where('resource_key', $resourceKey)->lockForUpdate()->first();
+        $resource = CraftingResource::query()->where('actor_id', $actorId)->where('resource_key', $resourceKey)->where('tenant_id', $tenantId)->where('team_id', $teamId)->lockForUpdate()->first();
         if ($resource === null || $resource->quantity < $quantity) {
             throw ValidationException::withMessages(['resources' => 'Insufficient crafting resources.']);
         }

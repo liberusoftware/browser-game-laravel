@@ -14,6 +14,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\GameCore\Models\GameWorld;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameWorldResource\Pages\CreateGameWorld;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameWorldResource\Pages\EditGameWorld;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameWorldResource\Pages\ListGameWorlds;
 
 final class GameWorldResource extends Resource
 {
@@ -55,6 +58,6 @@ final class GameWorldResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => Resources\GameWorldResource\Pages\ListGameWorlds::route('/'), 'create' => Resources\GameWorldResource\Pages\CreateGameWorld::route('/create'), 'edit' => Resources\GameWorldResource\Pages\EditGameWorld::route('/{record}/edit')];
+        return ['index' => ListGameWorlds::route('/'), 'create' => CreateGameWorld::route('/create'), 'edit' => EditGameWorld::route('/{record}/edit')];
     }
 }

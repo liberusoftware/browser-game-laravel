@@ -79,3 +79,15 @@ it('rejects competition and match idempotency keys reused for different inputs',
     expect(fn (): mixed => $manager->match($competition, 'player-a', 'player-c', 'match-1'))
         ->toThrow(ValidationException::class);
 });
+
+it('scopes match idempotency keys to their competition', function (): void {
+    $manager = app(CompetitionManager::class);
+    $firstCompetition = $manager->createPvp('Arena One');
+    $secondCompetition = $manager->createPvp('Arena Two');
+
+    $first = $manager->match($firstCompetition, 'player-a', 'player-b', 'shared-match-key');
+    $second = $manager->match($secondCompetition, 'player-a', 'player-b', 'shared-match-key');
+
+    expect($second->getKey())->not->toBe($first->getKey())
+        ->and($second->competition_id)->toBe($secondCompetition->getKey());
+});

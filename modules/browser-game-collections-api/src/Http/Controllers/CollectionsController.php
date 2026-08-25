@@ -63,7 +63,8 @@ final class CollectionsController extends Controller
     {
         $collections = $this->authorizedCollection($request, $collections);
         $validated = $request->validate(['entry_key' => ['required', 'string', 'max:128'], 'quantity' => ['nullable', 'integer', 'min:1'], 'idempotency_key' => ['nullable', 'string', 'max:128']]);
-        $progress = app(CollectionsManager::class)->record((string) $request->user()->getAuthIdentifier(), $collections, $validated['entry_key'], $validated['quantity'] ?? 1, $validated['idempotency_key'] ?? $request->header('Idempotency-Key'));
+        $team = $request->user()?->currentTeam;
+        $progress = app(CollectionsManager::class)->record((string) $request->user()->getAuthIdentifier(), $collections, $validated['entry_key'], $validated['quantity'] ?? 1, $validated['idempotency_key'] ?? $request->header('Idempotency-Key'), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
         return response()->json(['data' => $this->progressResource($progress)], 201);
     }
