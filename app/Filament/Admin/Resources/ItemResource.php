@@ -2,41 +2,35 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\ItemResource\Pages\CreateItem;
+use App\Filament\Admin\Resources\ItemResource\Pages\EditItem;
+use App\Filament\Admin\Resources\ItemResource\Pages\ListItems;
+use App\Filament\Admin\Resources\ItemResource\Pages\ViewItem;
+use App\Models\Item;
 use Filament\Actions\BulkAction;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ReplicateAction;
-use App\Filament\Admin\Resources\ItemResource\Pages\ListItems;
-use App\Filament\Admin\Resources\ItemResource\Pages\CreateItem;
-use App\Filament\Admin\Resources\ItemResource\Pages\ViewItem;
-use App\Filament\Admin\Resources\ItemResource\Pages\EditItem;
-use App\Models\Item;
-use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\ItemResource\Pages;
-use App\Filament\Admin\Resources\ItemResource\RelationManagers;
 
 class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-cube';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cube';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Items';
 
@@ -139,6 +133,7 @@ class ItemResource extends Resource
                         if (strlen($state) <= 50) {
                             return null;
                         }
+
                         return $state;
                     }),
                 TextColumn::make('created_at')
@@ -175,7 +170,7 @@ class ItemResource extends Resource
                 ReplicateAction::make()
                     ->excludeAttributes(['created_at', 'updated_at'])
                     ->beforeReplicaSaved(function (Item $replica): void {
-                        $replica->name = $replica->name . ' (Copy)';
+                        $replica->name = $replica->name.' (Copy)';
                     }),
                 DeleteAction::make(),
             ])
@@ -186,7 +181,7 @@ class ItemResource extends Resource
                         ->label('Update Rarity')
                         ->icon('heroicon-o-star')
                         ->form([
-                            Forms\Components\Select::make('rarity')
+                            Select::make('rarity')
                                 ->label('New Rarity')
                                 ->options([
                                     'common' => 'Common',

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Player_Quest extends Model
 {
@@ -22,12 +23,12 @@ class Player_Quest extends Model
         'completed_at' => 'datetime',
     ];
 
-    public function player()
+    public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class);
     }
 
-    public function quest()
+    public function quest(): BelongsTo
     {
         return $this->belongsTo(Quest::class);
     }

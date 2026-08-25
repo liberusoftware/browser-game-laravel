@@ -26,7 +26,7 @@ class QuestSystemTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->questService = new QuestService;
+        $this->questService = new QuestService();
 
         // Create test player
         $this->player = Player::create([

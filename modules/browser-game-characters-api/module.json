@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-characters-api",
+  "display_name": "Browser Game Characters API",
+  "description": "Versioned authenticated HTTP resources for character progression.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\CharactersApi\\CharactersApiServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-characters": "^1.0"}},
+  "capabilities": ["browser-game.characters.api"],
+  "default_enabled": false,
+  "features": ["Scoped character resources", "Progression actions", "OpenAPI 3.1 contract"]
+}

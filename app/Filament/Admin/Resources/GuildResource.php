@@ -2,37 +2,31 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Section;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Admin\Resources\GuildResource\Pages\ListGuilds;
 use App\Filament\Admin\Resources\GuildResource\Pages\CreateGuild;
-use App\Filament\Admin\Resources\GuildResource\Pages\ViewGuild;
 use App\Filament\Admin\Resources\GuildResource\Pages\EditGuild;
+use App\Filament\Admin\Resources\GuildResource\Pages\ListGuilds;
+use App\Filament\Admin\Resources\GuildResource\Pages\ViewGuild;
 use App\Models\Guild;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\GuildResource\Pages;
-use App\Filament\Admin\Resources\GuildResource\RelationManagers;
 
 class GuildResource extends Resource
 {
     protected static ?string $model = Guild::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shield-check';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Guilds';
 
@@ -79,6 +73,7 @@ class GuildResource extends Resource
                         if (strlen($state) <= 50) {
                             return null;
                         }
+
                         return $state;
                     }),
                 TextColumn::make('created_at')

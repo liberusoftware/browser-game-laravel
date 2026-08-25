@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use App\Models\Quest;
 use App\Models\Player;
+use App\Models\Quest;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -15,8 +15,11 @@ class QuestCompleted implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $player;
+
     public $quest;
+
     public $experienceGained;
+
     public $message;
 
     /**

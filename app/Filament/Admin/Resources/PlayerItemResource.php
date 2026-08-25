@@ -2,39 +2,32 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\PlayerItemResource\Pages\CreatePlayerItem;
+use App\Filament\Admin\Resources\PlayerItemResource\Pages\EditPlayerItem;
+use App\Filament\Admin\Resources\PlayerItemResource\Pages\ListPlayerItems;
+use App\Filament\Admin\Resources\PlayerItemResource\Pages\ViewPlayerItem;
+use App\Models\Player_Item;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Admin\Resources\PlayerItemResource\Pages\ListPlayerItems;
-use App\Filament\Admin\Resources\PlayerItemResource\Pages\CreatePlayerItem;
-use App\Filament\Admin\Resources\PlayerItemResource\Pages\ViewPlayerItem;
-use App\Filament\Admin\Resources\PlayerItemResource\Pages\EditPlayerItem;
-use App\Models\Player_Item;
-use App\Models\Player;
-use App\Models\Item;
-use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\PlayerItemResource\Pages;
-use App\Filament\Admin\Resources\PlayerItemResource\RelationManagers;
 
 class PlayerItemResource extends Resource
 {
     protected static ?string $model = Player_Item::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-archive-box';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Player Items';
 

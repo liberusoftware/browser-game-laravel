@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Player_Item extends Model
 {
@@ -15,14 +16,13 @@ class Player_Item extends Model
         'quantity',
     ];
 
-
-    public function player()
+    public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class);
     }
 
-
-    public function item()
+    /** @return BelongsTo<Item, $this> */
+    public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }

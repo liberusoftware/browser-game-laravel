@@ -1,0 +1,40 @@
+{
+  "name": "liberusoftware/module-browser-game-game-core",
+  "description": "Provider-neutral Browser Game worlds, clocks, rulesets, content versions, feature flags, and maintenance state.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "illuminate/database": "^13.0",
+    "illuminate/events": "^13.0",
+    "illuminate/support": "^13.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\BrowserGame\\GameCore\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Liberu\\BrowserGame\\GameCore\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "liberu": {
+      "name": "browser-game-game-core"
+    }
+  },
+  "version": "1.0.0",
+  "require-dev": {
+    "liberusoftware/package-testbench": "^1.5",
+    "pestphp/pest": "^5.0"
+  },
+  "scripts": {
+    "test": "pest"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+,"homepage":"https://github.com/liberusoftware/module-browser-game-game-core","support":{"source":"https://github.com/liberusoftware/module-browser-game-game-core","issues":"https://github.com/liberusoftware/module-browser-game-game-core/issues"}}

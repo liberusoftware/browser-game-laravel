@@ -1,0 +1,10 @@
+# Changelog
+
+## Unreleased
+
+- Added cancellation and salvage interactions with status feedback.
+- Added the authenticated player's crafting queue list with completion, cancellation, and salvage controls.
+
+## 1.0.0 - 2026-08-24
+
+- Initial Browser Game Crafting Livewire package release.

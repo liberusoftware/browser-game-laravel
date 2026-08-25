@@ -2,36 +2,28 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\TernaryFilter;
-use Filament\Actions\Action;
-use Filament\Actions\ViewAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\BulkAction;
 use App\Filament\Admin\Resources\ModuleResource\Pages\ListModules;
 use App\Filament\Admin\Resources\ModuleResource\Pages\ViewModule;
-use App\Modules\ModuleManager;
-use Filament\Forms;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\ModuleResource\Pages;
-
+use Liberu\Foundation\ModuleManager\ModuleRegistry;
 
 class ModuleResource extends Resource
 {
     protected static ?string $model = null;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-puzzle-piece';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-puzzle-piece';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'System';
+    protected static string|\UnitEnum|null $navigationGroup = 'System';
 
     protected static ?string $navigationLabel = 'Modules';
 
@@ -83,78 +75,30 @@ class ModuleResource extends Resource
                         false: fn (Builder $query) => $query->where('enabled', false),
                     ),
             ])
-            ->recordActions([
-                Action::make('toggle')
-                    ->label(fn ($record) => $record->enabled ? 'Disable' : 'Enable')
-                    ->icon(fn ($record) => $record->enabled ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
-                    ->color(fn ($record) => $record->enabled ? 'danger' : 'success')
-                    ->action(function ($record) {
-                        $moduleManager = app(ModuleManager::class);
-                        
-                        if ($record->enabled) {
-                            $moduleManager->disable($record->name);
-                        } else {
-                            $moduleManager->enable($record->name);
-                        }
-                    })
-                    ->requiresConfirmation(),
-                Action::make('install')
-                    ->label('Install')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->color('info')
-                    ->action(function ($record) {
-                        $moduleManager = app(ModuleManager::class);
-                        $moduleManager->install($record->name);
-                    })
-                    ->visible(fn ($record) => !$record->enabled)
-                    ->requiresConfirmation(),
-                Action::make('uninstall')
-                    ->label('Uninstall')
-                    ->icon('heroicon-o-trash')
-                    ->color('danger')
-                    ->action(function ($record) {
-                        $moduleManager = app(ModuleManager::class);
-                        $moduleManager->uninstall($record->name);
-                    })
-                    ->visible(fn ($record) => $record->enabled)
-                    ->requiresConfirmation(),
-                ViewAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    BulkAction::make('enable')
-                        ->label('Enable Selected')
-                        ->icon('heroicon-o-check-circle')
-                        ->color('success')
-                        ->action(function ($records) {
-                            $moduleManager = app(ModuleManager::class);
-                            foreach ($records as $record) {
-                                $moduleManager->enable($record->name);
-                            }
-                        })
-                        ->requiresConfirmation(),
-                    BulkAction::make('disable')
-                        ->label('Disable Selected')
-                        ->icon('heroicon-o-x-circle')
-                        ->color('danger')
-                        ->action(function ($records) {
-                            $moduleManager = app(ModuleManager::class);
-                            foreach ($records as $record) {
-                                $moduleManager->disable($record->name);
-                            }
-                        })
-                        ->requiresConfirmation(),
-                ]),
-            ]);
+            ->recordActions([ViewAction::make()]);
     }
 
     public static function getEloquentQuery(): Builder
     {
-        $moduleManager = app(ModuleManager::class);
-        $modules = $moduleManager->getAllModulesInfo();
+        $registry = app(ModuleRegistry::class);
+        $modules = array_map(
+            fn ($manifest): array => [
+                'name' => $manifest->name(),
+                'version' => $manifest->version(),
+                'description' => $manifest->displayName(),
+                'enabled' => $registry->enabled(
+                    $manifest->name(),
+                    (array) config('modules.enabled', []),
+                    (array) config('modules.disabled', []),
+                ),
+                'dependencies' => array_keys($manifest->requiredPackages()),
+            ],
+            array_values($registry->all()),
+        );
 
         // Convert modules array to a collection that can be used with Filament
-        $query = new class extends Builder {
+        $query = new class($modules) extends Builder
+        {
             protected $modules;
 
             public function __construct($modules)
@@ -169,7 +113,7 @@ class ModuleResource extends Resource
                 });
             }
 
-            public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+            public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null, $total = null)
             {
                 return $this->modules->map(function ($module) {
                     return (object) $module;
@@ -183,11 +127,12 @@ class ModuleResource extends Resource
                         return $module['enabled'] === $value;
                     });
                 }
+
                 return $this;
             }
         };
 
-        return new $query($modules);
+        return $query;
     }
 
     public static function getPages(): array

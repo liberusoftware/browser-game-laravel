@@ -1,0 +1,14 @@
+{
+  "name": "liberusoftware/module-browser-game-characters-filament",
+  "description": "Filament 5 adapter for Browser Game Characters.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {"php": "^8.5", "filament/filament": "^5.1", "liberusoftware/module-browser-game-characters": "^1.0"},
+  "autoload": {"psr-4": {"Liberu\\BrowserGame\\CharactersFilament\\": "src/"}},
+  "autoload-dev": {"psr-4": {"Liberu\\BrowserGame\\CharactersFilament\\Tests\\": "tests/"}},
+  "extra": {"liberu": {"name": "browser-game-characters-filament"}},
+  "version": "1.0.0",
+  "require-dev": {"liberusoftware/package-testbench": "^1.5", "pestphp/pest": "^5.0"},
+  "scripts": {"test": "pest"},
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+,"homepage":"https://github.com/liberusoftware/module-browser-game-characters-filament","support":{"source":"https://github.com/liberusoftware/module-browser-game-characters-filament","issues":"https://github.com/liberusoftware/module-browser-game-characters-filament/issues"}}

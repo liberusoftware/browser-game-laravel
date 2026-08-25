@@ -14,8 +14,11 @@ class PlayerLeveledUp implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $player;
+
     public $newLevel;
+
     public $oldLevel;
+
     public $message;
 
     /**

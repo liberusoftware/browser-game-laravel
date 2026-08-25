@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-game-core-filament",
+  "display_name": "Browser Game Game Core Filament",
+  "description": "Filament 5 administration for game worlds and maintenance state.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\GameCoreFilament\\GameCoreFilamentServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-game-core": "^1.0"}},
+  "presentation": {"filament": {"admin": ["Liberu\\BrowserGame\\GameCoreFilament\\GameCoreFilamentPlugin"]}},
+  "capabilities": ["browser-game.game-core.filament"],
+  "default_enabled": false,
+  "features": ["World administration", "Maintenance visibility", "Scoped resource policies"]
+}

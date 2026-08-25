@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\PlayerResource\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\PlayerResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewPlayer extends ViewRecord

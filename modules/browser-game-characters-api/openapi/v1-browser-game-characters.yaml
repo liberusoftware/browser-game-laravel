@@ -1,0 +1,197 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Characters API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+paths:
+  /api/v1/browser-game/characters:
+    get:
+      operationId: browser.game.characters.list
+      summary: List authorized browser-game characters
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { description: Authorized character collection }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+    post:
+      operationId: browser.game.characters.create
+      summary: Create a browser-game character
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CharacterRequest' }
+      responses:
+        '201': { description: Character created }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}:
+    patch:
+      operationId: browser.game.characters.update
+      summary: Update an authorized character profile
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: If-Match, in: header, required: false, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CharacterProfileRequest' }
+      responses:
+        '200': { description: Character updated }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/respec:
+    post:
+      operationId: browser.game.characters.respec
+      summary: Respec an authorized character
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Character respecified }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/skills:
+    post:
+      operationId: browser.game.characters.skills.allocate
+      summary: Allocate available character skill points
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [skills]
+              properties:
+                skills: { type: object, additionalProperties: { type: integer, minimum: 0 } }
+      responses:
+        '200': { description: Skills allocated }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/experience:
+    post:
+      operationId: browser.game.characters.experience.award
+      summary: Award character experience through an authorized action
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: { type: integer, minimum: 0 }
+      responses:
+        '200': { description: Experience awarded }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/vitals:
+    post:
+      operationId: browser.game.characters.vitals.update
+      summary: Update bounded character health and mana
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [health, mana]
+              properties:
+                health: { type: integer, minimum: 0 }
+                mana: { type: integer, minimum: 0 }
+      responses:
+        '200': { description: Vitals updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/characters/{character}/stats:
+    post:
+      operationId: browser.game.characters.stats.spend
+      summary: Spend authorized character stat points
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: character, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [statistics]
+              properties:
+                statistics: { type: object, additionalProperties: { type: integer, minimum: 0 } }
+      responses:
+        '200': { description: Character statistics updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, maxLength: 191 }
+  securitySchemes:
+    sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
+  schemas:
+    CharacterRequest:
+      type: object
+      required: [name, race, class]
+      properties:
+        name: { type: string, maxLength: 120 }
+        race: { type: string, maxLength: 80 }
+        class: { type: string, maxLength: 80 }
+        background: { type: [string, 'null'] }
+        statistics: { type: object, additionalProperties: { type: integer } }
+        skills: { type: object, additionalProperties: { type: integer } }
+    CharacterProfileRequest:
+      type: object
+      required: [name, race, class]
+      properties:
+        name: { type: string, maxLength: 120 }
+        race: { type: string, maxLength: 80 }
+        class: { type: string, maxLength: 80 }
+        background: { type: [string, 'null'] }
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+  responses:
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }
+    NotFound:
+      description: Resource unavailable in the current authorization context.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }
+    ValidationError:
+      description: Request validation failed.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }
+    TooManyRequests:
+      description: Request rate limit exceeded.
+      content:
+        application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } }

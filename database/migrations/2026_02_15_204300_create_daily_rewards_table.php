@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
     public function up(): void
     {
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('experience_rewarded')->default(0);
             $table->json('items_rewarded')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['player_id', 'reward_date']);
         });
     }

@@ -1,45 +1,568 @@
 {
-    "name": "liberusoftware/boilerplate-laravel",
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "liberusoftware/browser-game-laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Liberu persistent browser-based game Laravel application.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "browser-game",
+        "pbbg",
+        "game"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/composer-installer.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/analytics-contracts.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/localization-contracts.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/boilerplate-scripts.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-activity-comments.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-analytics-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-analytics-google.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-analytics-meta.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-api-access.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-application.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-audit.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-currency-context.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-developer-experience.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-feature-flags.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-files-media.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-module-manager-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-identity-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-identity-core-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-identity-socialstream.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-import-export.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-integrations.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-jetstream-bridge.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-localization-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-localization-core-livewire.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-localization-mymemory.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-module-manager.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-notifications.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-observability.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-organizations-teams.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-organizations-teams-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-profiles.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-roles-permissions.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-roles-permissions-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-scheduler-queues.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-search.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-search-api.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-sessions-devices.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-sessions-devices-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-settings.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-settings-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-theme-support.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-theme-support-livewire.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-two-factor-authentication.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-webhooks.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-clear-signal.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-dark.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-default.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-base.git"
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-game-core-livewire",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-characters-livewire",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-world",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-world-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-world-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-world-livewire",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-combat-livewire",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-quests-livewire",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-accounts",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-items",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-crafting",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-economy",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-competition",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-collections",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-social",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-live-ops",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-commerce",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-moderation-and-analytics",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-accounts-api",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-accounts-filament",
+            "options": {"symlink": false}
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-accounts-livewire",
+            "options": {"symlink": false}
+        },
+        {"type":"path","url":"modules/browser-game-collections-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-collections-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-collections-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-commerce-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-commerce-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-commerce-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-competition-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-competition-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-competition-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-crafting-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-crafting-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-crafting-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-economy-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-economy-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-economy-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-items-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-items-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-items-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-live-ops-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-live-ops-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-live-ops-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-moderation-and-analytics-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-moderation-and-analytics-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-moderation-and-analytics-livewire","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-social-api","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-social-filament","options":{"symlink":false}},
+        {"type":"path","url":"modules/browser-game-social-livewire","options":{"symlink":false}}
+    ],
     "require": {
         "php": "^8.5",
-        "bezhansalleh/filament-shield": "^4.0",
+        "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
-        "filament/filament": "^5.0",
+        "filament/filament": "~5.1",
         "filament/spatie-laravel-settings-plugin": "^5.0",
-        "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^13.0",
         "laravel/horizon": "^5.0",
         "laravel/jetstream": "^5.1",
         "laravel/octane": "^2.3",
+        "laravel/pulse": "^1.7",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.0",
         "laravel/tinker": "^3.0",
+        "liberusoftware/activity-comments": "^1.0",
+        "liberusoftware/analytics-contracts": "^1.0",
+        "liberusoftware/analytics-core": "^1.0",
+        "liberusoftware/analytics-google": "^1.0",
+        "liberusoftware/analytics-meta": "^1.0",
+        "liberusoftware/api-access": "^1.0",
+        "liberusoftware/application": "^1.0",
+        "liberusoftware/audit": "^1.0",
+        "liberusoftware/composer-installer": "^1.1",
+        "liberusoftware/currency-context": "^1.0",
+        "liberusoftware/developer-experience": "^1.0",
+        "liberusoftware/feature-flags": "^1.0",
+        "liberusoftware/files-media": "^1.0",
+        "liberusoftware/module-browser-game-game-core": "^1.0",
+        "liberusoftware/module-browser-game-game-core-api": "^1.0",
+        "liberusoftware/module-browser-game-game-core-filament": "^1.0",
+        "liberusoftware/module-browser-game-game-core-livewire": "^1.0",
+        "liberusoftware/module-browser-game-characters": "^1.0",
+        "liberusoftware/module-browser-game-characters-api": "^1.0",
+        "liberusoftware/module-browser-game-characters-filament": "^1.0",
+        "liberusoftware/module-browser-game-characters-livewire": "^1.0",
+        "liberusoftware/module-browser-game-world": "^1.0",
+        "liberusoftware/module-browser-game-world-api": "^1.0",
+        "liberusoftware/module-browser-game-world-filament": "^1.0",
+        "liberusoftware/module-browser-game-world-livewire": "^1.0",
+        "liberusoftware/module-browser-game-combat": "^1.0",
+        "liberusoftware/module-browser-game-combat-api": "^1.0",
+        "liberusoftware/module-browser-game-combat-filament": "^1.0",
+        "liberusoftware/module-browser-game-combat-livewire": "^1.0",
+        "liberusoftware/module-browser-game-quests": "^1.0",
+        "liberusoftware/module-browser-game-quests-api": "^1.0",
+        "liberusoftware/module-browser-game-quests-filament": "^1.0",
+        "liberusoftware/module-browser-game-quests-livewire": "^1.0",
+        "liberusoftware/module-browser-game-accounts": "^1.0",
+        "liberusoftware/module-browser-game-items": "^1.0",
+        "liberusoftware/module-browser-game-crafting": "^1.0",
+        "liberusoftware/module-browser-game-economy": "^1.0",
+        "liberusoftware/module-browser-game-competition": "^1.0",
+        "liberusoftware/module-browser-game-collections": "^1.0",
+        "liberusoftware/module-browser-game-social": "^1.0",
+        "liberusoftware/module-browser-game-live-ops": "^1.0",
+        "liberusoftware/module-browser-game-commerce": "^1.0",
+        "liberusoftware/module-browser-game-moderation-and-analytics": "^1.0",
+        "liberusoftware/module-browser-game-accounts-api": "^1.0",
+        "liberusoftware/module-browser-game-accounts-filament": "^1.0",
+        "liberusoftware/module-browser-game-accounts-livewire": "^1.0",
+        "liberusoftware/module-browser-game-collections-api": "^1.0",
+        "liberusoftware/module-browser-game-collections-filament": "^1.0",
+        "liberusoftware/module-browser-game-collections-livewire": "^1.0",
+        "liberusoftware/module-browser-game-commerce-api": "^1.0",
+        "liberusoftware/module-browser-game-commerce-filament": "^1.0",
+        "liberusoftware/module-browser-game-commerce-livewire": "^1.0",
+        "liberusoftware/module-browser-game-competition-api": "^1.0",
+        "liberusoftware/module-browser-game-competition-filament": "^1.0",
+        "liberusoftware/module-browser-game-competition-livewire": "^1.0",
+        "liberusoftware/module-browser-game-crafting-api": "^1.0",
+        "liberusoftware/module-browser-game-crafting-filament": "^1.0",
+        "liberusoftware/module-browser-game-crafting-livewire": "^1.0",
+        "liberusoftware/module-browser-game-economy-api": "^1.0",
+        "liberusoftware/module-browser-game-economy-filament": "^1.0",
+        "liberusoftware/module-browser-game-economy-livewire": "^1.0",
+        "liberusoftware/module-browser-game-items-api": "^1.0",
+        "liberusoftware/module-browser-game-items-filament": "^1.0",
+        "liberusoftware/module-browser-game-items-livewire": "^1.0",
+        "liberusoftware/module-browser-game-live-ops-api": "^1.0",
+        "liberusoftware/module-browser-game-live-ops-filament": "^1.0",
+        "liberusoftware/module-browser-game-live-ops-livewire": "^1.0",
+        "liberusoftware/module-browser-game-moderation-and-analytics-api": "^1.0",
+        "liberusoftware/module-browser-game-moderation-and-analytics-filament": "^1.0",
+        "liberusoftware/module-browser-game-moderation-and-analytics-livewire": "^1.0",
+        "liberusoftware/module-browser-game-social-api": "^1.0",
+        "liberusoftware/module-browser-game-social-filament": "^1.0",
+        "liberusoftware/module-browser-game-social-livewire": "^1.0",
+        "liberusoftware/module-manager-filament": "^1.1",
+        "liberusoftware/identity-core": "^1.0",
+        "liberusoftware/identity-core-filament": "^1.0",
+        "liberusoftware/identity-socialstream": "^1.0",
+        "liberusoftware/import-export": "^1.0",
+        "liberusoftware/integrations": "^1.0",
+        "liberusoftware/jetstream-bridge": "^1.0",
+        "liberusoftware/localization-core": "^1.0",
+        "liberusoftware/localization-contracts": "^1.0",
+        "liberusoftware/localization-core-livewire": "^1.0",
+        "liberusoftware/localization-mymemory": "^1.0",
+        "liberusoftware/module-manager": "^1.0",
+        "liberusoftware/notifications": "^1.0",
+        "liberusoftware/observability": "^1.0",
+        "liberusoftware/organizations-teams": "^1.0",
+        "liberusoftware/organizations-teams-filament": "^1.0",
+        "liberusoftware/profiles": "^1.0",
+        "liberusoftware/roles-permissions": "^1.0",
+        "liberusoftware/roles-permissions-filament": "^1.0",
+        "liberusoftware/scheduler-queues": "^1.0",
+        "liberusoftware/search": "^1.0",
+        "liberusoftware/search-api": "^1.0",
+        "liberusoftware/sessions-devices": "^1.0",
+        "liberusoftware/sessions-devices-filament": "^1.1",
+        "liberusoftware/settings": "^1.0",
+        "liberusoftware/settings-filament": "^1.0",
+        "liberusoftware/theme-base": "^2.0",
+        "liberusoftware/theme-clear-signal": "^1.0",
+        "liberusoftware/theme-dark": "^1.0",
+        "liberusoftware/theme-default": "^1.0",
+        "liberusoftware/theme-support": "^1.0",
+        "liberusoftware/theme-support-livewire": "^1.1",
+        "liberusoftware/two-factor-authentication": "^1.0",
+        "liberusoftware/webhooks": "^1.0",
         "livewire/livewire": "^4.0",
-        "spatie/laravel-menu": "^4.2",
-        "spatie/laravel-permission": "^7.0"
+        "spatie/laravel-activitylog": "^5.0",
+        "spatie/laravel-backup": "^10.3",
+        "spatie/laravel-passkeys": "^1.6",
+        "spatie/laravel-permission": "^7.0",
+        "spiral/roadrunner-cli": "^2.6.0",
+        "spiral/roadrunner-http": "^3.3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "filament/upgrade": "~5.1",
+        "fruitcake/laravel-debugbar": "^4.3",
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.4",
+        "laravel/mcp": "^0.9.1",
         "laravel/pint": "^1.14",
         "laravel/sail": "^1.28",
+        "laravel/telescope": "^5.20",
+        "liberusoftware/boilerplate-scripts": "^1.1",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^13.0",
+        "nunomaduro/collision": "^8.8",
+        "pestphp/pest": "^5.0",
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "phpunit/phpunit": "^13.1.8",
         "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Database\\Factories\\": "database/factories/",
+        "App\\": "app/",
+        "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "classmap": [
+            "modules/browser-game-accounts/src/",
+            "modules/browser-game-collections/src/",
+            "modules/browser-game-commerce/src/",
+            "modules/browser-game-competition/src/",
+            "modules/browser-game-crafting/src/",
+            "modules/browser-game-economy/src/",
+            "modules/browser-game-items/src/",
+            "modules/browser-game-live-ops/src/",
+            "modules/browser-game-moderation-and-analytics/src/",
+            "modules/browser-game-social/src/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -60,7 +583,8 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "test": "vendor/bin/pest"
     },
     "extra": {
         "laravel": {
@@ -68,14 +592,19 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.5"
+        },
+        "platform-check": false,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "liberusoftware/composer-installer": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

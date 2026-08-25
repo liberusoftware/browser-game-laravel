@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
     public function up(): void
     {
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('sold_at')->nullable();
             $table->foreignId('buyer_id')->nullable()->constrained('players')->cascadeOnDelete();
             $table->timestamps();
-            
+
             $table->index(['status', 'item_id']);
         });
     }

@@ -1,11 +1,11 @@
 <?php
 
 namespace Tests\Unit;
-use PHPUnit\Framework\Attributes\Test;
 
 use App\Models\Player;
 use App\Services\RankingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class RankingServiceTest extends TestCase
@@ -77,7 +77,7 @@ class RankingServiceTest extends TestCase
         // Players with same score but different levels
         $player1 = Player::factory()->create(['level' => 10, 'experience' => 100, 'score' => 1100]);
         $player2 = Player::factory()->create(['level' => 11, 'experience' => 0, 'score' => 1100]);
-        
+
         $this->rankingService->updateAllRankings();
 
         $player1->refresh();

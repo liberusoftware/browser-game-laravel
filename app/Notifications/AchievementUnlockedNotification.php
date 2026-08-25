@@ -11,6 +11,7 @@ class AchievementUnlockedNotification extends Notification
     use Queueable;
 
     protected $achievementName;
+
     protected $achievementDescription;
 
     public function __construct($achievementName, $achievementDescription = null)
@@ -26,10 +27,10 @@ class AchievementUnlockedNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
+        $message = (new MailMessage())
             ->subject('Achievement Unlocked!')
-            ->greeting('Great Job, ' . $notifiable->username . '!')
-            ->line('You have unlocked a new achievement: ' . $this->achievementName);
+            ->greeting('Great Job, '.$notifiable->username.'!')
+            ->line('You have unlocked a new achievement: '.$this->achievementName);
 
         if ($this->achievementDescription) {
             $message->line($this->achievementDescription);
@@ -46,7 +47,7 @@ class AchievementUnlockedNotification extends Notification
         return [
             'achievement_name' => $this->achievementName,
             'achievement_description' => $this->achievementDescription,
-            'message' => 'Achievement unlocked: ' . $this->achievementName,
+            'message' => 'Achievement unlocked: '.$this->achievementName,
         ];
     }
 }

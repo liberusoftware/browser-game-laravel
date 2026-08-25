@@ -1,0 +1,174 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Commerce API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+    description: Application API host
+paths:
+  /api/v1/browser-game/commerce:
+    get:
+      operationId: browser.game.commerce.list
+      summary: List authorized browser-game commerce
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/commerce/{id}:
+    get:
+      operationId: browser.game.commerce.get
+      summary: Retrieve an authorized browser-game commerce record
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/commerce/products:
+    get:
+      operationId: browser.game.commerce.products
+      summary: List active game-store products
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/commerce/checkout:
+    post:
+      operationId: browser.game.commerce.checkout
+      summary: Create a retry-safe game-store order
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [lines], properties: { lines: { type: array } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/commerce/orders/{order}/complete:
+    post:
+      operationId: browser.game.commerce.orders.complete
+      summary: Complete a pending order
+      security: [{ sanctum: [] }]
+      parameters: [{ name: order, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/commerce/orders/{order}/refund:
+    post:
+      operationId: browser.game.commerce.orders.refund
+      summary: Refund a completed order and revoke entitlements
+      security: [{ sanctum: [] }]
+      parameters: [{ name: order, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Opaque resource identifier.
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          const: browser-game-commerce
+        attributes:
+          type: object
+          additionalProperties: true
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        meta:
+          type: object
+          additionalProperties: true
+        links:
+          type: object
+          additionalProperties: true
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Resource:
+      description: Authorized commerce resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resource'
+    ResourceCollection:
+      description: Authorized paginated commerce resources.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCollection'
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: The resource is unavailable in the current authorization context.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

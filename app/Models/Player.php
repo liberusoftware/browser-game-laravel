@@ -3,14 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property-read Pivot $pivot
+ */
 class Player extends Authenticatable
 {
-    use HasFactory;
     use HasApiTokens;
+    use HasFactory;
     use Notifiable;
 
     protected $fillable = [
@@ -54,14 +62,14 @@ class Player extends Authenticatable
     {
         $levelScore = $this->level * 100;
         $experienceScore = $this->experience;
-        
+
         return $levelScore + $experienceScore;
     }
 
     /**
      * Game notifications relationship.
      */
-    public function gameNotifications()
+    public function gameNotifications(): HasMany
     {
         return $this->hasMany(GameNotification::class);
     }
@@ -69,7 +77,7 @@ class Player extends Authenticatable
     /**
      * Unread notifications relationship.
      */
-    public function unreadNotifications()
+    public function unreadNotifications(): HasMany
     {
         return $this->hasMany(GameNotification::class)->where('is_read', false);
     }
@@ -77,7 +85,7 @@ class Player extends Authenticatable
     /**
      * Player profile relationship.
      */
-    public function profile()
+    public function profile(): HasOne
     {
         return $this->hasOne(Player_Profile::class);
     }
@@ -85,7 +93,8 @@ class Player extends Authenticatable
     /**
      * Player's inventory items (pivot table records).
      */
-    public function playerItems()
+    /** @return HasMany<Player_Item, $this> */
+    public function playerItems(): HasMany
     {
         return $this->hasMany(Player_Item::class);
     }
@@ -93,7 +102,8 @@ class Player extends Authenticatable
     /**
      * Items in the player's inventory (many-to-many).
      */
-    public function items()
+    /** @return BelongsToMany<Item, $this> */
+    public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'player__items')
             ->withPivot('quantity')
@@ -103,7 +113,7 @@ class Player extends Authenticatable
     /**
      * Player's quest records (pivot table records).
      */
-    public function playerQuests()
+    public function playerQuests(): HasMany
     {
         return $this->hasMany(Player_Quest::class);
     }
@@ -111,7 +121,7 @@ class Player extends Authenticatable
     /**
      * Quests the player is involved with (many-to-many).
      */
-    public function quests()
+    public function quests(): BelongsToMany
     {
         return $this->belongsToMany(Quest::class, 'player__quests')
             ->withPivot('status', 'progress_percentage', 'completed_at')
@@ -121,7 +131,7 @@ class Player extends Authenticatable
     /**
      * Active quests for the player.
      */
-    public function activeQuests()
+    public function activeQuests(): BelongsToMany
     {
         return $this->quests()->wherePivot('status', 'in-progress');
     }
@@ -129,7 +139,7 @@ class Player extends Authenticatable
     /**
      * Completed quests for the player.
      */
-    public function completedQuests()
+    public function completedQuests(): BelongsToMany
     {
         return $this->quests()->wherePivot('status', 'completed');
     }
@@ -137,7 +147,8 @@ class Player extends Authenticatable
     /**
      * Player's resources.
      */
-    public function resources()
+    /** @return HasMany<\App\Models\Resource, $this> */
+    public function resources(): HasMany
     {
         return $this->hasMany(Resource::class);
     }
@@ -145,7 +156,7 @@ class Player extends Authenticatable
     /**
      * Guild memberships.
      */
-    public function guildMemberships()
+    public function guildMemberships(): HasMany
     {
         return $this->hasMany(Guild_Membership::class);
     }
@@ -153,7 +164,8 @@ class Player extends Authenticatable
     /**
      * Guilds the player belongs to (many-to-many).
      */
-    public function guilds()
+    /** @return BelongsToMany<Guild, $this> */
+    public function guilds(): BelongsToMany
     {
         return $this->belongsToMany(Guild::class, 'guild__memberships')
             ->withPivot('role', 'joined_at')
@@ -163,7 +175,7 @@ class Player extends Authenticatable
     /**
      * Player's primary guild.
      */
-    public function guild()
+    public function guild(): HasOneThrough
     {
         return $this->hasOneThrough(
             Guild::class,
@@ -178,7 +190,7 @@ class Player extends Authenticatable
     /**
      * Player statistics.
      */
-    public function statistics()
+    public function statistics(): HasOne
     {
         return $this->hasOne(PlayerStatistic::class);
     }
@@ -186,7 +198,7 @@ class Player extends Authenticatable
     /**
      * Player achievements (many-to-many).
      */
-    public function achievements()
+    public function achievements(): BelongsToMany
     {
         return $this->belongsToMany(Achievement::class, 'player_achievements')
             ->withPivot('unlocked_at', 'progress')
@@ -196,7 +208,8 @@ class Player extends Authenticatable
     /**
      * Player equipment.
      */
-    public function equipment()
+    /** @return HasMany<PlayerEquipment, $this> */
+    public function equipment(): HasMany
     {
         return $this->hasMany(PlayerEquipment::class);
     }
@@ -204,7 +217,7 @@ class Player extends Authenticatable
     /**
      * Player skills (many-to-many).
      */
-    public function skills()
+    public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class, 'player_skills')
             ->withPivot('level', 'last_used_at')
@@ -214,7 +227,7 @@ class Player extends Authenticatable
     /**
      * Player skill records.
      */
-    public function playerSkills()
+    public function playerSkills(): HasMany
     {
         return $this->hasMany(PlayerSkill::class);
     }
@@ -222,7 +235,7 @@ class Player extends Authenticatable
     /**
      * Battles as attacker.
      */
-    public function battlesAsAttacker()
+    public function battlesAsAttacker(): HasMany
     {
         return $this->hasMany(Battle::class, 'attacker_id');
     }
@@ -230,7 +243,7 @@ class Player extends Authenticatable
     /**
      * Battles as defender.
      */
-    public function battlesAsDefender()
+    public function battlesAsDefender(): HasMany
     {
         return $this->hasMany(Battle::class, 'defender_id');
     }
@@ -247,7 +260,8 @@ class Player extends Authenticatable
     /**
      * Recipes the player has learned.
      */
-    public function recipes()
+    /** @return BelongsToMany<Recipe, $this> */
+    public function recipes(): BelongsToMany
     {
         return $this->belongsToMany(Recipe::class, 'player_recipes')
             ->withPivot('learned_at')
@@ -257,7 +271,7 @@ class Player extends Authenticatable
     /**
      * Marketplace listings as seller.
      */
-    public function sellerListings()
+    public function sellerListings(): HasMany
     {
         return $this->hasMany(MarketplaceListing::class, 'seller_id');
     }
@@ -265,7 +279,7 @@ class Player extends Authenticatable
     /**
      * Marketplace purchases.
      */
-    public function purchases()
+    public function purchases(): HasMany
     {
         return $this->hasMany(MarketplaceListing::class, 'buyer_id');
     }
@@ -273,7 +287,7 @@ class Player extends Authenticatable
     /**
      * Leaderboard entries.
      */
-    public function leaderboardEntries()
+    public function leaderboardEntries(): HasMany
     {
         return $this->hasMany(Leaderboard::class);
     }
@@ -281,7 +295,8 @@ class Player extends Authenticatable
     /**
      * Daily rewards.
      */
-    public function dailyRewards()
+    /** @return HasMany<DailyReward, $this> */
+    public function dailyRewards(): HasMany
     {
         return $this->hasMany(DailyReward::class);
     }

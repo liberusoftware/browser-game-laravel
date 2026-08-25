@@ -15,7 +15,6 @@ class Player_Profile extends Model
         'bio',
     ];
 
-    
     public function player()
     {
         return $this->belongsTo(Player::class);

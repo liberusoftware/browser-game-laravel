@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Item;
 use App\Models\Player;
 use App\Models\Recipe;
-use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 
 class CraftingService
@@ -15,7 +15,7 @@ class CraftingService
     public function craftItem(Player $player, Recipe $recipe): array
     {
         // Check if player knows the recipe
-        if (!$player->recipes()->where('recipe_id', $recipe->id)->exists()) {
+        if (! $player->recipes()->where('recipe_id', $recipe->id)->exists()) {
             return [
                 'success' => false,
                 'message' => 'You have not learned this recipe.',
@@ -36,7 +36,7 @@ class CraftingService
                 ->where('item_id', $material->item_id)
                 ->first();
 
-            if (!$playerItem || $playerItem->quantity < $material->quantity) {
+            if (! $playerItem || $playerItem->quantity < $material->quantity) {
                 return [
                     'success' => false,
                     'message' => 'You do not have enough materials.',
@@ -53,9 +53,9 @@ class CraftingService
                 $playerItem = $player->playerItems()
                     ->where('item_id', $material->item_id)
                     ->first();
-                
+
                 $newQuantity = $playerItem->quantity - $material->quantity;
-                
+
                 if ($newQuantity <= 0) {
                     $playerItem->delete();
                 } else {
@@ -82,8 +82,8 @@ class CraftingService
 
         return [
             'success' => $succeeded,
-            'message' => $succeeded 
-                ? 'Crafting successful!' 
+            'message' => $succeeded
+                ? 'Crafting successful!'
                 : 'Crafting failed. Materials were consumed.',
             'item' => $succeeded ? $recipe->resultItem : null,
         ];

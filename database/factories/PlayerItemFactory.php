@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Player;
 use App\Models\Item;
+use App\Models\Player;
+use App\Models\Player_Item;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Player_Item>
+ * @extends Factory<Player_Item>
  */
 class PlayerItemFactory extends Factory
 {

@@ -2,18 +2,20 @@
 
 namespace App\Livewire;
 
+use App\Events\PlayerLeveledUp;
+use App\Events\QuestCompleted as QuestCompletedEvent;
 use App\Models\Player;
 use App\Models\Quest;
-use App\Models\Player_Quest;
-use App\Events\QuestCompleted as QuestCompletedEvent;
-use App\Events\PlayerLeveledUp;
 use Livewire\Component;
 
 class QuestBoard extends Component
 {
     public $player;
+
     public $availableQuests;
+
     public $activeQuests;
+
     public $completedQuests;
 
     protected $listeners = [
@@ -29,8 +31,8 @@ class QuestBoard extends Component
     {
         // Get the first player for demo
         $this->player = Player::with(['quests', 'items'])->first();
-        
-        if (!$this->player) {
+
+        if (! $this->player) {
             $this->player = Player::create([
                 'username' => 'Demo Player',
                 'email' => 'demo@example.com',
@@ -62,9 +64,10 @@ class QuestBoard extends Component
     public function acceptQuest($questId)
     {
         $quest = Quest::find($questId);
-        
-        if (!$quest) {
+
+        if (! $quest) {
             session()->flash('error', 'Quest not found!');
+
             return;
         }
 
@@ -83,9 +86,10 @@ class QuestBoard extends Component
     public function completeQuest($questId)
     {
         $quest = Quest::with('itemReward')->find($questId);
-        
-        if (!$quest) {
+
+        if (! $quest) {
             session()->flash('error', 'Quest not found!');
+
             return;
         }
 
@@ -98,22 +102,22 @@ class QuestBoard extends Component
         // Award experience
         $experienceGained = $quest->experience_reward;
         $this->player->experience += $experienceGained;
-        
+
         // Check for level up
         while ($this->player->experience >= ($this->player->level * 100)) {
             $this->player->level++;
             $this->dispatch('player-leveled-up', level: $this->player->level);
-            
+
             // Broadcast level up event
             event(new PlayerLeveledUp($this->player, $this->player->level));
         }
-        
+
         $this->player->save();
 
         // Award item if available
         if ($quest->item_reward_id) {
             $existingItem = $this->player->items()->where('item_id', $quest->item_reward_id)->first();
-            
+
             if ($existingItem) {
                 // Increment quantity
                 $this->player->items()->updateExistingPivot($quest->item_reward_id, [
@@ -135,16 +139,17 @@ class QuestBoard extends Component
         $this->loadQuests();
         $this->dispatch('quest-completed', questId: $questId, experienceReward: $experienceGained);
         $this->dispatch('player-updated');
-        
+
         session()->flash('success', "Quest '{$quest->name}' completed! You earned {$experienceGained} XP!");
     }
 
     public function abandonQuest($questId)
     {
         $quest = Quest::find($questId);
-        
-        if (!$quest) {
+
+        if (! $quest) {
             session()->flash('error', 'Quest not found!');
+
             return;
         }
 

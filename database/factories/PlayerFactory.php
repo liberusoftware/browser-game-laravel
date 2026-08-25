@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Facades\Hash;
+use App\Models\Player;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Player>
+ * @extends Factory<Player>
  */
 class PlayerFactory extends Factory
 {

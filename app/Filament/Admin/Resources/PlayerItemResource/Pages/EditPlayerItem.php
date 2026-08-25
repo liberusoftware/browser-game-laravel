@@ -2,10 +2,9 @@
 
 namespace App\Filament\Admin\Resources\PlayerItemResource\Pages;
 
-use Filament\Actions\ViewAction;
-use Filament\Actions\DeleteAction;
 use App\Filament\Admin\Resources\PlayerItemResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPlayerItem extends EditRecord

@@ -1,0 +1,265 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Social API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+    description: Application API host
+paths:
+  /api/v1/browser-game/social:
+    get:
+      operationId: browser.game.social.list
+      summary: List authorized browser-game social
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/social/{id}:
+    get:
+      operationId: browser.game.social.get
+      summary: Retrieve an authorized browser-game social record
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/social/friends:
+    post:
+      operationId: browser.game.social.friends.create
+      summary: Send a friend request
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [target_id]
+              properties:
+                target_id: { type: string }
+                idempotency_key: { type: string, maxLength: 128 }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/{social}/friend-response:
+    patch:
+      operationId: browser.game.social.friends.respond
+      summary: Accept or decline a friend request
+      security: [{ sanctum: [] }]
+      parameters: [{ name: social, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [accepted, declined] }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/social/groups/{kind}:
+    post:
+      operationId: browser.game.social.groups.create
+      summary: Create a party, chat, guild, or alliance
+      security: [{ sanctum: [] }]
+      parameters:
+        - name: kind
+          in: path
+          required: true
+          schema: { type: string, enum: [party, chat, guild, alliance] }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string, maxLength: 255 }
+                data: { type: object, additionalProperties: true }
+                idempotency_key: { type: string, maxLength: 128 }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/mail:
+    post:
+      operationId: browser.game.social.mail.create
+      summary: Send social mail
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [recipient_id, body]
+              properties:
+                recipient_id: { type: string }
+                body: { type: string, maxLength: 10000 }
+                idempotency_key: { type: string, maxLength: 128 }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/activity:
+    get:
+      operationId: browser.game.social.activity
+      summary: List authorized social activity
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/PageSize' }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/{social}/permissions:
+    patch:
+      operationId: browser.game.social.permissions.update
+      summary: Update member permissions
+      security: [{ sanctum: [] }]
+      parameters: [{ name: social, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [member_id, permissions]
+              properties:
+                member_id: { type: string }
+                permissions: { type: object, additionalProperties: { type: boolean } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/social/{social}/members:
+    post:
+      operationId: browser.game.social.member
+      summary: Add or update a social membership
+      security: [{ sanctum: [] }]
+      parameters: [{ name: social, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [actor_id], properties: { actor_id: { type: string }, role: { type: string } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/{social}/messages:
+    post:
+      operationId: browser.game.social.message
+      summary: Send a chat or mail message
+      security: [{ sanctum: [] }]
+      parameters: [{ name: social, in: path, required: true, schema: { type: string, format: uuid } }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [body], properties: { body: { type: string, maxLength: 10000 } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/social/reports:
+    post:
+      operationId: browser.game.social.report
+      summary: Submit a social report
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [target_id, reason], properties: { target_id: { type: string }, reason: { type: string, maxLength: 1000 }, idempotency_key: { type: string, maxLength: 128 } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Opaque resource identifier.
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          const: browser-game-social
+        attributes:
+          type: object
+          additionalProperties: true
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        meta:
+          type: object
+          additionalProperties: true
+        links:
+          type: object
+          additionalProperties: true
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Resource:
+      description: Authorized social resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resource'
+    ResourceCollection:
+      description: Authorized paginated social resources.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCollection'
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: The resource is unavailable in the current authorization context.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

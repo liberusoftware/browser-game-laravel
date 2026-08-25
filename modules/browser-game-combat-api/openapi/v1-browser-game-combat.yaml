@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Combat API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+paths:
+  /api/v1/browser-game/combat:
+    get:
+      operationId: browser.game.combat.list
+      summary: List authorized combats
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+    post:
+      operationId: browser.game.combat.create
+      summary: Start a combat
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      responses:
+        '201': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/combat/{id}:
+    get:
+      operationId: browser.game.combat.get
+      summary: Retrieve an authorized combat
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/v1/browser-game/combat/{id}/actions:
+    post:
+      operationId: browser.game.combat.action
+      summary: Execute a combat action
+      security: [{ sanctum: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/Id' }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [action], properties: { action: { type: string, maxLength: 120 }, value: { type: integer, minimum: 0 }, effects: { type: array, items: { type: object, additionalProperties: true } } } } } } }
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/combat/definitions:
+    post:
+      operationId: browser.game.combat.definition
+      summary: Define an ability, effect, enemy, boss, or loot entry
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [kind, slug, name], properties: { kind: { type: string, enum: [ability, effect, enemy, boss, loot] }, slug: { type: string }, name: { type: string }, cooldown: { type: integer, minimum: 0 }, effects: { type: array }, data: { type: object, additionalProperties: true } } } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/combat/simulate:
+    post:
+      operationId: browser.game.combat.simulate
+      summary: Run a deterministic combat simulation
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [opponent_id, actions], properties: { opponent_id: { type: string }, actions: { type: array }, state: { type: object, additionalProperties: true } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+components:
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    IdempotencyKey: { name: Idempotency-Key, in: header, required: false, schema: { type: string, maxLength: 128 } }
+  securitySchemes:
+    sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
+  schemas:
+    BrowserGameCombatResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, const: browser-game-combat }
+        attributes: { type: object, additionalProperties: true }
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data: { type: array, items: { $ref: '#/components/schemas/BrowserGameCombatResource' } }
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+  responses:
+    Resource:
+      description: Authorized combat resource.
+      content: { application/json: { schema: { $ref: '#/components/schemas/BrowserGameCombatResource' } } }
+    ResourceCollection:
+      description: Authorized combat resources.
+      content: { application/json: { schema: { $ref: '#/components/schemas/ResourceCollection' } } }
+    Unauthorized:
+      description: Authentication is required.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    NotFound:
+      description: Resource unavailable in the current authorization context.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    ValidationError:
+      description: Request validation failed.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    TooManyRequests:
+      description: Request rate limit exceeded.
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }

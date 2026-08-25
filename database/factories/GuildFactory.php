@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Guild;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Guild>
+ * @extends Factory<Guild>
  */
 class GuildFactory extends Factory
 {

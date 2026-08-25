@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
     public function up(): void
     {
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->dropColumn([
                 'health', 'max_health', 'mana', 'max_mana',
                 'strength', 'defense', 'agility', 'intelligence',
-                'stat_points', 'last_battle_at', 'last_action_at'
+                'stat_points', 'last_battle_at', 'last_action_at',
             ]);
         });
     }

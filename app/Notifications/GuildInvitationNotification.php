@@ -11,6 +11,7 @@ class GuildInvitationNotification extends Notification
     use Queueable;
 
     protected $guild;
+
     protected $inviter;
 
     public function __construct($guild, $inviter)
@@ -26,11 +27,11 @@ class GuildInvitationNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('Guild Invitation')
-            ->greeting('Hello, ' . $notifiable->username . '!')
-            ->line('You have been invited to join the guild: ' . $this->guild->name)
-            ->line('Invited by: ' . $this->inviter->username)
+            ->greeting('Hello, '.$notifiable->username.'!')
+            ->line('You have been invited to join the guild: '.$this->guild->name)
+            ->line('Invited by: '.$this->inviter->username)
             ->action('View Invitation', url('/guilds/invitations'))
             ->line('Join forces and conquer together!');
     }
@@ -42,7 +43,7 @@ class GuildInvitationNotification extends Notification
             'guild_name' => $this->guild->name,
             'inviter_id' => $this->inviter->id,
             'inviter_username' => $this->inviter->username,
-            'message' => 'You have been invited to join ' . $this->guild->name,
+            'message' => 'You have been invited to join '.$this->guild->name,
         ];
     }
 }

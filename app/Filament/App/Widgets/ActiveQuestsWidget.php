@@ -2,21 +2,20 @@
 
 namespace App\Filament\App\Widgets;
 
-use App\Models\Player;
 use App\Models\Quest;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Filament\Actions\Action;
 
 class ActiveQuestsWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
-    
-    protected int | string | array $columnSpan = 'full';
-    
+
+    protected int|string|array $columnSpan = 'full';
+
     public function table(Table $table): Table
     {
         return $table
@@ -24,10 +23,11 @@ class ActiveQuestsWidget extends BaseWidget
                 Quest::query()
                     ->whereHas('players', function (Builder $query) {
                         $user = Auth::user();
-                        // $player = Player::where('user_id', $user->id)->first();
-                        // if ($player) {
-                        //     $query->where('player_id', $player->id);
-                        // }
+                        $player = $user?->player;
+
+                        if ($player) {
+                            $query->whereKey($player->id);
+                        }
                     })
                     ->limit(5)
             )
@@ -40,7 +40,7 @@ class ActiveQuestsWidget extends BaseWidget
                     ->extraAttributes([
                         'class' => 'quest-title',
                     ]),
-                
+
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')
                     ->limit(50)
@@ -48,7 +48,7 @@ class ActiveQuestsWidget extends BaseWidget
                         'class' => 'quest-description',
                     ])
                     ->toggleable(isToggledHiddenByDefault: true),
-                
+
                 Tables\Columns\TextColumn::make('difficulty')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -58,7 +58,7 @@ class ActiveQuestsWidget extends BaseWidget
                         default => 'gray',
                     })
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('reward_gold')
                     ->label('Reward')
                     ->numeric()
@@ -66,7 +66,7 @@ class ActiveQuestsWidget extends BaseWidget
                     ->icon('heroicon-m-currency-dollar')
                     ->color('warning')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {

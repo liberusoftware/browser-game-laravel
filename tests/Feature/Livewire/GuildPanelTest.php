@@ -3,8 +3,8 @@
 namespace Tests\Feature\Livewire;
 
 use App\Livewire\GuildPanel;
-use App\Models\Player;
 use App\Models\Guild;
+use App\Models\Player;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -49,7 +49,7 @@ class GuildPanelTest extends TestCase
     {
         $player = Player::factory()->create();
         $guild = Guild::factory()->create(['name' => 'Mages Circle']);
-        
+
         // Join guild first
         $player->guilds()->attach($guild->id, [
             'role' => 'member',
@@ -69,7 +69,7 @@ class GuildPanelTest extends TestCase
     {
         $player = Player::factory()->create();
         $guild = Guild::factory()->create(['name' => 'Royal Guards']);
-        
+
         $player->guilds()->attach($guild->id, [
             'role' => 'member',
             'joined_at' => now(),
@@ -85,7 +85,7 @@ class GuildPanelTest extends TestCase
         $player = Player::factory()->create();
         $guild = Guild::factory()->create(['name' => 'Elite Squad']);
         $member = Player::factory()->create(['username' => 'GuildMate']);
-        
+
         $guild->members()->attach($member->id, [
             'role' => 'member',
             'joined_at' => now(),
@@ -102,7 +102,7 @@ class GuildPanelTest extends TestCase
         $player = Player::factory()->create();
         $guild = Guild::factory()->create();
         $leader = Player::factory()->create(['username' => 'GuildLeader']);
-        
+
         $guild->members()->attach($leader->id, [
             'role' => 'leader',
             'joined_at' => now(),
@@ -118,7 +118,7 @@ class GuildPanelTest extends TestCase
     {
         $player = Player::factory()->create();
         $guild = Guild::factory()->create(['name' => 'Test Guild']);
-        
+
         // Join guild first
         $player->guilds()->attach($guild->id, [
             'role' => 'member',

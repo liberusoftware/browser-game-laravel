@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Quest;
 use App\Models\Item;
+use App\Models\Quest;
 use Illuminate\Database\Seeder;
 
 class QuestSeeder extends Seeder

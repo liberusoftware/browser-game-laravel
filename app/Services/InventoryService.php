@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Item;
 use App\Models\Player;
 use App\Models\Player_Item;
-use App\Models\Item;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +18,6 @@ class InventoryService
 
     /**
      * Get a player's inventory with caching.
-     *
-     * @param int $playerId
-     * @return Collection
      */
     public function getPlayerInventory(int $playerId): Collection
     {
@@ -35,10 +32,6 @@ class InventoryService
 
     /**
      * Get a specific item from player's inventory.
-     *
-     * @param int $playerId
-     * @param int $itemId
-     * @return Player_Item|null
      */
     public function getPlayerItem(int $playerId, int $itemId): ?Player_Item
     {
@@ -54,11 +47,6 @@ class InventoryService
 
     /**
      * Add an item to player's inventory or increase quantity.
-     *
-     * @param int $playerId
-     * @param int $itemId
-     * @param int $quantity
-     * @return Player_Item
      */
     public function addItem(int $playerId, int $itemId, int $quantity = 1): Player_Item
     {
@@ -84,11 +72,6 @@ class InventoryService
 
     /**
      * Remove an item from player's inventory or decrease quantity.
-     *
-     * @param int $playerId
-     * @param int $itemId
-     * @param int $quantity
-     * @return bool
      */
     public function removeItem(int $playerId, int $itemId, int $quantity = 1): bool
     {
@@ -96,7 +79,7 @@ class InventoryService
             ->where('item_id', $itemId)
             ->first();
 
-        if (!$playerItem || $playerItem->quantity < $quantity) {
+        if (! $playerItem || $playerItem->quantity < $quantity) {
             return false;
         }
 
@@ -115,11 +98,6 @@ class InventoryService
 
     /**
      * Update item quantity directly.
-     *
-     * @param int $playerId
-     * @param int $itemId
-     * @param int $quantity
-     * @return Player_Item|null
      */
     public function updateItemQuantity(int $playerId, int $itemId, int $quantity): ?Player_Item
     {
@@ -127,7 +105,7 @@ class InventoryService
             ->where('item_id', $itemId)
             ->first();
 
-        if (!$playerItem) {
+        if (! $playerItem) {
             return null;
         }
 
@@ -135,6 +113,7 @@ class InventoryService
             $playerItem->delete();
             $this->invalidatePlayerInventoryCache($playerId);
             $this->invalidatePlayerItemCache($playerId, $itemId);
+
             return null;
         }
 
@@ -150,9 +129,6 @@ class InventoryService
 
     /**
      * Get inventory statistics for a player.
-     *
-     * @param int $playerId
-     * @return array
      */
     public function getInventoryStats(int $playerId): array
     {
@@ -174,9 +150,6 @@ class InventoryService
 
     /**
      * Invalidate all inventory cache for a player.
-     *
-     * @param int $playerId
-     * @return void
      */
     public function invalidatePlayerInventoryCache(int $playerId): void
     {
@@ -186,10 +159,6 @@ class InventoryService
 
     /**
      * Invalidate specific player item cache.
-     *
-     * @param int $playerId
-     * @param int $itemId
-     * @return void
      */
     public function invalidatePlayerItemCache(int $playerId, int $itemId): void
     {
@@ -198,9 +167,6 @@ class InventoryService
 
     /**
      * Get cache key for player inventory.
-     *
-     * @param int $playerId
-     * @return string
      */
     private function getInventoryCacheKey(int $playerId): string
     {
@@ -209,10 +175,6 @@ class InventoryService
 
     /**
      * Get cache key for specific player item.
-     *
-     * @param int $playerId
-     * @param int $itemId
-     * @return string
      */
     private function getPlayerItemCacheKey(int $playerId, int $itemId): string
     {
@@ -221,9 +183,6 @@ class InventoryService
 
     /**
      * Get cache key for inventory statistics.
-     *
-     * @param int $playerId
-     * @return string
      */
     private function getInventoryStatsCacheKey(int $playerId): string
     {

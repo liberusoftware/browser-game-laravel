@@ -2,18 +2,18 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\Action;
 use App\Models\Player;
-use Filament\Tables;
+use Filament\Actions\Action;
+use Filament\Facades\Filament;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class LeaderboardWidget extends BaseWidget
 {
-    protected ?string $heading = 'Top Players Leaderboard';
+    protected static ?string $heading = 'Top Players Leaderboard';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -28,12 +28,12 @@ class LeaderboardWidget extends BaseWidget
                 TextColumn::make('rank')
                     ->label('Rank')
                     ->badge()
-                    ->color(fn ($state) => match(true) {
+                    ->color(fn ($state) => match (true) {
                         $state === 1 => 'success',
                         $state <= 3 => 'warning',
                         default => 'gray',
                     })
-                    ->formatStateUsing(fn ($state) => '#' . $state),
+                    ->formatStateUsing(fn ($state) => '#'.$state),
                 TextColumn::make('username')
                     ->searchable()
                     ->weight('bold'),
@@ -41,10 +41,10 @@ class LeaderboardWidget extends BaseWidget
                     ->numeric()
                     ->badge()
                     ->color('info')
-                    ->formatStateUsing(fn ($state) => 'Lvl ' . $state),
+                    ->formatStateUsing(fn ($state) => 'Lvl '.$state),
                 TextColumn::make('experience')
                     ->numeric()
-                    ->formatStateUsing(fn ($state) => number_format($state) . ' XP'),
+                    ->formatStateUsing(fn ($state) => number_format($state).' XP'),
                 TextColumn::make('score')
                     ->label('Total Score')
                     ->numeric()
@@ -59,7 +59,9 @@ class LeaderboardWidget extends BaseWidget
             ])
             ->recordActions([
                 Action::make('view')
-                    ->url(fn (Player $record): string => route('filament.admin.resources.players.view', $record))
+                    ->url(fn (Player $record): string => Filament::getTenant()
+                        ? route('filament.admin.resources.players.view', ['tenant' => Filament::getTenant(), 'record' => $record])
+                        : '#')
                     ->icon('heroicon-m-eye'),
             ]);
     }

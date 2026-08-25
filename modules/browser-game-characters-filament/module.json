@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "browser-game-characters-filament",
+  "display_name": "Browser Game Characters Filament",
+  "description": "Filament 5 character administration surface.",
+  "version": "1.0.0",
+  "category": "presentation",
+  "provider": "Liberu\\BrowserGame\\CharactersFilament\\CharactersFilamentServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-browser-game-characters": "^1.0"}},
+  "presentation": {"filament": {"admin": ["Liberu\\BrowserGame\\CharactersFilament\\CharactersFilamentPlugin"]}},
+  "capabilities": ["browser-game.characters.filament"],
+  "default_enabled": false,
+  "features": ["Character resource", "Progression fields", "Scoped administration"]
+}

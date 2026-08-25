@@ -1,0 +1,240 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Crafting API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+    description: Application API host
+paths:
+  /api/v1/browser-game/crafting:
+    get:
+      operationId: browser.game.crafting.list
+      summary: List authorized browser-game crafting
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: browser.game.crafting.queue
+      summary: Queue a crafting job
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [recipe_id, quantity]
+              properties:
+                recipe_id: { type: string, format: uuid }
+                quantity: { type: integer, minimum: 1, maximum: 1000 }
+                quality: { type: integer, minimum: 0, maximum: 100 }
+                idempotency_key: { type: string, maxLength: 191, deprecated: true, description: Use the Idempotency-Key header. }
+      responses:
+        '202': { description: Crafting job queued }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/crafting/queue:
+    get:
+      operationId: browser.game.crafting.queues
+      summary: List the authenticated player's crafting queue
+      security:
+        - sanctum: []
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/browser-game/crafting/queue/{queue}/complete:
+    post:
+      operationId: browser.game.crafting.queue.complete
+      summary: Complete a ready crafting job
+      security:
+        - sanctum: []
+      parameters:
+        - { name: queue, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Crafting job completed }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/crafting/{id}/discover:
+    post:
+      operationId: browser.game.crafting.discover
+      summary: Discover a recipe
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '201': { description: Recipe discovered }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/v1/browser-game/crafting/{id}:
+    get:
+      operationId: browser.game.crafting.get
+      summary: Retrieve an authorized browser-game crafting record
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/crafting/professions:
+    get:
+      operationId: browser.game.crafting.professions
+      summary: List authenticated crafting professions
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/crafting/resources:
+    get:
+      operationId: browser.game.crafting.resources
+      summary: List the authenticated player's crafting resources
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/crafting/queue/{queue}/cancel:
+    post:
+      operationId: browser.game.crafting.queue.cancel
+      summary: Cancel a queued craft and refund materials
+      security: [{ sanctum: [] }]
+      parameters: [{ name: queue, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/crafting/queue/{queue}/salvage:
+    post:
+      operationId: browser.game.crafting.queue.salvage
+      summary: Salvage a completed craft output
+      security: [{ sanctum: [] }]
+      parameters: [{ name: queue, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Opaque resource identifier.
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 191
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          const: browser-game-crafting
+        attributes:
+          type: object
+          additionalProperties: true
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        meta:
+          type: object
+          additionalProperties: true
+        links:
+          type: object
+          additionalProperties: true
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Resource:
+      description: Authorized crafting resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resource'
+    ResourceCollection:
+      description: Authorized paginated crafting resources.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCollection'
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: The request failed domain validation.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: The resource is unavailable in the current authorization context.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

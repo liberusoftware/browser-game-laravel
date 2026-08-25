@@ -3,9 +3,9 @@
 namespace Tests\Feature\Livewire;
 
 use App\Livewire\QuestBoard;
+use App\Models\Item;
 use App\Models\Player;
 use App\Models\Quest;
-use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -38,7 +38,7 @@ class QuestBoardTest extends TestCase
     {
         $player = Player::factory()->create(['experience' => 50]);
         $quest = Quest::factory()->create(['experience_reward' => 100]);
-        
+
         // Attach quest as in-progress
         $player->quests()->attach($quest->id, ['status' => 'in-progress']);
 
@@ -52,7 +52,7 @@ class QuestBoardTest extends TestCase
     {
         $player = Player::factory()->create();
         $quest = Quest::factory()->create(['name' => 'Collect Herbs']);
-        
+
         // Attach quest as in-progress
         $player->quests()->attach($quest->id, ['status' => 'in-progress']);
 
@@ -68,7 +68,7 @@ class QuestBoardTest extends TestCase
             'level' => 1,
             'experience' => 0,
         ]);
-        
+
         $quest = Quest::factory()->create(['experience_reward' => 50]);
         $player->quests()->attach($quest->id, ['status' => 'in-progress']);
 
@@ -86,7 +86,7 @@ class QuestBoardTest extends TestCase
             'experience_reward' => 100,
             'item_reward_id' => $item->id,
         ]);
-        
+
         $player->quests()->attach($quest->id, ['status' => 'in-progress']);
 
         Livewire::test(QuestBoard::class)

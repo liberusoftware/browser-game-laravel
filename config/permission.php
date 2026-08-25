@@ -1,5 +1,9 @@
 <?php
 
+use Liberu\Foundation\RolesPermissions\Models\Permission;
+use Liberu\Foundation\RolesPermissions\Models\Role;
+use Spatie\Permission\DefaultTeamResolver;
+
 return [
 
     'models' => [
@@ -13,7 +17,7 @@ return [
          * `Spatie\Permission\Contracts\Permission` contract.
          */
 
-        'permission' => App\Models\Permission::class,
+        'permission' => Permission::class,
 
         /*
          * When using the "HasRoles" trait from this package, we need to know which
@@ -24,8 +28,36 @@ return [
          * `Spatie\Permission\Contracts\Role` contract.
          */
 
-        'role' => App\Models\Role::class,
+        'role' => Role::class,
 
+        /*
+         * When using the "Teams" feature from this package, we need to know which
+         * Eloquent model should be used to retrieve your teams. Of course, it
+         * is often just the "Team" model but you may use whatever you like.
+         *
+         * Keep this `null` in this boilerplate, even though `teams => true`
+         * below. Team scoping works off the `team_id` column and the team id
+         * set by `setPermissionsTeamId()`; it does not need this class.
+         *
+         * This key is only read by two members of Spatie's `HasRoles` trait,
+         * neither of which this app uses:
+         *   - `HasRoles::teams()` — `App\Models\User` resolves the trait
+         *     collision with `HasTeams::teams insteadof HasRoles`, so
+         *     Jetstream's `teams()` wins and Spatie's is never compiled in.
+         *   - the `team()` / `withoutTeam()` query scopes — unused here.
+         *
+         * Pointing it at `App\Models\Team` would therefore change no behaviour,
+         * and it invites re-exposing Spatie's `teams()` relation, which would
+         * collide with Jetstream's. Leave it null.
+         */
+        'team' => null,
+
+        /*
+         * When using the "HasModels" trait and passing raw IDs to syncModels,
+         * attachModels, or detachModels, this model class will be used to
+         * resolve those IDs. If null, defaults to the guard's model.
+         */
+        'default_model' => null,
     ],
 
     'table_names' => [
@@ -112,10 +144,10 @@ return [
 
     /*
      * Events will fire when a role or permission is assigned/unassigned:
-     * \Spatie\Permission\Events\RoleAttached
-     * \Spatie\Permission\Events\RoleDetached
-     * \Spatie\Permission\Events\PermissionAttached
-     * \Spatie\Permission\Events\PermissionDetached
+     * \Spatie\Permission\Events\RoleAttachedEvent
+     * \Spatie\Permission\Events\RoleDetachedEvent
+     * \Spatie\Permission\Events\PermissionAttachedEvent
+     * \Spatie\Permission\Events\PermissionDetachedEvent
      *
      * To enable, set to true, and then create listeners to watch these events.
      */
@@ -131,12 +163,12 @@ return [
      * (view the latest version of this package's migration file)
      */
 
-    'teams' => env('MULTITENANCY', false),
+    'teams' => true,
 
     /*
      * The class to use to resolve the permissions team id
      */
-    'team_resolver' => \Spatie\Permission\DefaultTeamResolver::class,
+    'team_resolver' => DefaultTeamResolver::class,
 
     /*
      * Passport Client Credentials Grant
@@ -183,7 +215,7 @@ return [
          * When permissions or roles are updated the cache is flushed automatically.
          */
 
-        'expiration_time' => \DateInterval::createFromDateString('24 hours'),
+        'expiration_time' => DateInterval::createFromDateString('24 hours'),
 
         /*
          * The cache key used to store all permissions.

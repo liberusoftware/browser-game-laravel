@@ -2,19 +2,22 @@
 
 namespace App\Livewire;
 
-use App\Models\Player;
-use App\Models\Guild;
-use App\Models\Guild_Membership;
 use App\Events\GuildMemberJoined;
 use App\Events\GuildMemberLeft;
+use App\Models\Guild;
+use App\Models\Player;
 use Livewire\Component;
 
 class GuildPanel extends Component
 {
     public $player;
+
     public $playerGuilds = [];
+
     public $availableGuilds = [];
+
     public $selectedGuild = null;
+
     public $guildMembers = [];
 
     protected $listeners = [
@@ -29,8 +32,8 @@ class GuildPanel extends Component
     public function loadGuilds()
     {
         $this->player = Player::with('guilds')->first();
-        
-        if (!$this->player) {
+
+        if (! $this->player) {
             $this->player = Player::create([
                 'username' => 'Demo Player',
                 'email' => 'demo@example.com',
@@ -68,13 +71,13 @@ class GuildPanel extends Component
         }])->find($guildId);
 
         if ($guild) {
-            $this->guildMembers = $guild->members->map(function ($member) {
+            $this->guildMembers = $guild->members->map(function (Player $member): array {
                 return [
                     'id' => $member->id,
                     'username' => $member->username,
                     'level' => $member->level,
-                    'role' => $member->pivot->role ?? 'member',
-                    'joined_at' => $member->pivot->joined_at,
+                    'role' => data_get($member->getRelationValue('pivot'), 'role', 'member'),
+                    'joined_at' => data_get($member->getRelationValue('pivot'), 'joined_at'),
                 ];
             })->toArray();
         }
@@ -83,15 +86,17 @@ class GuildPanel extends Component
     public function joinGuild($guildId)
     {
         $guild = Guild::find($guildId);
-        
-        if (!$guild) {
+
+        if (! $guild) {
             session()->flash('error', 'Guild not found!');
+
             return;
         }
 
         // Check if player is already in the guild
         if ($this->player->guilds()->where('guild_id', $guildId)->exists()) {
             session()->flash('error', 'You are already in this guild!');
+
             return;
         }
 
@@ -114,9 +119,10 @@ class GuildPanel extends Component
     public function leaveGuild($guildId)
     {
         $guild = Guild::find($guildId);
-        
-        if (!$guild) {
+
+        if (! $guild) {
             session()->flash('error', 'Guild not found!');
+
             return;
         }
 

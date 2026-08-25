@@ -15,7 +15,9 @@ class GuildMemberLeft implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $guild;
+
     public $player;
+
     public $message;
 
     /**
@@ -33,7 +35,7 @@ class GuildMemberLeft implements ShouldBroadcast
      */
     public function broadcastOn(): Channel
     {
-        return new Channel('guild.' . $this->guild->id);
+        return new Channel('guild.'.$this->guild->id);
     }
 
     /**

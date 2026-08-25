@@ -2,26 +2,23 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Models\Achievement;
 use App\Models\Player;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
 
 class RecentAchievementsWidget extends BaseWidget
 {
-    protected ?string $heading = 'Recent Achievement Unlocks';
+    protected static ?string $heading = 'Recent Achievement Unlocks';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                \DB::table('player_achievements')
-                    ->join('players', 'player_achievements.player_id', '=', 'players.id')
+                Player::query()
+                    ->join('player_achievements', 'player_achievements.player_id', '=', 'players.id')
                     ->join('achievements', 'player_achievements.achievement_id', '=', 'achievements.id')
                     ->whereNotNull('player_achievements.unlocked_at')
                     ->select(

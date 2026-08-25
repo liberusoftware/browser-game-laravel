@@ -1,11 +1,11 @@
 <?php
 
 namespace Tests\Feature;
-use PHPUnit\Framework\Attributes\Test;
 
 use App\Models\Player;
 use App\Services\RankingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PlayerRankingTest extends TestCase

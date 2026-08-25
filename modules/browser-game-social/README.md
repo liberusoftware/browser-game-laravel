@@ -1,0 +1,15 @@
+# Browser Game Social
+
+This package provides the core domain implementation for the Browser Game application. It owns the provider-neutral domain contracts, behavior, persistence, and authorization boundary for this capability.
+
+## Installation
+
+```bash
+composer require liberusoftware/module-browser-game-social
+```
+
+The package requires PHP 8.5 and Laravel 13. Enable it through the host application's module composition. It owns social records for friends, parties, chat, mail, guilds, alliances, memberships and permissions, activity evidence, and reports.
+
+## License
+
+MIT. See [LICENSE](LICENSE.md).

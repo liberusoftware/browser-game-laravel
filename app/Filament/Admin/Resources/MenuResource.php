@@ -2,42 +2,38 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use App\Filament\Admin\Resources\MenuResource\Pages\ListMenus;
 use App\Filament\Admin\Resources\MenuResource\Pages\CreateMenu;
-use App\Filament\Admin\Resources\MenuResource\Pages\ViewMenu;
 use App\Filament\Admin\Resources\MenuResource\Pages\EditMenu;
+use App\Filament\Admin\Resources\MenuResource\Pages\ListMenus;
+use App\Filament\Admin\Resources\MenuResource\Pages\ViewMenu;
 use App\Models\Menu;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\MenuResource\Pages;
-use App\Filament\Admin\Resources\MenuResource\RelationManagers;
 
 class MenuResource extends Resource
 {
     protected static ?string $model = Menu::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-bars-3';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-3';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'System';
+    protected static string|\UnitEnum|null $navigationGroup = 'System';
 
     protected static ?string $navigationLabel = 'Menus';
 

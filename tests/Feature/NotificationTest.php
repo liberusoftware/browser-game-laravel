@@ -3,17 +3,12 @@
 namespace Tests\Feature;
 
 use App\Events\AchievementUnlocked;
-use App\Events\GuildInvitationSent;
 use App\Events\PlayerLeveledUp;
 use App\Events\QuestCompleted;
 use App\Models\GameNotification;
-use App\Models\Guild;
 use App\Models\Player;
 use App\Models\Quest;
-use App\Models\User;
 use App\Notifications\AchievementUnlockedNotification;
-use App\Notifications\LevelUpNotification;
-use App\Notifications\QuestCompletedNotification;
 use App\Services\NotificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;

@@ -1,55 +1,69 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Liberu\Foundation\ApplicationCore\Http\Middleware\SecurityHeaders;
+use Liberu\Foundation\Localization\Http\Middleware\SetLocale;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->appendToGroup('web', [SetLocale::class, SecurityHeaders::class]);
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->shouldRenderJsonWhen(
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+        );
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
+        $exceptions->render(function (Throwable $exception, Request $request): ?JsonResponse {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
+                return null;
+            }
 
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
-);
+            $status = match (true) {
+                $exception instanceof AuthenticationException => 401,
+                $exception instanceof AuthorizationException => 403,
+                $exception instanceof ModelNotFoundException => 404,
+                $exception instanceof ValidationException => 422,
+                $exception instanceof ThrottleRequestsException => 429,
+                $exception instanceof HttpExceptionInterface => $exception->getStatusCode(),
+                default => 500,
+            };
 
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
-);
+            $detail = match (true) {
+                $exception instanceof ValidationException => 'The request data was invalid.',
+                $status >= 500 => 'An unexpected error occurred.',
+                default => $exception->getMessage() !== '' ? $exception->getMessage() : 'The request could not be completed.',
+            };
 
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    App\Exceptions\Handler::class
-);
+            $problem = [
+                'type' => 'about:blank',
+                'title' => strtolower((string) Response::$statusTexts[$status] ?? 'HTTP error'),
+                'status' => $status,
+                'detail' => $detail,
+                'instance' => $request->getUri(),
+            ];
 
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
+            if ($exception instanceof ValidationException) {
+                $problem['errors'] = $exception->errors();
+            }
 
-return $app;
+            return response()->json($problem, $status, ['Content-Type' => 'application/problem+json']);
+        });
+    })->create();

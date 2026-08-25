@@ -177,9 +177,9 @@ class PlayerTrackingDemoSeeder extends Seeder
 
                 $player->achievements()->syncWithoutDetaching([
                     $achievement->id => [
-                        'progress' => (int)$progress,
+                        'progress' => (int) $progress,
                         'unlocked_at' => $unlocked ? now()->subDays(rand(1, 30)) : null,
-                    ]
+                    ],
                 ]);
 
                 // Update achievements unlocked count

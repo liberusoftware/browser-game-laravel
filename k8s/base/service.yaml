@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: browser-game
-  namespace: browser-game
+  name: boilerplate-laravel
+  namespace: boilerplate-laravel
   labels:
-    app: browser-game
-    component: application
+    app: boilerplate-laravel
 spec:
   type: ClusterIP
   sessionAffinity: ClientIP
@@ -13,10 +12,10 @@ spec:
     clientIP:
       timeoutSeconds: 10800
   ports:
-    - name: http
-      port: 80
-      targetPort: 80
-      protocol: TCP
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
   selector:
-    app: browser-game
+    app: boilerplate-laravel
     component: application

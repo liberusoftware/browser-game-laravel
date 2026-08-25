@@ -4,19 +4,23 @@ namespace App\Livewire;
 
 use App\Models\Player;
 use App\Services\DailyRewardService;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class DailyRewardClaim extends Component
 {
     public $player;
+
     public $canClaim = false;
+
     public $currentStreak = 0;
+
     public $lastReward;
 
     public function mount()
     {
-        $this->player = Auth::user()?->player ?? Player::where('email', Auth::user()->email)->first();
+        $user = Auth::user();
+        $this->player = $user->player ?? Player::where('email', $user->email)->first();
         $this->refreshRewardStatus();
     }
 

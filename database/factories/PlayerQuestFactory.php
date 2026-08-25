@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-
 use App\Models\Player;
+use App\Models\Player_Quest;
 use App\Models\Quest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Player_Quest>
+ * @extends Factory<Player_Quest>
  */
 class PlayerQuestFactory extends Factory
 {

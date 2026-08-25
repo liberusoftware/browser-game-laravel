@@ -1,12 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Models;
 
-use Spatie\Permission\Models\Role as SpatieRole;
-
-class Role extends SpatieRole
-{
-    //
-}
+/** @deprecated Use the Liberu roles-permissions model in new code. */
+class Role extends \Liberu\Foundation\RolesPermissions\Models\Role {}

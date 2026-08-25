@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Player;
 use App\Models\Battle;
+use App\Models\Player;
 use Illuminate\Support\Facades\DB;
 
 class CombatService
@@ -66,7 +66,7 @@ class CombatService
             // Attacker's turn
             $attackDamage = $this->calculateDamage($attackerStats, $defenderStats);
             $defenderHP -= $attackDamage;
-            
+
             $battleLog[] = [
                 'round' => $round,
                 'actor' => 'attacker',
@@ -124,10 +124,10 @@ class CombatService
         $baseDamage = $attackerStats['strength'] + ($attackerStats['agility'] / 2);
         $defense = $defenderStats['defense'];
         $damage = max(1, $baseDamage - ($defense / 2));
-        
+
         // Add some randomness (80-120% of calculated damage)
         $damage = $damage * (0.8 + (mt_rand(0, 40) / 100));
-        
+
         return (int) round($damage);
     }
 
@@ -152,7 +152,7 @@ class CombatService
     {
         DB::transaction(function () use ($player, $exp, $gold) {
             $player->increment('experience', $exp);
-            
+
             // Update gold resource
             $goldResource = $player->resources()->where('resource_type', 'gold')->first();
             if ($goldResource) {
@@ -175,7 +175,7 @@ class CombatService
     protected function checkLevelUp(Player $player): void
     {
         $experienceRequired = $player->level * 100;
-        
+
         while ($player->experience >= $experienceRequired) {
             $player->increment('level');
             $player->decrement('experience', $experienceRequired);
@@ -183,7 +183,7 @@ class CombatService
             $player->increment('max_health', 10);
             $player->increment('max_mana', 5);
             $player->update(['health' => $player->max_health, 'mana' => $player->max_mana]);
-            
+
             $experienceRequired = $player->level * 100;
         }
     }

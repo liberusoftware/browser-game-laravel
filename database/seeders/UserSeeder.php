@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -28,8 +27,11 @@ class UserSeeder extends Seeder
 
         $team = Team::firstOrFail();
         $adminUser->teams()->syncWithoutDetaching([$team->id]);
+        $team->forceFill(['user_id' => $adminUser->id])->save();
+        $adminUser->forceFill(['current_team_id' => $team->id])->save();
 
         $role = Role::where('name', 'super_admin')->firstOrFail();
+        setPermissionsTeamId($team->id);
         $adminUser->assignRole($role);
 
         // Print passwords to console

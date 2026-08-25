@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Skill;
+use App\Models\Item;
 use App\Models\Recipe;
 use App\Models\RecipeMaterial;
-use App\Models\Item;
+use App\Models\Skill;
 use Illuminate\Database\Seeder;
 
 class GameContentSeeder extends Seeder

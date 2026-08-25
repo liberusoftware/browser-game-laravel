@@ -2,11 +2,11 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Models\Player;
 use App\Models\Guild;
 use App\Models\Item;
-use App\Models\Quest;
+use App\Models\Player;
 use App\Models\Player_Quest;
+use App\Models\Quest;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -21,7 +21,7 @@ class GameStatsOverview extends BaseWidget
 
         return [
             Stat::make('Total Players', $totalPlayers)
-                ->description($recentPlayers . ' new this week')
+                ->description($recentPlayers.' new this week')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart([7, 12, 15, 18, 22, 25, $recentPlayers]),

@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\GameResourceResource\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\GameResourceResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewGameResource extends ViewRecord

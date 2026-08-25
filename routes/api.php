@@ -11,35 +11,18 @@ use App\Http\Controllers\QuestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// Notification routes
-Route::middleware('auth:sanctum')->group(function () {
-    Route::prefix('notifications')->group(function () {
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::prefix('notifications')->group(function (): void {
         Route::get('/', [NotificationController::class, 'index'])->name('api.notifications.index');
         Route::get('/unread', [NotificationController::class, 'unread'])->name('api.notifications.unread');
         Route::get('/count', [NotificationController::class, 'count'])->name('api.notifications.count');
         Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('api.notifications.mark-as-read');
         Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('api.notifications.mark-all-as-read');
     });
-});
 
-Route::middleware('auth:sanctum')->group(function () {
-    // Player statistics routes
-    Route::prefix('players/{player}')->scopeBindings()->group(function () {
+    Route::prefix('players/{player}')->scopeBindings()->group(function (): void {
         Route::get('/statistics', [PlayerStatisticsController::class, 'show']);
         Route::get('/progression', [PlayerStatisticsController::class, 'progression']);
         Route::get('/achievements', [PlayerAchievementsController::class, 'index']);
@@ -49,11 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/recipes', [CraftingController::class, 'playerRecipes']);
     });
 
-    // Achievement routes
     Route::get('/achievements', [PlayerAchievementsController::class, 'available']);
 
-    // Quest API routes
-    Route::prefix('quests')->group(function () {
+    Route::prefix('quests')->group(function (): void {
         Route::get('/available', [QuestController::class, 'available']);
         Route::get('/active', [QuestController::class, 'active']);
         Route::get('/completed', [QuestController::class, 'completed']);
@@ -62,21 +43,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{quest}/abandon', [QuestController::class, 'abandon']);
     });
 
-    // Combat routes
-    Route::prefix('combat')->group(function () {
+    Route::prefix('combat')->group(function (): void {
         Route::post('/pve', [CombatController::class, 'pve']);
         Route::post('/pvp', [CombatController::class, 'pvp']);
         Route::post('/heal', [CombatController::class, 'heal']);
     });
 
-    // Crafting routes
-    Route::prefix('crafting')->group(function () {
+    Route::prefix('crafting')->group(function (): void {
         Route::post('/recipes/{recipe}/craft', [CraftingController::class, 'craft']);
         Route::post('/recipes/{recipe}/learn', [CraftingController::class, 'learn']);
     });
 
-    // Marketplace routes
-    Route::prefix('marketplace')->group(function () {
+    Route::prefix('marketplace')->group(function (): void {
         Route::get('/', [MarketplaceController::class, 'index']);
         Route::post('/', [MarketplaceController::class, 'store']);
         Route::post('/{listing}/purchase', [MarketplaceController::class, 'purchase']);

@@ -21,7 +21,7 @@ class MarketplaceService
                 ->first();
 
             if (! $playerItem || $playerItem->quantity < $quantity) {
-                return null;
+                return;
             }
 
             // Remove items from inventory

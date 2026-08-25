@@ -2,27 +2,31 @@
 
 namespace App\Livewire;
 
-use App\Models\Player;
 use App\Models\MarketplaceListing;
-use App\Models\Item;
+use App\Models\Player;
 use App\Services\MarketplaceService;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Auth;
 
 class Marketplace extends Component
 {
     use WithPagination;
 
     public $player;
+
     public $searchTerm = '';
+
     public $selectedItem;
+
     public $sellQuantity = 1;
+
     public $sellPrice = 100;
 
     public function mount()
     {
-        $this->player = Auth::user()?->player ?? Player::where('email', Auth::user()->email)->first();
+        $user = Auth::user();
+        $this->player = $user->player ?? Player::where('email', $user->email)->first();
     }
 
     public function selectItemToSell($itemId)
@@ -37,7 +41,7 @@ class Marketplace extends Component
 
     public function createListing()
     {
-        if (!$this->selectedItem) {
+        if (! $this->selectedItem) {
             return;
         }
 
@@ -61,8 +65,8 @@ class Marketplace extends Component
     public function purchaseItem($listingId)
     {
         $listing = MarketplaceListing::find($listingId);
-        
-        if (!$listing) {
+
+        if (! $listing) {
             return;
         }
 
@@ -80,8 +84,8 @@ class Marketplace extends Component
     public function cancelListing($listingId)
     {
         $listing = MarketplaceListing::find($listingId);
-        
-        if (!$listing) {
+
+        if (! $listing) {
             return;
         }
 
@@ -100,7 +104,7 @@ class Marketplace extends Component
 
         if ($this->searchTerm) {
             $query->whereHas('item', function ($q) {
-                $q->where('name', 'like', '%' . $this->searchTerm . '%');
+                $q->where('name', 'like', '%'.$this->searchTerm.'%');
             });
         }
 

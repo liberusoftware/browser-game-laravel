@@ -2,15 +2,16 @@
 
 namespace App\Livewire;
 
-use App\Models\Player;
 use App\Events\PlayerLeveledUp;
+use App\Models\Player;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
 
 class PlayerDashboard extends Component
 {
     public $player;
+
     public $experiencePercentage;
+
     public $nextLevelXp;
 
     protected $listeners = [
@@ -31,10 +32,10 @@ class PlayerDashboard extends Component
             'activeQuests.quest',
             'items',
             'guilds',
-            'resources'
+            'resources',
         ])->first();
 
-        if (!$this->player) {
+        if (! $this->player) {
             // Create a demo player for testing
             $this->player = Player::create([
                 'username' => 'Demo Player',
@@ -55,9 +56,9 @@ class PlayerDashboard extends Component
         $currentLevelXp = ($this->player->level - 1) * 100;
         $xpInCurrentLevel = $this->player->experience - $currentLevelXp;
         $xpNeededForLevel = $this->nextLevelXp - $currentLevelXp;
-        
-        $this->experiencePercentage = $xpNeededForLevel > 0 
-            ? ($xpInCurrentLevel / $xpNeededForLevel) * 100 
+
+        $this->experiencePercentage = $xpNeededForLevel > 0
+            ? ($xpInCurrentLevel / $xpNeededForLevel) * 100
             : 0;
     }
 
@@ -70,16 +71,16 @@ class PlayerDashboard extends Component
     public function handleQuestCompleted($questId, $experienceReward)
     {
         $this->player->experience += $experienceReward;
-        
+
         // Check for level up
         while ($this->player->experience >= ($this->player->level * 100)) {
             $this->player->level++;
             $this->dispatch('player-leveled-up', level: $this->player->level);
-            
+
             // Broadcast level up event
             event(new PlayerLeveledUp($this->player, $this->player->level));
         }
-        
+
         $this->player->save();
         $this->refreshPlayer();
     }

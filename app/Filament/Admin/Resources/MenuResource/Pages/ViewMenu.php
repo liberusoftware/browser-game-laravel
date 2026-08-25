@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\MenuResource\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\MenuResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewMenu extends ViewRecord

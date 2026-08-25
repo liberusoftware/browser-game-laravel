@@ -3,8 +3,8 @@
 namespace Tests\Feature\Livewire;
 
 use App\Livewire\PlayerInventory;
-use App\Models\Player;
 use App\Models\Item;
+use App\Models\Player;
 use App\Models\Resource;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -26,7 +26,7 @@ class PlayerInventoryTest extends TestCase
     {
         $player = Player::factory()->create();
         $item = Item::factory()->create(['name' => 'Health Potion']);
-        
+
         $player->items()->attach($item->id, ['quantity' => 5]);
 
         Livewire::test(PlayerInventory::class)
@@ -52,7 +52,7 @@ class PlayerInventoryTest extends TestCase
     {
         $player = Player::factory()->create();
         $item = Item::factory()->create(['name' => 'Mana Potion']);
-        
+
         $player->items()->attach($item->id, ['quantity' => 3]);
 
         Livewire::test(PlayerInventory::class)
@@ -68,7 +68,7 @@ class PlayerInventoryTest extends TestCase
     {
         $player = Player::factory()->create();
         $item = Item::factory()->create(['name' => 'Old Sword']);
-        
+
         $player->items()->attach($item->id, ['quantity' => 1]);
 
         Livewire::test(PlayerInventory::class)
@@ -84,7 +84,7 @@ class PlayerInventoryTest extends TestCase
     {
         $player = Player::factory()->create();
         $item = Item::factory()->create(['name' => 'Last Potion']);
-        
+
         $player->items()->attach($item->id, ['quantity' => 1]);
 
         Livewire::test(PlayerInventory::class)
@@ -110,7 +110,7 @@ class PlayerInventoryTest extends TestCase
             'name' => 'Legendary Sword',
             'rarity' => 'legendary',
         ]);
-        
+
         $player->items()->attach($item->id, ['quantity' => 1]);
 
         Livewire::test(PlayerInventory::class)

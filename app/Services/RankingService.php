@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Player;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 
 class RankingService
 {
@@ -27,7 +27,7 @@ class RankingService
             $player->rank = $currentRank;
             $player->last_rank_update = now();
             $player->save();
-            
+
             $currentRank++;
             $updatedCount++;
         }
@@ -47,7 +47,7 @@ class RankingService
 
         foreach ($players as $player) {
             $newScore = $player->calculateScore();
-            
+
             if ($player->score !== $newScore) {
                 $player->score = $newScore;
                 $player->save();
@@ -60,9 +60,6 @@ class RankingService
 
     /**
      * Update score and ranking for a specific player.
-     *
-     * @param Player $player
-     * @return void
      */
     public function updatePlayerRanking(Player $player): void
     {
@@ -77,8 +74,7 @@ class RankingService
     /**
      * Get top players by rank.
      *
-     * @param int $limit
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getTopPlayers(int $limit = 10)
     {
@@ -90,9 +86,6 @@ class RankingService
 
     /**
      * Get player's ranking position.
-     *
-     * @param Player $player
-     * @return int|null
      */
     public function getPlayerRank(Player $player): ?int
     {

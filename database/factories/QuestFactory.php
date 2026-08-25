@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Item;
+use App\Models\Quest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quest>
+ * @extends Factory<Quest>
  */
 class QuestFactory extends Factory
 {

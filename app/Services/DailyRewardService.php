@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Player;
 use App\Models\DailyReward;
+use App\Models\Player;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -17,11 +17,11 @@ class DailyRewardService
         $today = Carbon::today();
         $lastReward = $player->dailyRewards()->latest('reward_date')->first();
 
-        if (!$lastReward) {
+        if (! $lastReward) {
             return true;
         }
 
-        return !$lastReward->reward_date->isToday();
+        return ! $lastReward->reward_date->isToday();
     }
 
     /**
@@ -29,13 +29,13 @@ class DailyRewardService
      */
     public function claimDailyReward(Player $player): ?DailyReward
     {
-        if (!$this->canClaimReward($player)) {
+        if (! $this->canClaimReward($player)) {
             return null;
         }
 
         $today = Carbon::today();
         $lastReward = $player->dailyRewards()->latest('reward_date')->first();
-        
+
         // Calculate streak
         $streak = 1;
         if ($lastReward && $lastReward->reward_date->isYesterday()) {
@@ -45,7 +45,7 @@ class DailyRewardService
         // Calculate rewards based on streak
         $baseGold = 100;
         $baseExp = 50;
-        
+
         $goldReward = $baseGold + ($streak * 20); // +20 gold per day streak
         $expReward = $baseExp + ($streak * 10); // +10 exp per day streak
 
@@ -113,8 +113,8 @@ class DailyRewardService
     public function getCurrentStreak(Player $player): int
     {
         $lastReward = $player->dailyRewards()->latest('reward_date')->first();
-        
-        if (!$lastReward) {
+
+        if (! $lastReward) {
             return 0;
         }
 

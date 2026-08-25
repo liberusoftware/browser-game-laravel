@@ -1,266 +1,215 @@
-# Liberu Persistent Browser-Based Game (PBBG)
+# Liberu Browser Game
 
-[![](https://avatars.githubusercontent.com/u/158830885?s=200&v=4)](https://www.liberu.co.uk)
+> A persistent browser-based game (PBBG) platform built on the Liberu Laravel foundation.
 
-### Build. Battle. Conquer. — An open-source PBBG platform powered by Laravel 13 & Filament 5.
+[Software](https://liberusoftware.com) · [Hosting](https://liberuhosting.com) · [Services](https://liberuservices.com) · [Liberu Group](https://liberugroup.com)
 
-![](https://img.shields.io/badge/PHP-8.5-informational?style=flat&logo=php&color=4f5b93)
-![](https://img.shields.io/badge/Laravel-13-informational?style=flat&logo=laravel&color=ef3b2d)
-![](https://img.shields.io/badge/Filament-5-informational?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgeG1sbnM6dj0iaHR0cHM6Ly92ZWN0YS5pby9uYW5vIj48cGF0aCBkPSJNMCAwaDQ4djQ4SDBWMHoiIGZpbGw9IiNmNGIyNWUiLz48cGF0aCBkPSJNMjggN2wtMSA2LTMuNDM3LjgxM0wyMCAxNWwtMSAzaDZ2NWgtN2wtMyAxOEg4Yy41MTUtNS44NTMgMS40NTQtMTEuMzMgMy0xN0g4di01bDUtMSAuMjUtMy4yNUMxNCAxMSAxNCAxMSAxNS40MzggOC41NjMgMTkuNDI5IDYuMTI4IDIzLjQ0MiA2LjY4NyAyOCA3eiIgZmlsbD0iIzI4MjQxZSIvPjxwYXRoIGQ9Ik0zMCAxOGg0YzIuMjMzIDUuMzM0IDIuMjMzIDUuMzM0IDEuMTI1IDguNUwzNCAyOWMtLjE2OCAzLjIwOS0uMTY4IDMuMjA5IDAgNmwtMiAxIDEgM2gtNXYyaC0yYy44NzUtNy42MjUuODc1LTcuNjI1IDItMTFoMnYtMmgtMnYtMmwyLTF2LTQtM3oiIGZpbGw9IiMyYTIwMTIiLz48cGF0aCBkPSJNMzUuNTYzIDYuODEzQzM4IDcgMzggNyAzOSA4Yy4xODggMi40MzguMTg4IDIuNDM4IDAgNWwtMiAyYy0yLjYyNS0uMzc1LTIuNjI1LS4zNzUtNS0xLS42MjUtMi4zNzUtLjYyNS0yLjM3NS0xLTUgMi0yIDItMiA0LjU2My0yLjE4N3oiIGZpbGw9IiM0MDM5MzEiLz48cGF0aCBkPSJNMzAgMThoNGMyLjA1NSA1LjMxOSAyLjA1NSA1LjMxOSAxLjgxMyA4LjMxM0wzNSAyOGwtMyAxdi0ybC00IDF2LTJsMi0xdi00LTN6IiBmaWxsPSIjMzEyODFlIi8+PHBhdGggZD0iTTI5IDI3aDN2MmgydjJoLTJ2MmwtNC0xdi0yaDJsLTEtM3oiIGZpbGw9IiMxNTEzMTAiLz48cGF0aCBkPSJNMzAgMThoNHYzaC0ydjJsLTMgMSAxLTZ6IiBmaWxsPSIjNjA0YjMyIi8+PC9zdmc+&&color=fdae4b&link=https://filamentphp.com)
-![](https://img.shields.io/badge/Livewire-4-informational?style=flat&logo=Livewire&color=fb70a9)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Open Source Love](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red.svg)](https://github.com/liberu-browser-game/browser-game-laravel)
-[![Latest Release](https://img.shields.io/github/v/release/liberu-browser-game/browser-game-laravel?include_prereleases)](https://github.com/liberu-browser-game/browser-game-laravel/releases)
-[![Test Coverage](https://img.shields.io/badge/coverage-passing-brightgreen)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/tests.yml)
+[![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)](https://www.php.net/) [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/) [![Filament](https://img.shields.io/badge/Filament-5-FDAE4B)](https://filamentphp.com/) [![Livewire](https://img.shields.io/badge/Livewire-4-FB70A9)](https://livewire.laravel.com/)
 
-[![Install](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/install.yml/badge.svg)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/install.yml)
-[![Tests](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/tests.yml/badge.svg)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/tests.yml)
-[![Docker](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/main.yml/badge.svg)](https://github.com/liberu-browser-game/browser-game-laravel/actions/workflows/main.yml)
+[![Install](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/install.yml/badge.svg?branch=main)](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/install.yml) [![Tests](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/tests.yml) [![Docker](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/liberusoftware/browser-game-laravel/actions/workflows/docker.yml) [![Coverage](https://codecov.io/gh/liberusoftware/browser-game-laravel/branch/main/graph/badge.svg)](https://codecov.io/gh/liberusoftware/browser-game-laravel) [![Latest release](https://img.shields.io/github/v/release/liberusoftware/browser-game-laravel?sort=semver)](https://github.com/liberusoftware/browser-game-laravel/releases/latest) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
-[![Contact us on WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/+441793200950)
-[![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)](https://www.youtube.com/@liberusoftware)
+Liberu Browser Game is the deployable host for a persistent browser-based game. It combines the Liberu Composer ecosystem with game-domain systems for players, quests, combat, crafting, inventory, guilds, marketplace trading, achievements, rewards, notifications, and leaderboards.
 
----
+## Key features
 
-## About This Project
+- Jetstream authentication, profiles, sessions, two-factor authentication, passkeys, and social login
+- Filament admin and account panels assembled from optional presentation modules
+- Organisations, teams, roles, permissions, audit trails, settings, and feature flags
+- Messaging, notifications, localisation, search, files, webhooks, integrations, analytics, and import/export foundations
+- Queue, scheduler, Horizon, Pulse, Telescope, Octane, Reverb, backup, and observability support
+- Independently versioned modules installed into tracked `/modules` directories
+- Independently versioned themes installed into tracked `/themes` directories with inheritance and safe fallback
+- Architecture tests for manifests, dependency direction, package ownership, and presentation boundaries
+- Game-domain services, API endpoints, Filament administration, and Livewire gameplay components
+- Tenant- and team-aware authorization for player and guild activity
 
-**Liberu Browser Game** is a fully open-source, feature-rich **Persistent Browser-Based Game (PBBG)** platform built with modern PHP technologies. It delivers engaging, long-running gameplay — combat, character progression, crafting, trading, guilds, quests, and leaderboards — all within a browser. No plugins or downloads required for players.
+## Requirements
 
-The codebase is built on [Laravel 13](https://laravel.com), [PHP 8.5](https://php.net), [Filament 5](https://filamentphp.com) for the admin panel, and [Livewire 4](https://livewire.laravel.com) for reactive UI components. It follows PSR-12 standards and is designed with a modular service-layer architecture so developers can extend or customise any game system with minimal friction.
-
-Whether you want to host your own PBBG, study the architecture, or contribute new features, this repository is the starting point.
-
----
-
-## 🎮 Game Features
-
-### Core Gameplay Systems
-
-#### ⚔️ Combat System
-- **PvE Battles**: Fight AI opponents with dynamic difficulty scaling
-- **Turn-Based Mechanics**: Strategic combat with damage calculations
-- **Battle Logs**: Detailed round-by-round combat history
-- **Victory Rewards**: Earn experience and gold
-- **Healing System**: Manage health between battles
-
-#### 📈 Character Progression
-- **Core Stats**: Strength, Defense, Agility, Intelligence
-- **Resource Management**: Health and Mana pools
-- **Level System**: XP-based progression with meaningful rewards
-- **Stat Points**: Customise your character (5 points per level)
-- **Equipment Bonuses**: Items enhance your capabilities
-
-#### 🛡️ Equipment System
-- **6 Equipment Slots**: Weapon, Armor, Helmet, Boots, Gloves, Accessory
-- **Stat Bonuses**: Each piece provides specific increases
-- **Rarity Tiers**: Common → Uncommon → Rare → Legendary
-- **Level Requirements**: Progressive gear unlocking
-
-#### ✨ Skills & Abilities
-- **Diverse Skill Types**: Attack, Defense, Heal, Buff
-- **Mana System**: Strategic resource management
-- **Cooldown Mechanics**: Prevents ability spam
-- **Skill Progression**: Level up for increased power
-
-#### 🔨 Crafting System
-- **Recipe Learning**: Discover through quests and exploration
-- **Material Gathering**: Collect resources from various sources
-- **Success Rates**: Variable difficulty adds challenge
-- **Quality Crafting**: Create powerful equipment
-
-#### 💰 Player Economy
-- **Marketplace Trading**: Buy and sell with other players
-- **Custom Pricing**: Set your own market prices
-- **Secure Transactions**: Safe gold and item transfers
-- **Supply & Demand**: Dynamic player-driven economy
-
-#### 🏆 Competitive Features
-- **Leaderboards**: Compete in 4 categories (Level, PvP, Quests, Wealth)
-- **Rankings**: See top 20 players
-- **Daily Rewards**: Login bonuses with streak system
-- **Achievement Tracking**: 11 predefined achievements
-
-#### 👥 Social Features
-- **Guild System**: Join communities, participate in activities
-- **Guild Roles**: Leader, Officer, Member hierarchy
-- **Quests**: Complete objectives for rewards and items
-- **Real-time Notifications**: Stay informed of game events
-
----
-
-## 🌟 Key Features
-
-### For Players
-- ✅ Persistent character progression
-- ✅ Engaging turn-based combat
-- ✅ Player-driven economy and marketplace
-- ✅ Competitive leaderboards (4 categories)
-- ✅ Daily login rewards with streak bonuses
-- ✅ Guild system with roles and activities
-- ✅ Crafting & trading systems
-- ✅ Mobile-responsive design
-
-### For Developers
-- ✅ Laravel 13 best practices and conventions
-- ✅ Livewire 4 reactive real-time UI components
-- ✅ Filament 5 admin panel with full game management
-- ✅ Service layer architecture (modular, testable)
-- ✅ Comprehensive automated test suite
-- ✅ Security-first: SQL injection, XSS, CSRF protection
-- ✅ Well-documented codebase (20+ KB of guides)
-- ✅ PSR-12 compliant code quality
-
----
-
-## 🛠️ Technical Stack
-
-| Layer | Technology |
+| Dependency | Supported version |
 |---|---|
-| **Backend** | Laravel 13, PHP 8.5, MySQL / PostgreSQL, Laravel Octane |
-| **Frontend** | Livewire 4, Alpine.js, Tailwind CSS, Blade Templates |
-| **Admin Panel** | Filament 5 — real-time dashboard, player & content management |
-| **Security** | SQL injection prevention, XSS & CSRF protection, secure authentication |
-| **Tooling** | PHPUnit, Docker / Laravel Sail, GitHub Actions CI |
+| PHP | 8.5 |
+| Laravel | 13.x |
+| Filament | 5.x |
+| Livewire | 4.x |
+| Composer | 2.x |
+| Node.js | Latest stable release |
+| Database | A Laravel-supported SQL database |
 
----
-
-## 🚀 Installation
-
-### Prerequisites
-- **PHP 8.5+** and Composer
-- MySQL or PostgreSQL database
-- Node.js and NPM
-
-### Option 1 — Automated installer (recommended)
-
-Run the interactive setup script from the command line. It guides you through `.env` configuration, installs dependencies, generates the application key, runs migrations and seeds, and optionally starts the dev server:
+## Quick start
 
 ```bash
-git clone https://github.com/liberu-browser-game/browser-game-laravel.git
+git clone https://github.com/liberusoftware/browser-game-laravel.git
 cd browser-game-laravel
-./setup.sh
-```
-
-> A **graphical installer** is also available for desktop users — download and run the platform-specific installer from the [Releases page](https://github.com/liberu-browser-game/browser-game-laravel/releases), which wraps the same `setup.sh` logic in a user-friendly GUI.
-
-### Option 2 — Manual setup
-
-```bash
-git clone https://github.com/liberu-browser-game/browser-game-laravel.git
-cd browser-game-laravel
-
-# Install PHP and JS dependencies
 composer install
-npm install
-
-# Environment setup
 cp .env.example .env
 php artisan key:generate
-
-# Configure your database credentials in .env, then:
-php artisan migrate
-php artisan db:seed --class=GameSeeder
-php artisan db:seed --class=GameContentSeeder
-
-# Build frontend assets
+npm install
 npm run build
-
-# Start the development server
+php artisan migrate
 php artisan serve
 ```
 
-Visit `http://localhost:8000` and start playing!
+Review `.env` before migrating. Use `php artisan migrate --seed` only when example data is wanted. The optional interactive `install.sh` supports local, Docker, and Kubernetes-oriented setup.
 
-### Option 3 — Docker
+## Composable package architecture
 
-```bash
-docker build -t browser-game-laravel .
-docker run -p 8000:8000 browser-game-laravel
+Each runtime capability is an independent `liberu-module` Composer package with its own GitHub repository, release lifecycle, manifest, provider, documentation, and tests. Each visual package is an independent `liberu-theme`. Shared contract packages and the custom installer are normal Composer dependencies under `/vendor`.
+
+```text
+Application composition
+├── modules/       # Composer-installed module releases, tracked in Git
+├── themes/        # Composer-installed theme releases, tracked in Git
+├── app/           # Host-only composition and integration
+├── config/        # Enabled modules and application policy
+└── tests/         # Cross-package and application tests
 ```
 
-Or use **Laravel Sail** for a fully containerised development environment:
+Composer is the source of installation and version truth:
 
 ```bash
-./vendor/bin/sail up
+# Update all dependencies, including modules and themes
+composer update --with-all-dependencies
+
+# Update one capability from its tagged GitHub repository
+composer update liberusoftware/search --with-dependencies
 ```
 
-**📖 For detailed setup instructions, see [Quick Start Guide](docs/QUICK_START.md)**
+The trusted [`liberusoftware/composer-installer`](https://github.com/liberusoftware/composer-installer) places packages according to type:
 
----
-
-## 📚 Documentation
-
-- **[Quick Start Guide](docs/QUICK_START.md)** — Get running in minutes
-- **[Game Features](docs/GAME_FEATURES.md)** — Complete feature reference
-- **[Admin Panel Guide](docs/ADMIN_PANEL_GUIDE.md)** — Admin panel documentation
-- **[Architecture](docs/ARCHITECTURE.md)** — Modular design overview
-- **[Mobile Responsiveness](docs/MOBILE_RESPONSIVENESS.md)** — Mobile optimisation guide
-
----
-
-## 🌐 Our Projects
-
-Liberu Browser Game is part of a broader ecosystem of open-source Laravel applications. Follow the links below to explore, use, or contribute to our related projects.
-
-| Project | Repository | Description |
+| Composer type | Install path | Repository convention |
 |---|---|---|
-| Accounting | [liberu-accounting/accounting-laravel](https://github.com/liberu-accounting/accounting-laravel) | Accounting and invoicing features for Laravel applications. |
-| Automation | [liberu-automation/automation-laravel](https://github.com/liberu-automation/automation-laravel) | Automation tooling and workflow integrations. |
-| Billing | [liberu-billing/billing-laravel](https://github.com/liberu-billing/billing-laravel) | Subscription and billing management (payments, invoices). |
-| Boilerplate (core) | [liberusoftware/boilerplate](https://github.com/liberusoftware/boilerplate) | Core starter and shared utilities used across Liberu projects. |
-| Browser Game | [liberu-browser-game/browser-game-laravel](https://github.com/liberu-browser-game/browser-game-laravel) | This repository — open-source PBBG platform. |
-| CMS | [liberu-cms/cms-laravel](https://github.com/liberu-cms/cms-laravel) | Content management and modular page administration. |
-| Control Panel | [liberu-control-panel/control-panel-laravel](https://github.com/liberu-control-panel/control-panel-laravel) | Administration components for managing services. |
-| CRM | [liberu-crm/crm-laravel](https://github.com/liberu-crm/crm-laravel) | Customer relationship management features and integrations. |
-| E‑commerce | [liberu-ecommerce/ecommerce-laravel](https://github.com/liberu-ecommerce/ecommerce-laravel) | E‑commerce storefront, product and order management. |
-| Genealogy | [liberu-genealogy/genealogy-laravel](https://github.com/liberu-genealogy/genealogy-laravel) | Family tree and genealogy features built on Laravel. |
-| Maintenance | [liberu-maintenance/maintenance-laravel](https://github.com/liberu-maintenance/maintenance-laravel) | Scheduling, tracking and reporting for maintenance tasks. |
-| Real Estate | [liberu-real-estate/real-estate-laravel](https://github.com/liberu-real-estate/real-estate-laravel) | Property listings and real-estate management features. |
-| Social Network | [liberu-social-network/social-network-laravel](https://github.com/liberu-social-network/social-network-laravel) | Social features, profiles, feeds and messaging. |
+| `liberu-module` | `/modules/{installer-name}` | `liberusoftware/module-{installer-name}` |
+| `liberu-theme` | `/themes/{installer-name}` | `liberusoftware/theme-{installer-name}` |
+| Contract/library | `/vendor` | Package-specific repository |
 
----
+`modules/` and `themes/` are intentionally kept out of `.gitignore`. Their reproduced contents are committed so deployments and reviews can see the exact installed code, while `composer.lock` pins each release and source commit. Do not edit an installed module only in this host: contribute the generic change to its package repository, release it, and update the Composer dependency here.
 
-## 🤝 Contributing
+Installation, runtime enablement, authorisation, and commercial entitlement are separate concerns. `config/modules.php` selects the enabled capability graph; the module manager validates dependencies and orders providers without scanning application classes manually.
 
-Contributions are warmly welcomed! Whether you're fixing a bug, adding a feature, improving documentation, or writing tests — every contribution helps.
+Every module also publishes a validated feature catalog in `module.json`. Hosts can inspect the complete catalog or search it without loading module internals:
 
-**Pull Request process:**
-1. **Fork** the repository and create a descriptive feature branch (`feature/my-new-feature`).
-2. **Write** your code following [PSR-12](https://www.php-fig.org/psr/psr-12/) coding standards.
-3. **Add tests** that cover your changes — new behaviour must be tested.
-4. **Run the test suite** locally (`./vendor/bin/phpunit`) and make sure all tests pass.
-5. **Open a Pull Request** against the `main` branch with a clear description of what you changed and why.
+```bash
+php artisan module:features
+php artisan module:features health
+php artisan module:status search
+```
 
-For larger changes, please open an issue first to discuss your approach. See [our issue template](.github/issue_template.md) for guidance.
+## Module and theme development
 
----
+A module owns one cohesive capability and communicates through public contracts, actions, events, registries, or stable identifiers. Domain modules do not depend on Filament or themes; optional `*-filament`, `*-api`, and `*-livewire` packages provide presentation adapters.
 
-## 📄 License
+Every module contains:
 
-This project is licensed under the **[MIT License](LICENSE)**.
+```text
+composer.json
+module.json
+README.md
+LICENSE.md
+CHANGELOG.md
+src/
+database/ or resources/ when required
+tests/
+```
 
-The MIT licence is one of the most permissive open-source licences available. It means you are free to:
-- **Use** this software for any purpose — personal, commercial, or educational.
-- **Modify** the source code to suit your own needs.
-- **Distribute** copies of the original or modified software.
-- **Incorporate** it into your own projects, even proprietary ones.
+Themes contain `composer.json`, `theme.json`, source assets, compatibility metadata, accessibility/fallback expectations, tests, documentation, and asset licensing information. See the [module development guide](docs/MODULE_DEVELOPMENT.md) and [theme architecture](docs/THEME_ARCHITECTURE.md).
 
-The only requirement is that the original copyright notice and licence text are included with any substantial distribution of the software. There is **no warranty** — the software is provided "as is".
+## Testing, coverage, and quality
 
-This licence makes Liberu Browser Game ideal for learning, prototyping, building commercial products, or hosting your own PBBG community.
+```bash
+composer validate --strict
+vendor/bin/pest
+vendor/bin/pint --test
+npm run build
+```
 
----
+The test suite exercises authentication, teams, authorization, game services, API endpoints, Filament resources, Livewire components, module boundaries, and installed providers. The CI workflow publishes `coverage.xml` to Codecov and enforces the configured release-scope coverage threshold (`--min=100`); a coverage failure blocks the workflow.
 
-## 📞 Support
+Run the same coverage gate locally with:
 
-- **Documentation**: See the [`/docs`](docs/) directory
-- **Issues & Feature Requests**: [GitHub Issues](https://github.com/liberu-browser-game/browser-game-laravel/issues)
-- **WhatsApp**: [+44 1793 200950](https://wa.me/+441793200950)
-- **Email**: support@liberu.co.uk
-- **YouTube**: [@liberusoftware](https://www.youtube.com/@liberusoftware)
+```bash
+XDEBUG_MODE=coverage vendor/bin/pest --coverage-clover=coverage.xml --min=100
+```
 
----
+### Publishing the component repositories
 
-**Built with ❤️ by the [Liberu Team](https://www.liberu.co.uk)**
+The publishing helper derives repository names from directory names, using
+`module-` for entries in `modules/` and `theme-` for entries in `themes/`. It
+also handles this complete meta repository as `browser-game-laravel`.
 
-*Build. Battle. Conquer.* 🎮✨
+```bash
+# Inspect all mappings without changing GitHub
+scripts/publish-components
+
+# Create any missing public repositories in the organisation
+scripts/publish-components --create
+
+# After committing the complete worktree, split and push every component plus the meta repository
+scripts/publish-components --push
+```
+
+Publishing requires authenticated `gh` and `git` access to the organisation.
+Push mode deliberately refuses a dirty worktree because subtree splits can only
+publish committed content. Existing repositories are updated without force, so
+non-fast-forward histories must be reconciled explicitly rather than overwritten.
+
+After the repositories are public, register every Composer package on Packagist:
+
+```bash
+# Verify all package-to-repository mappings without submitting
+php scripts/submit-packagist.php --dry-run
+
+# Obtain the MAIN API token from packagist.org/profile, then bulk register the packages
+export PACKAGIST_USERNAME='your-packagist-username'
+export PACKAGIST_API_TOKEN='your-packagist-api-token'
+php scripts/submit-packagist.php
+unset PACKAGIST_API_TOKEN
+```
+
+The submitter skips packages that are already registered and reports individual
+API failures without printing the configured token.
+
+## Documentation
+
+- [Module development](docs/MODULE_DEVELOPMENT.md)
+- [Foundation compliance](docs/FOUNDATION_COMPLIANCE.md)
+- [Foundation module matrix](docs/FOUNDATION_MODULE_MATRIX.md)
+- [Theme architecture](docs/THEME_ARCHITECTURE.md)
+- [Theme system](docs/THEME_SYSTEM.md)
+- [Messaging architecture](docs/MESSAGING_ARCHITECTURE.md)
+- [Search architecture](docs/SEARCH_ARCHITECTURE.md)
+- [Localisation](docs/MULTI_LANGUAGE.md)
+- [Notifications](docs/NOTIFICATIONS.md)
+
+## Related Liberu projects
+
+| Project | Repository | Scope |
+|---|---|---|
+| Accounting | [liberusoftware/accounting-erp-laravel](https://github.com/liberusoftware/accounting-erp-laravel) | Ledgers, banking, tax, expenses, close, and reporting |
+| Automation | [liberusoftware/automation-laravel](https://github.com/liberusoftware/automation-laravel) | Governed workflows, provider-neutral AI, approvals, and connectors |
+| Billing | [liberusoftware/billing-laravel](https://github.com/liberusoftware/billing-laravel) | Billing, subscriptions, payments, invoices, and revenue operations |
+| Boilerplate | [liberusoftware/boilerplate-laravel](https://github.com/liberusoftware/boilerplate-laravel) | Modular Laravel foundation and reference implementation |
+| Browser game | [liberusoftware/browser-game-laravel](https://github.com/liberusoftware/browser-game-laravel) | Browser-based game platform and domain capabilities |
+| CMS | [liberusoftware/cms-laravel](https://github.com/liberusoftware/cms-laravel) | Content, publishing, pages, media, search, and delivery |
+| Control panel | [liberusoftware/control-panel-laravel](https://github.com/liberusoftware/control-panel-laravel) | Hosting, infrastructure, DNS, mail, backups, and operations |
+| CRM | [liberusoftware/crm-laravel](https://github.com/liberusoftware/crm-laravel) | Customers, leads, opportunities, sales, and service |
+| Ecommerce | [liberusoftware/ecommerce-laravel](https://github.com/liberusoftware/ecommerce-laravel) | Catalogues, checkout, orders, fulfilment, and returns |
+| Genealogy | [liberusoftware/genealogy-laravel](https://github.com/liberusoftware/genealogy-laravel) | Genealogy records, relationships, sources, and research |
+| Maintenance | [liberusoftware/maintenance-laravel](https://github.com/liberusoftware/maintenance-laravel) | Maintenance planning, assets, work orders, and operations |
+| Real estate | [liberusoftware/real-estate-laravel](https://github.com/liberusoftware/real-estate-laravel) | Property, listing, tenancy, and transaction workflows |
+| Social network | [liberusoftware/social-network-laravel](https://github.com/liberusoftware/social-network-laravel) | Social profiles, groups, content, messaging, and discovery |
+
+## Security
+
+Do not report security vulnerabilities through public GitHub issues. Email `security@liberusoftware.com` with reproduction details and the affected version so the report can be handled privately.
+
+## License
+
+This project is open-source software available under the [MIT License](LICENSE.md). The linked licence text is authoritative; this summary is not legal advice.
+
+## Feedback and contributing
+
+Feedback and contributions are welcome. Report reproducible bugs, propose focused enhancements, improve documentation or translations, and submit tested changes. Search existing issues first. Pull requests should explain the problem and approach, remain focused, pass the required checks, and document user-visible or breaking changes. Security reports must follow the private route above.
+
+## Contributors
+
+Thank you to everyone who helps improve Liberu Browser Game. [View the contributors graph](https://github.com/liberusoftware/browser-game-laravel/graphs/contributors).

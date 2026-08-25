@@ -1,25 +1,24 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: browser-game
-
-commonLabels:
-  app.kubernetes.io/name: browser-game-laravel
-  app.kubernetes.io/managed-by: kustomize
+namespace: boilerplate-laravel
 
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - secret.yaml
-  - pvc.yaml
-  - nginx-configmap.yaml
-  - deployment.yaml
-  - queue-worker.yaml
-  - mysql-statefulset.yaml
-  - mysql-service.yaml
-  - redis.yaml
-  - service.yaml
-  - ingress.yaml
-  - hpa.yaml
-  - network-policy.yaml
-  - resource-quota.yaml
+- namespace.yaml
+- configmap.yaml
+- secret.yaml
+- pvc.yaml
+- mysql-statefulset.yaml
+- redis.yaml
+- nginx-configmap.yaml
+- deployment.yaml
+- queue-worker.yaml
+- service.yaml
+- horizon.yaml
+- reverb.yaml
+- ingress.yaml
+- network-policy.yaml
+- resource-quota.yaml
+
+commonLabels:
+  app: liberu-boilerplate

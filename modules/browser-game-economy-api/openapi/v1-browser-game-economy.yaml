@@ -1,0 +1,250 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Economy API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+    description: Application API host
+paths:
+  /api/v1/browser-game/economy:
+    get:
+      operationId: browser.game.economy.list
+      summary: List authorized browser-game economy
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/economy/wallet:
+    get:
+      operationId: browser.game.economy.wallet
+      summary: List authenticated currency balances
+      security:
+        - sanctum: []
+      responses:
+        '200': { description: Wallet balances }
+  /api/v1/browser-game/economy/transfer:
+    post:
+      operationId: browser.game.economy.transfer
+      summary: Transfer currency to another actor
+      security:
+        - sanctum: []
+      responses:
+        '200': { description: Transfer recorded }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/wallet/credit:
+    post:
+      operationId: browser.game.economy.wallet.credit
+      summary: Credit authenticated actor currency
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/LedgerRequest' } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/wallet/debit:
+    post:
+      operationId: browser.game.economy.wallet.debit
+      summary: Debit authenticated actor currency
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/LedgerRequest' } } } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/vendors:
+    get:
+      operationId: browser.game.economy.vendors
+      summary: List active vendors and offers
+      security: [{ sanctum: [] }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' } }
+    post:
+      operationId: browser.game.economy.vendors.create
+      summary: Create a vendor
+      security: [{ sanctum: [] }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/vendors/{vendor}/offers:
+    post:
+      operationId: browser.game.economy.vendors.offers.create
+      summary: Add or update a vendor offer
+      security: [{ sanctum: [] }]
+      parameters: [{ name: vendor, in: path, required: true, schema: { type: integer } }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/offers/{offer}/purchase:
+    post:
+      operationId: browser.game.economy.offers.purchase
+      summary: Purchase a vendor offer
+      security: [{ sanctum: [] }]
+      parameters: [{ name: offer, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/economy/listings:
+    get:
+      operationId: browser.game.economy.listings
+      summary: List active marketplace listings
+      security:
+        - sanctum: []
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+    post:
+      operationId: browser.game.economy.listing.create
+      summary: Create a marketplace listing
+      security:
+        - sanctum: []
+      responses:
+        '201': { description: Listing created }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/listings/{listing}/purchase:
+    post:
+      operationId: browser.game.economy.listing.purchase
+      summary: Purchase an active marketplace listing
+      security:
+        - sanctum: []
+      parameters:
+        - { name: listing, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: Listing purchased }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/economy/listings/{listing}/cancel:
+    post:
+      operationId: browser.game.economy.listings.cancel
+      summary: Cancel an owned marketplace listing
+      security:
+        - sanctum: []
+      parameters:
+        - { name: listing, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/browser-game/economy/{id}:
+    get:
+      operationId: browser.game.economy.get
+      summary: Retrieve an authorized browser-game economy record
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Opaque resource identifier.
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  schemas:
+    LedgerRequest:
+      type: object
+      required: [currency_code, amount]
+      properties:
+        currency_code: { type: string, maxLength: 30 }
+        amount: { type: integer, minimum: 1 }
+        source: { type: string, maxLength: 80 }
+        idempotency_key: { type: string, maxLength: 120, nullable: true }
+        metadata: { type: object, additionalProperties: true }
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          const: browser-game-economy
+        attributes:
+          type: object
+          additionalProperties: true
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        meta:
+          type: object
+          additionalProperties: true
+        links:
+          type: object
+          additionalProperties: true
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Resource:
+      description: Authorized economy resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Resource'
+    ResourceCollection:
+      description: Authorized paginated economy resources.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCollection'
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: The resource is unavailable in the current authorization context.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

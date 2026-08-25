@@ -3,19 +3,17 @@
 namespace App\Services;
 
 use App\Models\Player;
-use App\Models\Quest;
 use App\Models\Player_Quest;
-use Illuminate\Support\Facades\DB;
+use App\Models\Quest;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class QuestService
 {
     /**
      * Accept a quest for a player.
      *
-     * @param Player $player
-     * @param Quest $quest
-     * @return Player_Quest
      * @throws Exception
      */
     public function acceptQuest(Player $player, Quest $quest): Player_Quest
@@ -42,9 +40,6 @@ class QuestService
     /**
      * Complete a quest and distribute rewards.
      *
-     * @param Player $player
-     * @param Quest $quest
-     * @return array
      * @throws Exception
      */
     public function completeQuest(Player $player, Quest $quest): array
@@ -58,7 +53,7 @@ class QuestService
                 ->where('status', 'in-progress')
                 ->first();
 
-            if (!$playerQuest) {
+            if (! $playerQuest) {
                 throw new Exception('Quest not found or not in progress');
             }
 
@@ -80,10 +75,6 @@ class QuestService
 
     /**
      * Distribute quest rewards to the player.
-     *
-     * @param Player $player
-     * @param Quest $quest
-     * @return array
      */
     protected function distributeRewards(Player $player, Quest $quest): array
     {
@@ -92,14 +83,14 @@ class QuestService
         // Award experience
         if ($quest->experience_reward > 0) {
             $player->experience += $quest->experience_reward;
-            
+
             // Level up if enough experience (simple formula: 100 XP per level)
             $requiredXpForNextLevel = $player->level * 100;
             if ($player->experience >= $requiredXpForNextLevel) {
                 $player->level++;
                 $rewards['level_up'] = true;
             }
-            
+
             $player->save();
             $rewards['experience'] = $quest->experience_reward;
         }
@@ -114,7 +105,7 @@ class QuestService
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-            
+
             $rewards['item'] = $quest->itemReward;
         }
 
@@ -124,21 +115,19 @@ class QuestService
     /**
      * Get available quests for a player (not started yet).
      *
-     * @param Player $player
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getAvailableQuests(Player $player)
     {
         $acceptedQuestIds = $player->quests()->pluck('quests.id');
-        
+
         return Quest::whereNotIn('id', $acceptedQuestIds)->get();
     }
 
     /**
      * Get active quests for a player.
      *
-     * @param Player $player
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getActiveQuests(Player $player)
     {
@@ -148,8 +137,7 @@ class QuestService
     /**
      * Get completed quests for a player.
      *
-     * @param Player $player
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getCompletedQuests(Player $player)
     {
@@ -159,9 +147,6 @@ class QuestService
     /**
      * Abandon a quest.
      *
-     * @param Player $player
-     * @param Quest $quest
-     * @return bool
      * @throws Exception
      */
     public function abandonQuest(Player $player, Quest $quest): bool
@@ -171,7 +156,7 @@ class QuestService
             ->where('status', 'in-progress')
             ->first();
 
-        if (!$playerQuest) {
+        if (! $playerQuest) {
             throw new Exception('Quest not found or not in progress');
         }
 

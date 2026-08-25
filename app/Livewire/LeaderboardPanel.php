@@ -8,6 +8,7 @@ use Livewire\Component;
 class LeaderboardPanel extends Component
 {
     public $selectedCategory = 'level';
+
     public $categories = [
         'level' => 'Top Players by Level',
         'pvp_wins' => 'PvP Champions',

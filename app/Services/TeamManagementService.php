@@ -14,8 +14,9 @@ class TeamManagementService
     {
         $team = Team::first();
 
-        if (!$team) {
+        if (! $team) {
             $this->createPersonalTeamForUser($user);
+
             return;
         }
 
@@ -31,10 +32,11 @@ class TeamManagementService
      */
     public function createPersonalTeamForUser(User $user): Team
     {
-        $team = $user->ownedTeams()->create([
-            'name'          => $user->name . "'s Team",
+        $createdTeam = $user->ownedTeams()->create([
+            'name' => $user->name."'s Team",
             'personal_team' => true,
         ]);
+        $team = Team::query()->findOrFail($createdTeam->getKey());
 
         $user->switchTeam($team);
 

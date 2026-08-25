@@ -12,7 +12,9 @@ class AchievementUnlocked
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $player;
+
     public $achievementName;
+
     public $achievementDescription;
 
     public function __construct(Player $player, $achievementName, $achievementDescription = null)

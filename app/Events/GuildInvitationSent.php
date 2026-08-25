@@ -13,7 +13,9 @@ class GuildInvitationSent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $player;
+
     public $guild;
+
     public $inviter;
 
     public function __construct(Player $player, Guild $guild, Player $inviter)

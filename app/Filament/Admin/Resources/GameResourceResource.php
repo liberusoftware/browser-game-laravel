@@ -2,38 +2,31 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Schema;
+use App\Filament\Admin\Resources\GameResourceResource\Pages\CreateGameResource;
+use App\Filament\Admin\Resources\GameResourceResource\Pages\EditGameResource;
+use App\Filament\Admin\Resources\GameResourceResource\Pages\ListGameResources;
+use App\Filament\Admin\Resources\GameResourceResource\Pages\ViewGameResource;
+use App\Models\Resource as GameResource;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Admin\Resources\GameResourceResource\Pages\ListGameResources;
-use App\Filament\Admin\Resources\GameResourceResource\Pages\CreateGameResource;
-use App\Filament\Admin\Resources\GameResourceResource\Pages\ViewGameResource;
-use App\Filament\Admin\Resources\GameResourceResource\Pages\EditGameResource;
-use App\Models\Resource as GameResource;
-use App\Models\Player;
-use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\GameResourceResource\Pages;
-use App\Filament\Admin\Resources\GameResourceResource\RelationManagers;
 
 class GameResourceResource extends Resource
 {
     protected static ?string $model = GameResource::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Player Resources';
 

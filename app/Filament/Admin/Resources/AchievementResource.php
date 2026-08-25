@@ -4,28 +4,26 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\AchievementResource\Pages;
 use App\Models\Achievement;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 
 class AchievementResource extends Resource
 {
     protected static ?string $model = Achievement::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-trophy';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-trophy';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Achievements';
 

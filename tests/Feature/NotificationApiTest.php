@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\GameNotification;
 use App\Models\Player;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -111,7 +110,7 @@ class NotificationApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(['message' => 'Notification marked as read']);
-        
+
         $this->assertTrue($notification->fresh()->is_read);
     }
 
@@ -157,7 +156,7 @@ class NotificationApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(['message' => 'All notifications marked as read']);
-        
+
         $this->assertEquals(0, $player->unreadNotifications()->count());
     }
 }

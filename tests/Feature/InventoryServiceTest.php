@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Player;
 use App\Models\Item;
+use App\Models\Player;
 use App\Models\Player_Item;
 use App\Services\InventoryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,15 +15,17 @@ class InventoryServiceTest extends TestCase
     use RefreshDatabase;
 
     private InventoryService $inventoryService;
+
     private Player $player;
+
     private Item $item;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->inventoryService = new InventoryService();
-        
+
         // Create test data
         $this->player = Player::factory()->create();
         $this->item = Item::factory()->create([
@@ -47,12 +49,12 @@ class InventoryServiceTest extends TestCase
     {
         // Add item first time
         $this->inventoryService->addItem($this->player->id, $this->item->id, 3);
-        
+
         // Add same item again
         $playerItem = $this->inventoryService->addItem($this->player->id, $this->item->id, 2);
 
         $this->assertEquals(5, $playerItem->quantity);
-        
+
         // Verify only one record exists
         $count = Player_Item::where('player_id', $this->player->id)
             ->where('item_id', $this->item->id)
@@ -71,7 +73,7 @@ class InventoryServiceTest extends TestCase
         $result = $this->inventoryService->removeItem($this->player->id, $this->item->id, 3);
 
         $this->assertTrue($result);
-        
+
         $playerItem = Player_Item::where('player_id', $this->player->id)
             ->where('item_id', $this->item->id)
             ->first();
@@ -89,7 +91,7 @@ class InventoryServiceTest extends TestCase
         $result = $this->inventoryService->removeItem($this->player->id, $this->item->id, 5);
 
         $this->assertTrue($result);
-        
+
         $exists = Player_Item::where('player_id', $this->player->id)
             ->where('item_id', $this->item->id)
             ->exists();
@@ -107,7 +109,7 @@ class InventoryServiceTest extends TestCase
         $result = $this->inventoryService->removeItem($this->player->id, $this->item->id, 5);
 
         $this->assertFalse($result);
-        
+
         // Quantity should remain unchanged
         $playerItem = Player_Item::where('player_id', $this->player->id)
             ->where('item_id', $this->item->id)
@@ -119,13 +121,13 @@ class InventoryServiceTest extends TestCase
     {
         $item1 = Item::factory()->create(['name' => 'Sword']);
         $item2 = Item::factory()->create(['name' => 'Shield']);
-        
+
         Player_Item::create([
             'player_id' => $this->player->id,
             'item_id' => $item1->id,
             'quantity' => 5,
         ]);
-        
+
         Player_Item::create([
             'player_id' => $this->player->id,
             'item_id' => $item2->id,
@@ -149,7 +151,7 @@ class InventoryServiceTest extends TestCase
 
         // First call - should cache
         $inventory1 = $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         // Manually add item to database (bypassing service)
         $newItem = Item::factory()->create();
         Player_Item::create([
@@ -160,13 +162,13 @@ class InventoryServiceTest extends TestCase
 
         // Second call - should return cached result (not include new item)
         $inventory2 = $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         $this->assertCount(1, $inventory2); // Still 1 item from cache
-        
+
         // Clear cache and verify we get updated data
         Cache::forget("player.{$this->player->id}.inventory");
         $inventory3 = $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         $this->assertCount(2, $inventory3); // Now 2 items
     }
 
@@ -174,13 +176,13 @@ class InventoryServiceTest extends TestCase
     {
         // Prime the cache
         $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         // Add item through service (should invalidate cache)
         $this->inventoryService->addItem($this->player->id, $this->item->id, 1);
-        
+
         // Getting inventory again should reflect the new item
         $inventory = $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         $this->assertCount(1, $inventory);
         $this->assertEquals($this->item->id, $inventory->first()->item_id);
     }
@@ -192,16 +194,16 @@ class InventoryServiceTest extends TestCase
             'item_id' => $this->item->id,
             'quantity' => 5,
         ]);
-        
+
         // Prime the cache
         $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         // Remove item through service (should invalidate cache)
         $this->inventoryService->removeItem($this->player->id, $this->item->id, 5);
-        
+
         // Getting inventory again should reflect the removal
         $inventory = $this->inventoryService->getPlayerInventory($this->player->id);
-        
+
         $this->assertCount(0, $inventory);
     }
 
@@ -246,7 +248,7 @@ class InventoryServiceTest extends TestCase
         $result = $this->inventoryService->updateItemQuantity($this->player->id, $this->item->id, 0);
 
         $this->assertNull($result);
-        
+
         $exists = Player_Item::where('player_id', $this->player->id)
             ->where('item_id', $this->item->id)
             ->exists();
@@ -257,13 +259,13 @@ class InventoryServiceTest extends TestCase
     {
         $weapon = Item::factory()->create(['type' => 'weapon']);
         $armor = Item::factory()->create(['type' => 'armor']);
-        
+
         Player_Item::create([
             'player_id' => $this->player->id,
             'item_id' => $weapon->id,
             'quantity' => 5,
         ]);
-        
+
         Player_Item::create([
             'player_id' => $this->player->id,
             'item_id' => $armor->id,
@@ -288,7 +290,7 @@ class InventoryServiceTest extends TestCase
 
         // First call - caches stats
         $stats1 = $this->inventoryService->getInventoryStats($this->player->id);
-        
+
         // Add more items directly to database
         Player_Item::create([
             'player_id' => $this->player->id,
@@ -298,7 +300,7 @@ class InventoryServiceTest extends TestCase
 
         // Second call - should return cached stats
         $stats2 = $this->inventoryService->getInventoryStats($this->player->id);
-        
+
         $this->assertEquals(5, $stats2['total_items']); // Still showing cached value
     }
 }

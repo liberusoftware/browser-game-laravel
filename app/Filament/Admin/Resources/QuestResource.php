@@ -2,41 +2,35 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use App\Filament\Admin\Resources\QuestResource\Pages\CreateQuest;
+use App\Filament\Admin\Resources\QuestResource\Pages\EditQuest;
+use App\Filament\Admin\Resources\QuestResource\Pages\ListQuests;
+use App\Filament\Admin\Resources\QuestResource\Pages\ViewQuest;
+use App\Models\Quest;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ReplicateAction;
-use App\Filament\Admin\Resources\QuestResource\Pages\ListQuests;
-use App\Filament\Admin\Resources\QuestResource\Pages\CreateQuest;
-use App\Filament\Admin\Resources\QuestResource\Pages\ViewQuest;
-use App\Filament\Admin\Resources\QuestResource\Pages\EditQuest;
-use App\Models\Quest;
-use App\Models\Item;
-use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\QuestResource\Pages;
-use App\Filament\Admin\Resources\QuestResource\RelationManagers;
 
 class QuestResource extends Resource
 {
     protected static ?string $model = Quest::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-map';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Quests';
 
@@ -53,7 +47,7 @@ class QuestResource extends Resource
     {
         return [
             'XP Reward' => $record->experience_reward,
-            'Item Reward' => $record->itemReward?->name ?? 'None',
+            'Item Reward' => $record->itemReward->name ?? 'None',
         ];
     }
 
@@ -110,6 +104,7 @@ class QuestResource extends Resource
                         if (strlen($state) <= 50) {
                             return null;
                         }
+
                         return $state;
                     }),
                 TextColumn::make('experience_reward')
@@ -143,7 +138,7 @@ class QuestResource extends Resource
                 ReplicateAction::make()
                     ->excludeAttributes(['created_at', 'updated_at'])
                     ->beforeReplicaSaved(function (Quest $replica): void {
-                        $replica->name = $replica->name . ' (Copy)';
+                        $replica->name = $replica->name.' (Copy)';
                     }),
                 DeleteAction::make(),
             ])

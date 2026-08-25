@@ -5,18 +5,21 @@ namespace App\Livewire;
 use App\Models\Player;
 use App\Models\Recipe;
 use App\Services\CraftingService;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class CraftingWorkshop extends Component
 {
     public $player;
+
     public $selectedRecipe;
+
     public $craftingResult;
 
     public function mount()
     {
-        $this->player = Auth::user()?->player ?? Player::where('email', Auth::user()->email)->first();
+        $user = Auth::user();
+        $this->player = $user->player ?? Player::where('email', $user->email)->first();
     }
 
     public function selectRecipe($recipeId)
@@ -27,7 +30,7 @@ class CraftingWorkshop extends Component
 
     public function craftItem()
     {
-        if (!$this->selectedRecipe) {
+        if (! $this->selectedRecipe) {
             return;
         }
 
@@ -36,7 +39,7 @@ class CraftingWorkshop extends Component
         $this->player->refresh();
 
         $this->dispatch('item-crafted');
-        
+
         if ($this->craftingResult['success']) {
             $this->dispatch('show-message', message: $this->craftingResult['message']);
         } else {

@@ -1,0 +1,361 @@
+openapi: 3.1.0
+info:
+  title: Browser Game Accounts API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.example.test
+    description: Application API host
+paths:
+  /api/v1/browser-game/accounts:
+    get:
+      operationId: browser.game.accounts.list
+      summary: List authorized browser-game accounts
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResourceCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: browser.game.accounts.create
+      summary: Create an account in the authenticated team context
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityRequest'
+      responses:
+        '201': { $ref: '#/components/responses/Resource' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/browser-game/accounts/{id}:
+    get:
+      operationId: browser.game.accounts.get
+      summary: Retrieve an authorized browser-game account
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    patch:
+      operationId: browser.game.accounts.update
+      summary: Update account identity
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentityRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{id}/age-region:
+    post:
+      operationId: browser.game.accounts.ageRegion.update
+      summary: Update age and region policy data
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Resource'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{id}/privacy:
+    put:
+      operationId: browser.game.accounts.privacy.update
+      summary: Update account privacy consent
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Privacy settings updated.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{id}/deletion-request:
+    post:
+      operationId: browser.game.accounts.deletion.request
+      summary: Request account deletion
+      security:
+        - sanctum: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Deletion request recorded.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/v1/browser-game/accounts/{account}/age-region:
+    post:
+      operationId: browser.game.accounts.age_region
+      summary: Set account age and region policy data
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, properties: { birth_year: { type: integer }, region: { type: string } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/privacy:
+    put:
+      operationId: browser.game.accounts.privacy
+      summary: Update account privacy preferences
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/deletion-request:
+    post:
+      operationId: browser.game.accounts.deletion_request
+      summary: Request account deletion
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '202': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/verify-email:
+    post:
+      operationId: browser.game.accounts.verify_email
+      summary: Verify the account email address
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/deletion-complete:
+    post:
+      operationId: browser.game.accounts.deletion_complete
+      summary: Complete an approved account deletion request
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/sessions:
+    get:
+      operationId: browser.game.accounts.sessions
+      summary: List account sessions
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/ResourceCollection' }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/{account}/recovery:
+    post:
+      operationId: browser.game.accounts.recovery.issue
+      summary: Issue an account recovery request
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '429': { $ref: '#/components/responses/TooManyRequests' } }
+  /api/v1/browser-game/accounts/{account}/sessions/{session}/revoke:
+    post:
+      operationId: browser.game.accounts.sessions.revoke
+      summary: Revoke an account session
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { name: session, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { '204': { description: Session revoked }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/{account}/sessions/revoke-all:
+    post:
+      operationId: browser.game.accounts.sessions.revoke_all
+      summary: Revoke all active account sessions
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Sessions revoked }, '401': { $ref: '#/components/responses/Unauthorized' } }
+  /api/v1/browser-game/accounts/recovery/consume:
+    post:
+      operationId: browser.game.accounts.recovery.consume
+      summary: Consume an account recovery token
+      security: [{ sanctum: [] }]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [token], properties: { token: { type: string }, password: { type: string, format: password } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/suspend:
+    post:
+      operationId: browser.game.accounts.suspend
+      summary: Suspend an authorized account
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/{account}/reactivate:
+    post:
+      operationId: browser.game.accounts.reactivate
+      summary: Reactivate an authorized account
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+  /api/v1/browser-game/accounts/{account}/ban:
+    post:
+      operationId: browser.game.accounts.ban
+      summary: Issue an account ban
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, maxLength: 1000 }
+                ends_at: { type: string, format: date-time, nullable: true }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+  /api/v1/browser-game/accounts/{account}/bans/{ban}/lift:
+    post:
+      operationId: browser.game.accounts.bans.lift
+      summary: Lift an account ban
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }, { name: ban, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' } }
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Opaque account identifier.
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  schemas:
+    IdentityRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 255 }
+        email: { type: string, format: email, nullable: true }
+        username: { type: string, minLength: 3, maxLength: 50, nullable: true }
+    BrowserGameAccountsResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Opaque Liberu resource identifier.
+        type:
+          type: string
+          const: browser-game-account
+        attributes:
+          type: object
+          required: [name, status]
+          properties:
+            name:
+              type: string
+              minLength: 1
+              maxLength: 255
+            status:
+              type: string
+              enum: [active, suspended, closed]
+            data:
+              type: object
+              additionalProperties: true
+              writeOnly: true
+    ResourceCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrowserGameAccountsResource'
+        meta:
+          type: object
+          additionalProperties: true
+        links:
+          type: object
+          additionalProperties: true
+    Problem:
+      type: object
+      required: [title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Resource:
+      description: Authorized account resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BrowserGameAccountsResource'
+    ResourceCollection:
+      description: Authorized paginated account resources.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceCollection'
+    Unauthorized:
+      description: Authentication is required.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: The resource is unavailable in the current authorization context.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: The request rate limit was exceeded.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: Validation failed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

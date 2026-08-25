@@ -2,42 +2,38 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Actions\BulkAction;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Admin\Resources\PlayerResource\Pages\ListPlayers;
 use App\Filament\Admin\Resources\PlayerResource\Pages\CreatePlayer;
-use App\Filament\Admin\Resources\PlayerResource\Pages\ViewPlayer;
 use App\Filament\Admin\Resources\PlayerResource\Pages\EditPlayer;
+use App\Filament\Admin\Resources\PlayerResource\Pages\ListPlayers;
+use App\Filament\Admin\Resources\PlayerResource\Pages\ViewPlayer;
+use App\Filament\Admin\Resources\PlayerResource\RelationManagers;
 use App\Filament\Admin\Resources\PlayerResource\RelationManagers\ItemsRelationManager;
 use App\Filament\Admin\Resources\PlayerResource\RelationManagers\QuestsRelationManager;
 use App\Filament\Admin\Resources\PlayerResource\RelationManagers\ResourcesRelationManager;
 use App\Models\Player;
-use Filament\Forms;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\PlayerResource\Pages;
-use App\Filament\Admin\Resources\PlayerResource\RelationManagers;
 
 class PlayerResource extends Resource
 {
     protected static ?string $model = Player::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-group';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
 
     protected static ?string $navigationLabel = 'Players';
 
@@ -89,7 +85,7 @@ class PlayerResource extends Resource
                             ->helperText('Leave blank to keep current password'),
                     ])
                     ->columns(2),
-                
+
                 Section::make('Game Stats')
                     ->description('Player game progression and statistics')
                     ->schema([
@@ -117,12 +113,12 @@ class PlayerResource extends Resource
                     ->label('Rank')
                     ->sortable()
                     ->badge()
-                    ->color(fn ($state) => match(true) {
+                    ->color(fn ($state) => match (true) {
                         $state === 1 => 'success',
                         $state <= 10 => 'warning',
                         default => 'gray',
                     })
-                    ->formatStateUsing(fn ($state) => $state ? '#' . $state : 'Unranked'),
+                    ->formatStateUsing(fn ($state) => $state ? '#'.$state : 'Unranked'),
                 TextColumn::make('username')
                     ->searchable()
                     ->sortable(),
@@ -186,7 +182,7 @@ class PlayerResource extends Resource
                         ->label('Adjust Level')
                         ->icon('heroicon-o-arrow-trending-up')
                         ->form([
-                            Forms\Components\TextInput::make('level_change')
+                            TextInput::make('level_change')
                                 ->label('Level Adjustment')
                                 ->helperText('Use positive numbers to increase, negative to decrease')
                                 ->numeric()
@@ -208,7 +204,7 @@ class PlayerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\QuestsRelationManager::class,
+            QuestsRelationManager::class,
             RelationManagers\AchievementsRelationManager::class,
             ItemsRelationManager::class,
             QuestsRelationManager::class,

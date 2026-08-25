@@ -1,0 +1,14 @@
+{
+  "name": "liberusoftware/module-browser-game-world",
+  "description": "Provider-neutral Browser Game world catalog, travel, weather, encounters, resources, NPCs, and unlocks.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {"php": "^8.5", "illuminate/database": "^13.0", "illuminate/events": "^13.0", "illuminate/support": "^13.0"},
+  "autoload": {"psr-4": {"Liberu\\BrowserGame\\World\\": "src/"}},
+  "autoload-dev": {"psr-4": {"Liberu\\BrowserGame\\World\\Tests\\": "tests/"}},
+  "extra": {"liberu": {"name": "browser-game-world"}},
+  "version": "1.0.0",
+  "require-dev": {"liberusoftware/package-testbench": "^1.5", "pestphp/pest": "^5.0"},
+  "scripts": {"test": "pest"},
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+,"homepage":"https://github.com/liberusoftware/module-browser-game-world","support":{"source":"https://github.com/liberusoftware/module-browser-game-world","issues":"https://github.com/liberusoftware/module-browser-game-world/issues"}}
