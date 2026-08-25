@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Scope crafting player state, queues, discoveries, professions, resources, and idempotency by tenant and team context.
+
 ## 1.0.0 - 2026-08-24
 
 - Initial Browser Game Crafting package release.
