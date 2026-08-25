@@ -41,3 +41,16 @@ it('anonymizes an account and revokes its sessions on completed deletion', funct
         ->and($account->fresh()->email)->toBeNull()
         ->and($manager->resolveSession($session['token']))->toBeNull();
 });
+
+it('consumes recovery tokens once and rejects expired tokens', function (): void {
+    $manager = app(AccountsManager::class);
+    $account = $manager->define('Recovery Player', ['email' => 'recovery@example.test']);
+    $issued = $manager->issueRecovery($account);
+
+    expect($manager->consumeRecovery($issued['token'])?->getKey())->toBe($account->getKey())
+        ->and($manager->consumeRecovery($issued['token']))->toBeNull();
+
+    $expired = $manager->issueRecovery($account);
+    $expired['recovery']->update(['expires_at' => now()->subMinute()]);
+    expect($manager->consumeRecovery($expired['token']))->toBeNull();
+});

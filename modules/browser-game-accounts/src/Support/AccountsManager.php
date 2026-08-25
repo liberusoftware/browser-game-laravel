@@ -153,16 +153,19 @@ final class AccountsManager
 
     public function consumeRecovery(string $token): ?AccountsRecord
     {
-        $recovery = AccountRecovery::query()->where('token_hash', hash('sha512', $token))
-            ->whereNull('used_at')->where('expires_at', '>', now())
-            ->where('attempts', '<', (int) config('browser-game.accounts.maximum_recovery_attempts', 5))->first();
-        if ($recovery === null) {
-            return null;
-        }
-        $recovery->increment('attempts');
-        $recovery->update(['used_at' => now()]);
+        return DB::transaction(function () use ($token): ?AccountsRecord {
+            $recovery = AccountRecovery::query()->where('token_hash', hash('sha512', $token))
+                ->whereNull('used_at')->where('expires_at', '>', now())
+                ->where('attempts', '<', (int) config('browser-game.accounts.maximum_recovery_attempts', 5))
+                ->lockForUpdate()->first();
+            if ($recovery === null) {
+                return null;
+            }
 
-        return $recovery->account;
+            $recovery->update(['attempts' => $recovery->attempts + 1, 'used_at' => now()]);
+
+            return $recovery->account;
+        });
     }
 
     public function resolveSession(string $token): ?AccountSession
