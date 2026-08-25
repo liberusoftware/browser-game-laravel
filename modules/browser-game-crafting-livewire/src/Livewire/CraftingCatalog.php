@@ -28,6 +28,16 @@ final class CraftingCatalog extends Component
         $this->dispatch('crafting-queued');
     }
 
+    public function discover(string $recipeId): void
+    {
+        abort_unless(auth()->check(), 403);
+        $team = $this->team();
+        $recipe = app(CraftingQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($recipeId)->firstOrFail();
+        app(CraftingManager::class)->discover((string) auth()->id(), $recipe, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+        $this->statusMessage = 'Recipe discovered.';
+        $this->dispatch('crafting-discovered');
+    }
+
     public function complete(string $queueId): void
     {
         abort_unless(auth()->check(), 403);
