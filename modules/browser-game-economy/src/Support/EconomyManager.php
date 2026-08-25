@@ -25,7 +25,7 @@ final class EconomyManager
         $this->required($name, 'name');
         $code = strtolower(trim((string) ($data['code'] ?? Str::slug($name, '_'))));
         $this->required($code, 'code');
-        if (EconomyRecord::query()->where('code', $code)->where('kind', 'currency')->exists()) {
+        if ($this->economyScope(EconomyRecord::query(), $tenantId, $teamId)->where('code', $code)->where('kind', 'currency')->exists()) {
             throw ValidationException::withMessages(['code' => 'The currency code is already defined.']);
         }
         $record = DB::transaction(fn (): EconomyRecord => EconomyRecord::query()->create([
@@ -45,33 +45,33 @@ final class EconomyManager
         return $record;
     }
 
-    public function credit(string $actorId, string $currencyCode, int $amount, string $source = 'faucet', ?string $idempotencyKey = null, array $metadata = []): EconomyLedgerEntry
+    public function credit(string $actorId, string $currencyCode, int $amount, string $source = 'faucet', ?string $idempotencyKey = null, array $metadata = [], ?string $tenantId = null, ?string $teamId = null): EconomyLedgerEntry
     {
         if ($amount < 1) {
             throw ValidationException::withMessages(['amount' => 'Amount must be positive.']);
         }
 
-        return $this->adjust($actorId, $currencyCode, $amount, 'credit', $source, $idempotencyKey, $metadata);
+        return $this->adjust($actorId, $currencyCode, $amount, 'credit', $source, $idempotencyKey, $metadata, $tenantId, $teamId);
     }
 
-    public function debit(string $actorId, string $currencyCode, int $amount, string $source = 'sink', ?string $idempotencyKey = null, array $metadata = []): EconomyLedgerEntry
+    public function debit(string $actorId, string $currencyCode, int $amount, string $source = 'sink', ?string $idempotencyKey = null, array $metadata = [], ?string $tenantId = null, ?string $teamId = null): EconomyLedgerEntry
     {
         if ($amount < 1) {
             throw ValidationException::withMessages(['amount' => 'Amount must be positive.']);
         }
 
-        return $this->adjust($actorId, $currencyCode, -$amount, 'debit', $source, $idempotencyKey, $metadata);
+        return $this->adjust($actorId, $currencyCode, -$amount, 'debit', $source, $idempotencyKey, $metadata, $tenantId, $teamId);
     }
 
-    public function transfer(string $senderId, string $recipientId, string $currencyCode, int $amount, ?string $idempotencyKey = null): array
+    public function transfer(string $senderId, string $recipientId, string $currencyCode, int $amount, ?string $idempotencyKey = null, ?string $tenantId = null, ?string $teamId = null): array
     {
         if ($senderId === $recipientId) {
             throw ValidationException::withMessages(['recipient_id' => 'An actor cannot transfer to itself.']);
         }
 
-        return DB::transaction(function () use ($senderId, $recipientId, $currencyCode, $amount, $idempotencyKey): array {
-            $debit = $this->debit($senderId, $currencyCode, $amount, 'trade', $idempotencyKey);
-            $credit = $this->credit($recipientId, $currencyCode, $amount, 'trade', $idempotencyKey === null ? null : $idempotencyKey.':recipient');
+        return DB::transaction(function () use ($senderId, $recipientId, $currencyCode, $amount, $idempotencyKey, $tenantId, $teamId): array {
+            $debit = $this->debit($senderId, $currencyCode, $amount, 'trade', $idempotencyKey, [], $tenantId, $teamId);
+            $credit = $this->credit($recipientId, $currencyCode, $amount, 'trade', $idempotencyKey === null ? null : $idempotencyKey.':recipient', [], $tenantId, $teamId);
 
             return ['debit' => $debit, 'credit' => $credit];
         });
@@ -88,7 +88,7 @@ final class EconomyManager
     {
         $this->assertScope($vendor, $tenantId, $teamId);
         $this->required($itemKey, 'item_key');
-        $this->currency($currencyCode);
+        $this->currency($currencyCode, $tenantId, $teamId);
         if ($unitPrice < 1 || ($stock !== null && $stock < 0)) {
             throw ValidationException::withMessages(['offer' => 'Offer price or stock is invalid.']);
         }
@@ -117,7 +117,7 @@ final class EconomyManager
             if ($offer->max_per_actor !== null && $purchased + $quantity > (int) $offer->max_per_actor) {
                 throw ValidationException::withMessages(['quantity' => 'The actor purchase limit for this offer has been reached.']);
             }
-            $this->debit($actorId, $offer->currency_code, $offer->unit_price * $quantity, 'vendor');
+            $this->debit($actorId, $offer->currency_code, $offer->unit_price * $quantity, 'vendor', null, [], $tenantId, $teamId);
             if ($offer->stock !== null) {
                 $offer->decrement('stock', $quantity);
             }
@@ -133,7 +133,7 @@ final class EconomyManager
     {
         $this->required($sellerId, 'seller_id');
         $this->required($itemKey, 'item_key');
-        $this->currency($currencyCode);
+        $this->currency($currencyCode, $tenantId, $teamId);
         if ($quantity < 1 || $unitPrice < 1) {
             throw ValidationException::withMessages(['listing' => 'Listing quantity and price must be positive.']);
         }
@@ -145,7 +145,7 @@ final class EconomyManager
             return $existing;
         }
 
-        $currency = $this->currency($currencyCode);
+        $currency = $this->currency($currencyCode, $tenantId, $teamId);
         $total = $quantity * $unitPrice;
         $fee = intdiv($total * (int) $currency->fee_basis_points, 10000);
 
@@ -170,8 +170,8 @@ final class EconomyManager
                 throw ValidationException::withMessages(['listing' => 'You cannot purchase your own listing.']);
             }
             $total = (int) $listing->unit_price * (int) $listing->quantity;
-            $this->debit($buyerId, $listing->currency_code, $total, 'auction', $idempotencyKey);
-            $this->credit($listing->seller_id, $listing->currency_code, $total - (int) $listing->fee, 'auction', $idempotencyKey === null ? null : $idempotencyKey.':seller');
+            $this->debit($buyerId, $listing->currency_code, $total, 'auction', $idempotencyKey, [], $tenantId, $teamId);
+            $this->credit($listing->seller_id, $listing->currency_code, $total - (int) $listing->fee, 'auction', $idempotencyKey === null ? null : $idempotencyKey.':seller', [], $tenantId, $teamId);
             $listing->update(['buyer_id' => $buyerId, 'status' => 'sold', 'sold_at' => now()]);
             EconomyListingSold::dispatch((int) $listing->getKey(), $buyerId, $listing->seller_id, $total);
             if ((int) $listing->fee > 0) {
@@ -194,14 +194,14 @@ final class EconomyManager
         return $listing->refresh();
     }
 
-    private function adjust(string $actorId, string $currencyCode, int $amount, string $entryType, string $source, ?string $idempotencyKey, array $metadata): EconomyLedgerEntry
+    private function adjust(string $actorId, string $currencyCode, int $amount, string $entryType, string $source, ?string $idempotencyKey, array $metadata, ?string $tenantId, ?string $teamId): EconomyLedgerEntry
     {
         $this->required($actorId, 'actor_id');
         $currencyCode = strtolower(trim($currencyCode));
-        $this->currency($currencyCode);
+        $this->currency($currencyCode, $tenantId, $teamId);
         $this->assertAmount(abs($amount));
 
-        return DB::transaction(function () use ($actorId, $currencyCode, $amount, $entryType, $source, $idempotencyKey, $metadata): EconomyLedgerEntry {
+        return DB::transaction(function () use ($actorId, $currencyCode, $amount, $entryType, $source, $idempotencyKey, $metadata, $tenantId, $teamId): EconomyLedgerEntry {
             if ($idempotencyKey !== null && ($existing = EconomyLedgerEntry::query()->where('idempotency_key', $idempotencyKey)->first()) !== null) {
                 if ($existing->actor_id !== $actorId || $existing->currency_code !== $currencyCode || (int) $existing->amount !== $amount || $existing->entry_type !== $entryType) {
                     throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another ledger operation.']);
@@ -210,7 +210,7 @@ final class EconomyManager
                 return $existing;
             }
             $wallet = EconomyWallet::query()->lockForUpdate()->firstOrCreate(
-                ['actor_id' => $actorId, 'currency_code' => $currencyCode],
+                ['actor_id' => $actorId, 'currency_code' => $currencyCode, 'tenant_id' => $tenantId, 'team_id' => $teamId],
                 ['balance' => 0],
             );
             if ($amount < 0 && $wallet->balance < abs($amount)) {
@@ -222,6 +222,7 @@ final class EconomyManager
                 'id' => (string) Str::uuid(), 'actor_id' => $actorId, 'currency_code' => $currencyCode,
                 'amount' => $amount, 'balance_after' => $balance, 'entry_type' => $entryType,
                 'source' => $source, 'idempotency_key' => $idempotencyKey, 'metadata' => $metadata,
+                'tenant_id' => $tenantId, 'team_id' => $teamId,
             ]);
             EconomyTransactionRecorded::dispatch($actorId, $currencyCode, $amount, $entryType);
 
@@ -229,14 +230,25 @@ final class EconomyManager
         });
     }
 
-    private function currency(string $code): EconomyRecord
+    private function currency(string $code, ?string $tenantId = null, ?string $teamId = null): EconomyRecord
     {
-        $record = EconomyRecord::query()->where('code', strtolower($code))->where('kind', 'currency')->where('status', 'active')->first();
+        $record = $this->economyScope(EconomyRecord::query(), $tenantId, $teamId)->where('code', strtolower($code))->where('kind', 'currency')->where('status', 'active')->first();
         if ($record === null) {
             throw ValidationException::withMessages(['currency_code' => 'The currency is unavailable.']);
         }
 
         return $record;
+    }
+
+    private function economyScope($query, ?string $tenantId = null, ?string $teamId = null)
+    {
+        if ($tenantId === null && $teamId === null) {
+            return $query;
+        }
+
+        return $query
+            ->where(fn ($scope) => $scope->whereNull('tenant_id')->orWhere('tenant_id', $tenantId))
+            ->where(fn ($scope) => $scope->whereNull('team_id')->orWhere('team_id', $teamId));
     }
 
     private function assertAmount(int $amount): void

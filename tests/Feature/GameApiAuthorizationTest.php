@@ -149,6 +149,30 @@ class GameApiAuthorizationTest extends TestCase
         $this->postJson('/api/v1/browser-game/economy/wallet/debit', ['currency_code' => 'gold', 'amount' => 1, 'idempotency_key' => 'debit-api-1'])->assertCreated();
     }
 
+    public function test_browser_game_economy_wallets_are_scoped_to_the_current_team(): void
+    {
+        $this->app->register(EconomyServiceProvider::class);
+        $this->app->register(EconomyApiServiceProvider::class);
+        $this->artisan('migrate');
+
+        $user = User::factory()->create();
+        $team = Team::factory()->create(['user_id' => $user->id]);
+        $otherTeam = Team::factory()->create();
+        $user->forceFill(['current_team_id' => $team->getKey()])->save();
+        $manager = app(EconomyManager::class);
+        $manager->define('Team One Gold', ['code' => 'GOLD'], teamId: (string) $team->getKey());
+        $manager->define('Team Two Gold', ['code' => 'GOLD'], teamId: (string) $otherTeam->getKey());
+        Sanctum::actingAs($user);
+
+        $this->postJson('/api/v1/browser-game/economy/wallet/credit', ['currency_code' => 'gold', 'amount' => 10])->assertCreated();
+        $this->getJson('/api/v1/browser-game/economy/wallet')->assertOk()->assertJsonPath('data.0.attributes.balance', 10);
+
+        $user->forceFill(['current_team_id' => $otherTeam->getKey()])->save();
+        Sanctum::actingAs($user->fresh());
+        $this->postJson('/api/v1/browser-game/economy/wallet/credit', ['currency_code' => 'gold', 'amount' => 30])->assertCreated();
+        $this->getJson('/api/v1/browser-game/economy/wallet')->assertOk()->assertJsonPath('data.0.attributes.balance', 30);
+    }
+
     public function test_browser_game_accounts_and_collections_api_can_create_team_scoped_records(): void
     {
         $this->app->register(AccountsServiceProvider::class);

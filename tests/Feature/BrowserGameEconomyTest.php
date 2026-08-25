@@ -38,3 +38,16 @@ it('rejects idempotency keys reused by another economy operation', function (): 
     expect(fn (): mixed => $manager->credit('player-2', 'gold', 10, idempotencyKey: 'ledger-1'))
         ->toThrow(ValidationException::class);
 });
+
+it('keeps scoped currencies and actor balances isolated', function (): void {
+    $manager = app(EconomyManager::class);
+    $teamOne = $manager->define('Team One Gold', ['code' => 'GOLD'], tenantId: 'tenant-1', teamId: 'team-1');
+    $teamTwo = $manager->define('Team Two Gold', ['code' => 'GOLD'], tenantId: 'tenant-1', teamId: 'team-2');
+
+    $manager->credit('player-1', 'gold', 10, tenantId: 'tenant-1', teamId: 'team-1');
+    $manager->credit('player-1', 'gold', 30, tenantId: 'tenant-1', teamId: 'team-2');
+
+    expect($teamOne->getKey())->not->toBe($teamTwo->getKey())
+        ->and(EconomyWallet::query()->where('actor_id', 'player-1')->where('team_id', 'team-1')->value('balance'))->toBe(10)
+        ->and(EconomyWallet::query()->where('actor_id', 'player-1')->where('team_id', 'team-2')->value('balance'))->toBe(30);
+});
