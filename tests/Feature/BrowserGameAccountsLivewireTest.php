@@ -32,6 +32,16 @@ it('renders and completes the account privacy and lifecycle interactions', funct
         ->call('updateAgeRegion', (string) $account->getKey())
         ->set('profileVisibility', 'friends')
         ->call('updatePrivacy', (string) $account->getKey())
+        ->call('suspend', (string) $account->getKey())
+        ->call('reactivate', (string) $account->getKey())
+        ->set('banReason', 'Abusive behavior')
+        ->call('ban', (string) $account->getKey());
+
+    $banId = $account->fresh()->bans()->latest()->value('id');
+
+    Livewire::actingAs($user)
+        ->test(AccountsCatalog::class)
+        ->call('liftBan', (string) $account->getKey(), (int) $banId)
         ->call('requestDeletion', (string) $account->getKey())
         ->call('completeDeletion', (string) $account->getKey())
         ->assertSee('Account deletion completed.');
