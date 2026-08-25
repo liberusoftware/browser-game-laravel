@@ -28,7 +28,8 @@ final class EconomyCatalog extends Component
     {
         abort_unless(auth()->check(), 403);
         $this->validate(['recipientId' => ['required', 'string', 'different:'.(string) auth()->id()], 'currencyCode' => ['required', 'string', 'max:30'], 'quantity' => ['required', 'integer', 'min:1']]);
-        app(EconomyManager::class)->transfer((string) auth()->id(), $this->recipientId, $this->currencyCode, $this->quantity, 'livewire:transfer:'.auth()->id().':'.$this->recipientId.':'.$this->currencyCode.':'.$this->quantity);
+        $team = auth()->user()?->currentTeam;
+        app(EconomyManager::class)->transfer((string) auth()->id(), $this->recipientId, $this->currencyCode, $this->quantity, 'livewire:transfer:'.auth()->id().':'.$this->recipientId.':'.$this->currencyCode.':'.$this->quantity, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
         $this->message = 'Transfer completed.';
     }
 
@@ -70,7 +71,10 @@ final class EconomyCatalog extends Component
         $team = auth()->user()?->currentTeam;
         $economy = app(EconomyQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->where('status', 'active')->latest()->limit(25)->get();
 
-        $wallets = EconomyWallet::query()->where('actor_id', (string) auth()->id())->get();
+        $wallets = EconomyWallet::query()->where('actor_id', (string) auth()->id())
+            ->where('tenant_id', $team?->getAttribute('tenant_id'))
+            ->where('team_id', $team?->getKey())
+            ->get();
         $listings = EconomyListing::query()->where('status', 'active')
             ->where(fn ($query) => $query->whereNull('tenant_id')->orWhere('tenant_id', $team?->getAttribute('tenant_id')))
             ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $team?->getKey()))

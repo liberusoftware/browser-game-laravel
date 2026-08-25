@@ -44,9 +44,9 @@ final class CommerceCatalog extends Component
     public function complete(string $orderId): void
     {
         abort_unless(auth()->check(), 403);
-        $order = CommerceOrder::query()->whereKey($orderId)->where('actor_id', (string) auth()->id())->firstOrFail();
         $team = auth()->user()?->currentTeam;
         abort_unless($team?->getKey() !== null, 404);
+        $order = $this->ownedOrder($orderId, $team);
         app(CommerceManager::class)->complete($order, (string) auth()->id(), $team->getAttribute('tenant_id'), (string) $team->getKey());
         $this->message = 'Order completed.';
         $this->error = null;
@@ -55,9 +55,9 @@ final class CommerceCatalog extends Component
     public function refund(string $orderId): void
     {
         abort_unless(auth()->check(), 403);
-        $order = CommerceOrder::query()->whereKey($orderId)->where('actor_id', (string) auth()->id())->firstOrFail();
         $team = auth()->user()?->currentTeam;
         abort_unless($team?->getKey() !== null, 404);
+        $order = $this->ownedOrder($orderId, $team);
         app(CommerceManager::class)->refund($order, (string) auth()->id(), $team->getAttribute('tenant_id'), (string) $team->getKey());
         $this->message = 'Order refunded.';
         $this->error = null;
@@ -77,5 +77,13 @@ final class CommerceCatalog extends Component
             ->latest()->limit(25)->get() : collect();
 
         return resolve('view')->make('browser-game-commerce-livewire::commerce-catalog', ['commerce' => $commerce, 'products' => $products, 'orders' => $orders]);
+    }
+
+    private function ownedOrder(string $orderId, mixed $team): CommerceOrder
+    {
+        return CommerceOrder::query()->whereKey($orderId)->where('actor_id', (string) auth()->id())
+            ->where('tenant_id', $team->getAttribute('tenant_id'))
+            ->where('team_id', $team->getKey())
+            ->firstOrFail();
     }
 }

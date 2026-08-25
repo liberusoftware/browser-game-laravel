@@ -33,14 +33,14 @@ final class ItemsCatalog extends Component
     public function equip(int $entryId): void
     {
         abort_unless(auth()->check(), 403);
-        app(ItemsManager::class)->equip((string) auth()->id(), InventoryEntry::query()->where('player_id', (string) auth()->id())->whereKey($entryId)->firstOrFail(), tenantId: $this->tenantId(), teamId: $this->teamId());
+        app(ItemsManager::class)->equip((string) auth()->id(), $this->ownedEntry($entryId), tenantId: $this->tenantId(), teamId: $this->teamId());
         $this->dispatch('inventory-updated');
     }
 
     public function bind(int $entryId): void
     {
         abort_unless(auth()->check(), 403);
-        app(ItemsManager::class)->bind((string) auth()->id(), InventoryEntry::query()->where('player_id', (string) auth()->id())->whereKey($entryId)->firstOrFail(), tenantId: $this->tenantId(), teamId: $this->teamId());
+        app(ItemsManager::class)->bind((string) auth()->id(), $this->ownedEntry($entryId), tenantId: $this->tenantId(), teamId: $this->teamId());
         $this->dispatch('inventory-updated');
     }
 
@@ -93,7 +93,10 @@ final class ItemsCatalog extends Component
 
     private function ownedEntry(int $entryId): InventoryEntry
     {
-        return InventoryEntry::query()->where('player_id', (string) auth()->id())->whereKey($entryId)->firstOrFail();
+        return InventoryEntry::query()->where('player_id', (string) auth()->id())
+            ->where('tenant_id', $this->tenantId())
+            ->where('team_id', $this->teamId())
+            ->whereKey($entryId)->firstOrFail();
     }
 
     private function tenantId(): ?string
