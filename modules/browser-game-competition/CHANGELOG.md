@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Scope match idempotency keys to their competition.
+
 ## 1.0.0 - 2026-08-24
 
 - Initial Browser Game Competition package release.
