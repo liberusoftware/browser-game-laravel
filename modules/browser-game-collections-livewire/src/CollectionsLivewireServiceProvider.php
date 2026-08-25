@@ -13,6 +13,7 @@ final class CollectionsLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Livewire::component('browser-game.collections.catalog', CollectionsCatalog::class);
+        Livewire::addNamespace('module-browser-game-collections', classNamespace: 'Liberu\\BrowserGame\\CollectionsLivewire\\Livewire');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-collections-livewire');
     }
 }

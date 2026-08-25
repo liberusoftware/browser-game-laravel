@@ -13,6 +13,7 @@ final class ModerationAndAnalyticsLivewireServiceProvider extends ServiceProvide
     public function boot(): void
     {
         Livewire::component('browser-game.moderation-and-analytics.catalog', ModerationAndAnalyticsCatalog::class);
+        Livewire::addNamespace('module-browser-game-moderation-and-analytics', classNamespace: 'Liberu\\BrowserGame\\ModerationAndAnalyticsLivewire\\Livewire');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-moderation-and-analytics-livewire');
     }
 }

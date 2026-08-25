@@ -14,5 +14,6 @@ final class WorldLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-world-livewire');
         Livewire::component('browser-game.world.catalog', WorldCatalog::class);
+        Livewire::addNamespace('module-browser-game-world', classNamespace: 'Liberu\\BrowserGame\\WorldLivewire\\Livewire');
     }
 }

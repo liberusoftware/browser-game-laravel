@@ -13,6 +13,7 @@ final class EconomyLivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Livewire::component('browser-game.economy.catalog', EconomyCatalog::class);
+        Livewire::addNamespace('module-browser-game-economy', classNamespace: 'Liberu\\BrowserGame\\EconomyLivewire\\Livewire');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'browser-game-economy-livewire');
     }
 }
