@@ -85,6 +85,9 @@ final class WorldOverview extends Component
     {
         $context = $this->context();
 
-        return GameWorld::query()->whereKey($this->worldId)->when($context->tenantId() !== null, fn ($query) => $query->where('tenant_id', $context->tenantId()))->when($context->teamId() !== null, fn ($query) => $query->where('team_id', $context->teamId()))->firstOrFail();
+        return GameWorld::query()->whereKey($this->worldId)
+            ->where(fn ($query) => $query->whereNull('tenant_id')->orWhere('tenant_id', $context->tenantId()))
+            ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $context->teamId()))
+            ->firstOrFail();
     }
 }
