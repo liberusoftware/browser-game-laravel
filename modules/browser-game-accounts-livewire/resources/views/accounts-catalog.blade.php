@@ -5,6 +5,19 @@
         <article wire:key="account-{{ $account->getKey() }}">
             <h3>{{ $account->name }}</h3>
             <p>Status: {{ $account->status }}</p>
+            @if($account->status === 'active')
+                <button type="button" wire:click="suspend('{{ $account->getKey() }}')">Suspend account</button>
+            @elseif($account->status === 'suspended')
+                <button type="button" wire:click="reactivate('{{ $account->getKey() }}')">Reactivate account</button>
+            @endif
+            <form wire:submit="ban('{{ $account->getKey() }}')">
+                <label>Ban reason <input wire:model="banReason" type="text" maxlength="1000" required></label>
+                <label>Ban ends at <input wire:model="banEndsAt" type="datetime-local"></label>
+                <button type="submit">Ban account</button>
+            </form>
+            @foreach($account->bans->whereNull('revoked_at') as $ban)
+                <button type="button" wire:click="liftBan('{{ $account->getKey() }}', {{ $ban->getKey() }})">Lift ban</button>
+            @endforeach
             <form wire:submit="updateIdentity('{{ $account->getKey() }}')">
                 <label>Name <input wire:model="name" type="text" required></label>
                 <label>Email <input wire:model="email" type="email"></label>
