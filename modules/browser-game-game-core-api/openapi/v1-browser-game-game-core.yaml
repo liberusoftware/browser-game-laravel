@@ -15,7 +15,7 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ name: "page[size]", in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }]
       responses:
-        '200': { description: Authorized world collection }
+        '200': { $ref: '#/components/responses/WorldCollection' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
     post:
@@ -26,7 +26,7 @@ paths:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/WorldRequest' } } }
       responses:
-        '201': { description: World created }
+        '201': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '422': { $ref: '#/components/responses/ValidationError' }
   /api/v1/browser-game/game-core/{world}:
@@ -36,7 +36,7 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
       responses:
-        '200': { description: Authorized world overview }
+        '200': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
     patch:
@@ -48,7 +48,7 @@ paths:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/WorldUpdateRequest' } } }
       responses:
-        '200': { description: World updated }
+        '200': { $ref: '#/components/responses/Resource' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/ValidationError' }
@@ -59,7 +59,7 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [current_at, speed], properties: { current_at: { type: string, format: date-time }, speed: { type: number, minimum: 0 }, paused: { type: boolean } } } } } }
-      responses: { '200': { description: Clock updated }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/game-core/{world}/rulesets:
     post:
       operationId: browser.game.game.core.ruleset
@@ -67,7 +67,7 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [version, rules], properties: { version: { type: integer, minimum: 1 }, rules: { type: object, additionalProperties: true } } } } } }
-      responses: { '201': { description: Ruleset published }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/game-core/{world}/content-versions:
     post:
       operationId: browser.game.game.core.content
@@ -75,21 +75,21 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [version, content_hash, manifest], properties: { version: { type: integer, minimum: 1 }, content_hash: { type: string }, manifest: { type: object, additionalProperties: true } } } } } }
-      responses: { '201': { description: Content version published }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+      responses: { '201': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/game-core/{world}/feature-flags/{key}:
     get:
       operationId: browser.game.game.core.feature.flag.evaluate
       summary: Evaluate a feature flag for the authenticated actor
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }, { name: key, in: path, required: true, schema: { type: string } }, { name: attributes, in: query, schema: { type: object, additionalProperties: true } }]
-      responses: { '200': { description: Feature evaluation }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' }, '422': { $ref: '#/components/responses/ValidationError' } }
+      responses: { '200': { $ref: '#/components/responses/FeatureEvaluation' }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' }, '422': { $ref: '#/components/responses/ValidationError' } }
     put:
       operationId: browser.game.game.core.feature.flag
       summary: Change a feature flag
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }, { name: key, in: path, required: true, schema: { type: string } }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [enabled], properties: { enabled: { type: boolean }, rollout_percentage: { type: integer, minimum: 0, maximum: 100 }, constraints: { type: object, additionalProperties: true } } } } } }
-      responses: { '200': { description: Feature flag updated }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/game-core/{world}/maintenance:
     put:
       operationId: browser.game.game.core.maintenance
@@ -97,7 +97,7 @@ paths:
       security: [{ sanctum: [] }]
       parameters: [{ $ref: '#/components/parameters/WorldId' }]
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [status], properties: { status: { type: string, enum: [scheduled, active, resolved] }, message: { type: string } } } } } }
-      responses: { '200': { description: Maintenance state updated }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
+      responses: { '200': { $ref: '#/components/responses/Resource' }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
 components:
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
@@ -118,6 +118,97 @@ components:
           required: [status]
           properties:
             status: { type: string, enum: [draft, active, archived] }
+    Resource:
+      type: object
+      required: [data]
+      properties:
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/WorldResource'
+            - $ref: '#/components/schemas/ClockResource'
+            - $ref: '#/components/schemas/RulesetResource'
+            - $ref: '#/components/schemas/ContentResource'
+            - $ref: '#/components/schemas/FeatureFlagResource'
+            - $ref: '#/components/schemas/MaintenanceResource'
+    WorldCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/WorldResource' }
+        links: { type: object, additionalProperties: true }
+        meta: { type: object, additionalProperties: true }
+    WorldResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, const: browser-game-game-core }
+        attributes:
+          type: object
+          required: [name, slug, status, metadata]
+          properties:
+            name: { type: string }
+            slug: { type: string }
+            status: { type: string, enum: [draft, active, archived] }
+            metadata: { type: object, additionalProperties: true }
+            overview: { type: object, nullable: true, additionalProperties: true }
+            created_at: { type: string, format: date-time, nullable: true }
+            updated_at: { type: string, format: date-time, nullable: true }
+    ClockResource:
+      allOf:
+        - $ref: '#/components/schemas/ResourceObject'
+        - type: object
+          properties:
+            type: { type: string, const: browser-game-game-clock }
+    RulesetResource:
+      allOf:
+        - $ref: '#/components/schemas/ResourceObject'
+        - type: object
+          properties:
+            type: { type: string, const: browser-game-game-ruleset }
+    ContentResource:
+      allOf:
+        - $ref: '#/components/schemas/ResourceObject'
+        - type: object
+          properties:
+            type: { type: string, const: browser-game-game-content-version }
+    FeatureFlagResource:
+      allOf:
+        - $ref: '#/components/schemas/ResourceObject'
+        - type: object
+          properties:
+            type: { type: string, const: browser-game-game-feature-flag }
+    MaintenanceResource:
+      allOf:
+        - $ref: '#/components/schemas/ResourceObject'
+        - type: object
+          properties:
+            type: { type: string, const: browser-game-game-maintenance-state }
+    ResourceObject:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: { type: string }
+        type: { type: string }
+        attributes: { type: object, additionalProperties: true }
+    FeatureEvaluation:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [type, attributes]
+          properties:
+            type: { type: string, const: browser-game-game-feature-evaluation }
+            attributes:
+              type: object
+              required: [world_id, key, enabled]
+              properties:
+                world_id: { type: string, format: uuid }
+                key: { type: string }
+                enabled: { type: boolean }
     Problem:
       type: object
       required: [title, status]
@@ -126,6 +217,15 @@ components:
         status: { type: integer, minimum: 400, maximum: 599 }
         detail: { type: string }
   responses:
+    Resource:
+      description: A single authorized Game Core resource.
+      content: { application/json: { schema: { $ref: '#/components/schemas/Resource' } } }
+    WorldCollection:
+      description: A paginated collection of authorized worlds.
+      content: { application/json: { schema: { $ref: '#/components/schemas/WorldCollection' } } }
+    FeatureEvaluation:
+      description: Deterministic feature evaluation for the authenticated actor.
+      content: { application/json: { schema: { $ref: '#/components/schemas/FeatureEvaluation' } } }
     Unauthorized:
       description: Authentication is required.
       content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
