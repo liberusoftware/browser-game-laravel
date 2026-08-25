@@ -9,15 +9,22 @@ use App\Livewire\PlayerDashboard;
 use App\Livewire\PlayerInventory;
 use App\Livewire\QuestBoard;
 use App\Models\GameNotification;
+use App\Models\Guild;
 use App\Models\Item;
 use App\Models\MarketplaceListing;
 use App\Models\Player;
+use App\Models\Player_Item;
 use App\Models\Quest;
 use App\Models\Recipe;
 use App\Models\RecipeMaterial;
 use App\Models\User;
+use App\Notifications\GuildInvitationNotification;
+use App\Notifications\LevelUpNotification;
 use App\Services\CraftingService;
+use App\Services\DailyRewardService;
 use App\Services\MarketplaceService;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Livewire\Livewire;
@@ -37,13 +44,35 @@ it('covers successful and alternate legacy crafting paths', function (): void {
     $service = app(CraftingService::class);
 
     expect($service->craftItem($player, $recipe)['success'])->toBeFalse();
-    $player->update(['level' => 10]);
     $service->learnRecipe($player, $recipe);
+    expect($service->craftItem($player, $recipe)['success'])->toBeFalse();
+    $player->update(['level' => 10]);
     expect($service->craftItem($player, $recipe)['success'])->toBeFalse();
     $player->playerItems()->create(['item_id' => $material->id, 'quantity' => 1]);
     expect($service->craftItem($player, $recipe)['success'])->toBeTrue();
     $player->playerItems()->create(['item_id' => $material->id, 'quantity' => 1]);
     expect($service->craftItem($player, $recipe)['success'])->toBeTrue();
+});
+
+it('covers legacy model relationships, stale streaks, and notification channels', function (): void {
+    $player = Player::factory()->create();
+    $player->dailyRewards()->create([
+        'reward_date' => Carbon::now()->subDays(3), 'day_streak' => 4,
+        'gold_rewarded' => 0, 'experience_rewarded' => 0, 'items_rewarded' => [],
+    ]);
+    expect(app(DailyRewardService::class)->getCurrentStreak($player))->toBe(0);
+
+    $guild = Guild::factory()->create();
+    $inviter = Player::factory()->create();
+    $notification = new GuildInvitationNotification($guild, $inviter);
+    expect($notification->via($player))->toBe(['mail', 'database']);
+    expect((new LevelUpNotification(2, 1))->via($player))->toBe(['mail', 'database']);
+    expect((new Player_Item())->player())->toBeInstanceOf(BelongsTo::class)
+        ->and((new RecipeMaterial())->recipe())->toBeInstanceOf(BelongsTo::class);
+    $player->profile_photo_path = 'https://example.test/avatar.png';
+    expect($player->email)->not->toBeNull();
+    expect(User::factory()->create(['profile_photo_path' => 'https://example.test/photo.png'])->profile_photo_url)
+        ->toBe('https://example.test/photo.png');
 });
 
 it('covers marketplace inventory, seller, and cancellation branches', function (): void {
