@@ -2,9 +2,21 @@
 
 declare(strict_types=1);
 
+use App\Filament\Admin\Resources\ItemResource;
+use App\Filament\Admin\Resources\ModuleResource\Pages\ListModules;
+use App\Filament\Admin\Resources\PlayerItemResource;
+use App\Filament\Admin\Resources\PlayerResource;
+use App\Filament\Admin\Resources\PlayerResource\RelationManagers\QuestsRelationManager;
+use App\Filament\Admin\Resources\QuestResource;
+use App\Filament\Admin\Resources\Users\Tables\UsersTable;
+use App\Filament\Admin\Widgets\LeaderboardWidget;
+use App\Filament\Admin\Widgets\RecentPlayersTable;
+use App\Filament\App\Widgets\ActiveQuestsWidget;
+use App\Filament\App\Widgets\SocialLinksWidget;
 use App\Http\Controllers\Api\MarketplaceController;
 use App\Http\Controllers\NotificationController;
 use App\Livewire\GuildPanel;
+use App\Livewire\Marketplace;
 use App\Livewire\PlayerDashboard;
 use App\Livewire\PlayerInventory;
 use App\Livewire\QuestBoard;
@@ -24,13 +36,42 @@ use App\Services\CraftingService;
 use App\Services\DailyRewardService;
 use App\Services\MarketplaceService;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
+use Filament\Support\Contracts\TranslatableContentDriver;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Liberu\Foundation\Organizations\Models\Team;
+use Liberu\Foundation\Settings\Settings\SiteSettings;
+use Livewire\Component;
 use Livewire\Livewire;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 uses(RefreshDatabase::class);
+
+final class LegacyCoverageTableHarness extends Component implements HasTable
+{
+    use InteractsWithTable;
+
+    public function table(Table $table): Table
+    {
+        return $table;
+    }
+
+    public function makeFilamentTranslatableContentDriver(): ?TranslatableContentDriver
+    {
+        return null;
+    }
+
+    public function render(): View
+    {
+        return view('welcome');
+    }
+}
 
 it('covers successful and alternate legacy crafting paths', function (): void {
     $player = Player::factory()->create(['level' => 1]);
@@ -75,6 +116,87 @@ it('covers legacy model relationships, stale streaks, and notification channels'
         ->toBe('https://example.test/photo.png');
 });
 
+it('executes the remaining legacy Filament callbacks', function (): void {
+    $harness = new LegacyCoverageTableHarness();
+    $tableProperty = new ReflectionProperty($harness, 'table');
+    $tableProperty->setAccessible(true);
+    $tableProperty->setValue($harness, Table::make($harness));
+
+    $item = Item::factory()->create(['type' => 'weapon', 'rarity' => 'common']);
+    $itemTable = ItemResource::table(Table::make($harness));
+    $replicate = collect($itemTable->getRecordActions())->first(fn ($action): bool => $action->getName() === 'replicate');
+    $property = new ReflectionProperty($replicate, 'beforeReplicaSaved');
+    $property->setAccessible(true);
+    $replica = $item->replicate();
+    ($property->getValue($replicate))($replica);
+    expect($replica->name)->toContain('(Copy)');
+    expect(ItemResource::getGlobalSearchResultDetails($item))->toHaveKey('Type', 'Weapon');
+
+    $player = Player::factory()->create(['rank' => 1]);
+    expect(PlayerResource::getGloballySearchableAttributes())->toContain('username');
+    $playerTable = PlayerResource::table(Table::make($harness));
+    $levelFilter = collect($playerTable->getFilters())->first(fn ($filter): bool => $filter->getName() === 'level_range');
+    $levelFilter->apply(Player::query(), ['value' => '1-10']);
+
+    $playerItemTable = PlayerItemResource::table(Table::make($harness));
+    $typeFilter = collect($playerItemTable->getFilters())->first(fn ($filter): bool => $filter->getName() === 'item_type');
+    $typeFilter->apply(Player_Item::query(), ['value' => 'weapon']);
+    $typeFilter->apply(Player_Item::query(), ['value' => null]);
+
+    $quest = Quest::factory()->create(['description' => 'short']);
+    $questTable = QuestResource::table(Table::make($harness));
+    $questCopy = collect($questTable->getRecordActions())->first(fn ($action): bool => $action->getName() === 'replicate');
+    $questProperty = new ReflectionProperty($questCopy, 'beforeReplicaSaved');
+    $questProperty->setAccessible(true);
+    $questReplica = $quest->replicate();
+    ($questProperty->getValue($questCopy))($questReplica);
+    expect($questReplica->name)->toContain('(Copy)');
+
+    $description = collect($questTable->getColumns())->first(fn ($column): bool => $column->getName() === 'description');
+    $tooltip = new ReflectionProperty($description, 'tooltip');
+    $tooltip->setAccessible(true);
+    $description->record($quest);
+    expect(($tooltip->getValue($description))($description))->toBeNull();
+
+    $userTable = UsersTable::configure(Table::make($harness));
+    $verified = User::factory()->create(['email_verified_at' => now()]);
+    $verifiedColumn = collect($userTable->getColumns())->first(fn ($column): bool => $column->getName() === 'email_verified_at');
+    $verifiedColumn->record($verified);
+    $tableTooltip = new ReflectionProperty($verifiedColumn, 'tooltip');
+    $tableTooltip->setAccessible(true);
+    expect(($tableTooltip->getValue($verifiedColumn))($verified))->toContain('Verified');
+
+    $page = (new ReflectionClass(ListModules::class))->newInstanceWithoutConstructor();
+    $header = new ReflectionMethod($page, 'getHeaderActions');
+    $header->setAccessible(true);
+    $header->invoke($page)[0]->getActionFunction()([]);
+
+    $leaderboard = app(LeaderboardWidget::class)->table(Table::make($harness));
+    $leaderboard->getRecordActions()[0]->record($player)->getUrl();
+    $recent = app(RecentPlayersTable::class)->table(Table::make($harness));
+    $recent->getRecordActions()[0]->record($player)->getUrl();
+    $this->actingAs(User::factory()->create());
+    Filament::setTenant(Team::factory()->create());
+    $leaderboard->getRecordActions()[0]->record($player)->getUrl();
+    $recent->getRecordActions()[0]->record($player)->getUrl();
+    $active = app(ActiveQuestsWidget::class)->table(Table::make($harness));
+    foreach ($active->getColumns() as $column) {
+        $column->getColor('medium');
+        $column->getColor('hard');
+    }
+    $settings = app(SiteSettings::class);
+    foreach (['github_url', 'facebook_url', 'twitter_url', 'youtube_url'] as $key) {
+        $settings->{$key} = null;
+    }
+    app(SocialLinksWidget::class)->render();
+    $questRelationTable = (new QuestsRelationManager())->table(Table::make($harness));
+    foreach ($questRelationTable->getColumns() as $column) {
+        $column->getColor('completed');
+        $column->getColor('in-progress');
+    }
+    expect($questRelationTable)->toBeInstanceOf(Table::class);
+});
+
 it('covers marketplace inventory, seller, and cancellation branches', function (): void {
     $item = Item::factory()->create();
     $seller = Player::factory()->create();
@@ -95,12 +217,90 @@ it('covers marketplace inventory, seller, and cancellation branches', function (
     expect($seller->fresh()->playerItems()->where('item_id', $item->id)->value('quantity'))->toBe(2);
 });
 
+it('covers legacy Livewire rejection and selection branches', function (): void {
+    Player::query()->delete();
+    Livewire::test(PlayerInventory::class)->assertStatus(200);
+    Player::query()->delete();
+    Livewire::test(QuestBoard::class)->assertStatus(200);
+    Player::query()->delete();
+    Livewire::test(PlayerDashboard::class)->assertStatus(200);
+
+    $player = Player::factory()->create(['health' => 50, 'level' => 10]);
+    $this->actingAs(User::factory()->create(['email' => $player->email]));
+    Livewire::test(CombatArena::class, ['player' => $player])
+        ->call('heal')
+        ->assertDispatched('show-message');
+
+    $recipe = Recipe::create([
+        'name' => 'Unknown Livewire Recipe', 'description' => 'Coverage',
+        'result_item_id' => Item::factory()->create()->id, 'min_level' => 1,
+        'result_quantity' => 1, 'success_rate' => 100, 'crafting_time_seconds' => 0,
+    ]);
+    Livewire::test(CraftingWorkshop::class, ['player' => $player])
+        ->call('selectRecipe', $recipe->id)
+        ->call('craftItem')
+        ->assertDispatched('show-error');
+
+    $player->recipes()->attach($recipe->id, ['learned_at' => now()]);
+    $material = Item::factory()->create();
+    $recipe->materials()->create(['item_id' => $material->id, 'quantity' => 1]);
+    $player->playerItems()->create(['item_id' => $material->id, 'quantity' => 1]);
+    Livewire::test(CraftingWorkshop::class, ['player' => $player])
+        ->call('selectRecipe', $recipe->id)
+        ->call('craftItem')
+        ->assertDispatched('show-message');
+
+    $guild = Guild::factory()->create();
+    Livewire::test(GuildPanel::class, ['player' => $player])
+        ->call('joinGuild', $guild->id)
+        ->call('selectGuild', $guild->id)
+        ->call('leaveGuild', $guild->id)
+        ->assertSet('selectedGuild', null);
+
+    $marketItem = Item::factory()->create();
+    $player->playerItems()->create(['item_id' => $marketItem->id, 'quantity' => 1]);
+    $seller = Player::factory()->create();
+    $listing = MarketplaceListing::create([
+        'seller_id' => $seller->id, 'item_id' => $marketItem->id, 'quantity' => 1,
+        'price_per_unit' => 20, 'status' => 'active',
+    ]);
+    $marketplace = Livewire::test(Marketplace::class, ['player' => $player])
+        ->call('selectItemToSell', $marketItem->id)
+        ->set('sellQuantity', 2)
+        ->call('createListing')
+        ->assertDispatched('show-error')
+        ->call('purchaseItem', $listing->id)
+        ->assertDispatched('show-error')
+        ->call('cancelListing', $listing->id);
+
+    $item = Item::factory()->create();
+    $closed = MarketplaceListing::create([
+        'seller_id' => $seller->id, 'item_id' => $item->id, 'quantity' => 1,
+        'price_per_unit' => 20, 'status' => 'sold',
+    ]);
+    expect(app(MarketplaceService::class)->purchaseListing($player, $closed)['success'])->toBeFalse();
+    $unstocked = MarketplaceListing::create([
+        'seller_id' => $seller->id, 'item_id' => $item->id, 'quantity' => 1,
+        'price_per_unit' => 20, 'status' => 'active',
+    ]);
+    expect(app(MarketplaceService::class)->cancelListing($seller, $unstocked))->toBeTrue();
+
+    $playerListing = MarketplaceListing::create([
+        'seller_id' => $player->id, 'item_id' => $item->id, 'quantity' => 1,
+        'price_per_unit' => 20, 'status' => 'active',
+    ]);
+    Livewire::test(Marketplace::class, ['player' => $player])
+        ->call('cancelListing', $playerListing->id)
+        ->assertDispatched('show-message');
+});
+
 it('covers livewire demo fallbacks and successful mutations', function (): void {
     Livewire::test(PlayerDashboard::class)->assertStatus(200);
     Livewire::test(PlayerInventory::class)->assertStatus(200);
     Livewire::test(QuestBoard::class)->assertStatus(200);
     Livewire::test(GuildPanel::class)->assertStatus(200);
 
+    Player::query()->delete();
     $player = Player::factory()->create(['level' => 1, 'experience' => 0]);
     $item = Item::factory()->create();
     $player->playerItems()->create(['item_id' => $item->id, 'quantity' => 2]);
@@ -111,6 +311,7 @@ it('covers livewire demo fallbacks and successful mutations', function (): void 
         ->call('dropItem', $item->id)
         ->assertStatus(200);
 
+    Player_Item::create(['player_id' => $player->id, 'item_id' => $item->id, 'quantity' => 1]);
     $quest = Quest::factory()->create(['item_reward_id' => $item->id, 'experience_reward' => 100]);
     $component = Livewire::test(QuestBoard::class)
         ->call('acceptQuest', $quest->id)
@@ -126,14 +327,16 @@ it('covers authenticated notification and marketplace controller responses', fun
     expect($controller->index($request)->getStatusCode())->toBe(404)
         ->and($controller->unread($request)->getStatusCode())->toBe(404)
         ->and($controller->count($request)->getStatusCode())->toBe(404)
+        ->and($controller->markAsRead($request, 999999)->getStatusCode())->toBe(404)
         ->and($controller->markAllAsRead($request)->getStatusCode())->toBe(404);
 
     $player = Player::factory()->create(['email' => $user->email]);
     $user->unsetRelation('player');
-    GameNotification::create(['player_id' => $player->id, 'type' => 'test', 'title' => 'Test', 'message' => 'Test', 'is_read' => false]);
+    $gameNotification = GameNotification::create(['player_id' => $player->id, 'type' => 'test', 'title' => 'Test', 'message' => 'Test', 'is_read' => false]);
     expect($controller->index($request)->getStatusCode())->toBe(200)
         ->and($controller->unread($request)->getStatusCode())->toBe(200)
         ->and($controller->count($request)->getStatusCode())->toBe(200)
+        ->and($controller->markAsRead($request, $gameNotification->id)->getStatusCode())->toBe(200)
         ->and($controller->markAllAsRead($request)->getStatusCode())->toBe(200);
 
     $marketplace = app(MarketplaceController::class);
@@ -150,5 +353,11 @@ it('covers authenticated notification and marketplace controller responses', fun
     ]);
     $storeRequest->setUserResolver(fn (): User => $user);
     expect($marketplace->store($storeRequest)->getStatusCode())->toBe(201);
+    $otherSeller = Player::factory()->create();
+    $uncancellable = MarketplaceListing::create([
+        'seller_id' => $otherSeller->id, 'item_id' => $marketItem->id,
+        'quantity' => 1, 'price_per_unit' => 10, 'status' => 'active',
+    ]);
+    expect($marketplace->cancel($storeRequest, $uncancellable)->getStatusCode())->toBe(422);
     expect($marketplace->index($apiRequest)->getStatusCode())->toBe(200);
 });

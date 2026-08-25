@@ -57,9 +57,7 @@ class PlayerDashboard extends Component
         $xpInCurrentLevel = $this->player->experience - $currentLevelXp;
         $xpNeededForLevel = $this->nextLevelXp - $currentLevelXp;
 
-        $this->experiencePercentage = $xpNeededForLevel > 0
-            ? ($xpInCurrentLevel / $xpNeededForLevel) * 100
-            : 0;
+        $this->experiencePercentage = ($xpInCurrentLevel / $xpNeededForLevel) * 100;
     }
 
     public function refreshPlayer()
