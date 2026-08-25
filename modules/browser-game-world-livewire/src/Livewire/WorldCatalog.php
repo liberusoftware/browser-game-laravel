@@ -16,6 +16,16 @@ final class WorldCatalog extends Component
 
     public ?string $message = null;
 
+    public function unlock(string $entityId): void
+    {
+        abort_unless(auth()->check(), 403);
+        $user = auth()->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+        $entity = app(WorldQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($entityId)->firstOrFail();
+        app(WorldManager::class)->grantUnlock((string) auth()->id(), $entity, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey(), 'livewire:unlock:'.auth()->id().':'.$entityId);
+        $this->message = 'Unlock granted.';
+    }
+
     public function travel(string $originId, string $destinationId): void
     {
         abort_unless(auth()->check(), 403);

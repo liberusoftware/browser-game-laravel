@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Liberu\BrowserGame\World\Models\WorldEntity;
+use Liberu\BrowserGame\World\Models\WorldUnlock;
 use Liberu\BrowserGame\World\Queries\WorldQuery;
 use Liberu\BrowserGame\World\Support\WorldManager;
 
@@ -38,11 +39,31 @@ final class WorldController extends Controller
         $user = $request->user();
         $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
         $query = app(WorldQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
-        $destination = $query->whereKey($v['destination_id'])->firstOrFail();
-        $origin = isset($v['origin_id']) ? $query->whereKey($v['origin_id'])->firstOrFail() : null;
+        $destination = (clone $query)->whereKey($v['destination_id'])->firstOrFail();
+        $origin = isset($v['origin_id']) ? (clone $query)->whereKey($v['origin_id'])->firstOrFail() : null;
         $travel = app(WorldManager::class)->travel((string) $request->user()->getAuthIdentifier(), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey(), $origin, $destination, $v['idempotency_key'] ?? null, $v['metadata'] ?? []);
 
         return response()->json(['data' => ['id' => (string) $travel->getKey(), 'type' => 'browser-game-world-travel', 'attributes' => ['actor_id' => $travel->actor_id, 'origin_id' => $travel->origin_id, 'destination_id' => $travel->destination_id, 'metadata' => $travel->metadata]]], 201);
+    }
+
+    public function unlock(Request $request, WorldEntity $entity): JsonResponse
+    {
+        $user = $request->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+        $scope = app(WorldQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($entity->getKey())->firstOrFail();
+        $v = $request->validate(['idempotency_key' => ['nullable', 'string', 'max:128'], 'metadata' => ['array']]);
+        $unlock = app(WorldManager::class)->grantUnlock((string) $request->user()->getAuthIdentifier(), $scope, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey(), $v['idempotency_key'] ?? null, $v['metadata'] ?? []);
+
+        return response()->json(['data' => $this->unlockResource($unlock)], 201);
+    }
+
+    public function revokeUnlock(Request $request, WorldUnlock $unlock): JsonResponse
+    {
+        $user = $request->user();
+        $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+        $updated = app(WorldManager::class)->revokeUnlock((string) $request->user()->getAuthIdentifier(), $unlock, $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+
+        return response()->json(['data' => $this->unlockResource($updated)]);
     }
 
     public function show(Request $request, WorldEntity $entity): JsonResponse
@@ -68,5 +89,10 @@ final class WorldController extends Controller
     private function resource(WorldEntity $entity): array
     {
         return ['id' => (string) $entity->getKey(), 'type' => 'browser-game-world', 'attributes' => ['kind' => $entity->kind, 'name' => $entity->name, 'slug' => $entity->slug, 'status' => $entity->status, 'attributes' => $entity->attributes, 'coordinates' => $entity->coordinates, 'unlock_key' => $entity->unlock_key, 'created_at' => $entity->created_at?->toISOString(), 'updated_at' => $entity->updated_at?->toISOString()]];
+    }
+
+    private function unlockResource(WorldUnlock $unlock): array
+    {
+        return ['id' => (string) $unlock->getKey(), 'type' => 'browser-game-world-unlock', 'attributes' => ['actor_id' => $unlock->actor_id, 'entity_id' => $unlock->entity_id, 'unlock_key' => $unlock->unlock_key, 'status' => $unlock->status, 'metadata' => $unlock->metadata, 'granted_at' => $unlock->granted_at?->toISOString(), 'revoked_at' => $unlock->revoked_at?->toISOString()]];
     }
 }

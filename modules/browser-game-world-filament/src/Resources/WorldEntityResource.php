@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\BrowserGame\WorldFilament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -14,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Liberu\BrowserGame\World\Models\WorldEntity;
+use Liberu\BrowserGame\World\Support\WorldManager;
 
 final class WorldEntityResource extends Resource
 {
@@ -32,7 +34,16 @@ final class WorldEntityResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('kind')->badge(), TextColumn::make('status')->badge()])->actions([EditAction::make(), DeleteAction::make()]);
+        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('kind')->badge(), TextColumn::make('status')->badge()])->actions([
+            EditAction::make(),
+            Action::make('grantUnlock')->label('Grant unlock')->requiresConfirmation()->visible(fn (WorldEntity $record): bool => filled($record->unlock_key))->action(function (WorldEntity $record): void {
+                $user = auth()->user();
+                $team = is_object($user) && method_exists($user, 'currentTeam') ? $user->currentTeam : null;
+                abort_unless($team !== null, 403);
+                app(WorldManager::class)->grantUnlock((string) auth()->id(), $record, $team->getAttribute('tenant_id'), (string) $team->getKey(), 'filament:unlock:'.auth()->id().':'.$record->getKey());
+            }),
+            DeleteAction::make(),
+        ]);
     }
 
     public static function getEloquentQuery(): Builder

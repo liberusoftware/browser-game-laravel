@@ -27,6 +27,24 @@ it('keeps travel scoped, same-world, and idempotent', function (): void {
         ->toThrow(ValidationException::class);
 });
 
+it('requires a persisted actor unlock for gated travel', function (): void {
+    $manager = app(WorldManager::class);
+    $origin = $manager->define('tenant-1', 'team-1', 'location', 'Origin', 'origin', worldId: 'world-1');
+    $destination = $manager->define('tenant-1', 'team-1', 'location', 'Locked', 'locked', worldId: 'world-1', unlockKey: 'world.locked');
+
+    expect(fn (): mixed => $manager->travel('player-1', 'tenant-1', 'team-1', $origin, $destination, 'locked-1', ['unlocked' => true]))
+        ->toThrow(ValidationException::class);
+
+    $unlock = $manager->grantUnlock('player-1', $destination, 'tenant-1', 'team-1', 'unlock-1');
+    expect($unlock->unlock_key)->toBe('world.locked');
+    expect($manager->travel('player-1', 'tenant-1', 'team-1', $origin, $destination, 'locked-1')->destination_id)
+        ->toBe($destination->getKey());
+
+    $manager->revokeUnlock('player-1', $unlock, 'tenant-1', 'team-1');
+    expect(fn (): mixed => $manager->travel('player-1', 'tenant-1', 'team-1', $origin, $destination, 'locked-2'))
+        ->toThrow(ValidationException::class);
+});
+
 it('defines every supported world catalog kind through typed actions', function (): void {
     $manager = app(WorldManager::class);
     $methods = ['defineRegion', 'defineLocation', 'defineMap', 'defineEncounter', 'defineNpc', 'defineResource', 'defineWeather', 'defineUnlock'];

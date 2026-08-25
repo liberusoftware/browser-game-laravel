@@ -10,8 +10,11 @@ use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\World\Events\WorldEntityDefined;
 use Liberu\BrowserGame\World\Events\WorldEntityUpdated;
 use Liberu\BrowserGame\World\Events\WorldTravelled;
+use Liberu\BrowserGame\World\Events\WorldUnlockGranted;
+use Liberu\BrowserGame\World\Events\WorldUnlockRevoked;
 use Liberu\BrowserGame\World\Models\WorldEntity;
 use Liberu\BrowserGame\World\Models\WorldTravel;
+use Liberu\BrowserGame\World\Models\WorldUnlock;
 
 final class WorldManager
 {
@@ -83,7 +86,7 @@ final class WorldManager
         if ($origin !== null) {
             $this->assertScope($origin, $tenantId, $teamId);
         }
-        if ($destination->getAttribute('status') !== 'active' || ($destination->getAttribute('unlock_key') !== null && ! (bool) ($metadata['unlocked'] ?? false))) {
+        if ($destination->getAttribute('status') !== 'active' || ($destination->getAttribute('unlock_key') !== null && ! $this->hasUnlock($actorId, (string) $destination->getAttribute('unlock_key'), $tenantId, $teamId))) {
             throw ValidationException::withMessages(['destination' => 'The destination is not available.']);
         }
         if ($origin?->getKey() === $destination->getKey() || ($origin !== null && $origin->world_id !== $destination->world_id)) {
@@ -105,6 +108,74 @@ final class WorldManager
         }
 
         return $travel;
+    }
+
+    public function grantUnlock(string $actorId, WorldEntity|string $entity, ?string $tenantId = null, ?string $teamId = null, ?string $idempotencyKey = null, array $metadata = []): WorldUnlock
+    {
+        if (trim($actorId) === '') {
+            throw ValidationException::withMessages(['actor' => 'An actor is required.']);
+        }
+
+        $worldEntity = $entity instanceof WorldEntity ? $entity : WorldEntity::query()->whereKey($entity)->firstOrFail();
+        $this->assertScope($worldEntity, $tenantId, $teamId);
+        $unlockKey = trim((string) $worldEntity->getAttribute('unlock_key'));
+        if ($unlockKey === '') {
+            throw ValidationException::withMessages(['entity' => 'The world entity does not define an unlock key.']);
+        }
+
+        $unlock = DB::transaction(function () use ($actorId, $worldEntity, $tenantId, $teamId, $idempotencyKey, $metadata, $unlockKey): WorldUnlock {
+            if ($idempotencyKey !== null && ($existing = WorldUnlock::query()->where('actor_id', $actorId)->where('idempotency_key', $idempotencyKey)->lockForUpdate()->first())) {
+                if ($existing->unlock_key !== $unlockKey || $existing->tenant_id !== $tenantId || (string) $existing->team_id !== (string) $teamId) {
+                    throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another unlock operation.']);
+                }
+
+                return $existing;
+            }
+
+            $existing = WorldUnlock::query()->where('actor_id', $actorId)->where('unlock_key', $unlockKey)->where('status', 'granted')->where(fn ($query) => $query->whereNull('tenant_id')->orWhere('tenant_id', $tenantId))->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->lockForUpdate()->first();
+            if ($existing !== null) {
+                if ($idempotencyKey !== null && $existing->idempotency_key === null) {
+                    $existing->update(['idempotency_key' => $idempotencyKey]);
+                }
+
+                return $existing->refresh();
+            }
+
+            return WorldUnlock::query()->create([
+                'id' => (string) Str::uuid(), 'tenant_id' => $tenantId, 'team_id' => $teamId,
+                'actor_id' => $actorId, 'entity_id' => $worldEntity->getKey(), 'unlock_key' => $unlockKey,
+                'status' => 'granted', 'metadata' => $metadata, 'idempotency_key' => $idempotencyKey,
+                'granted_at' => now(),
+            ]);
+        });
+
+        if ($unlock->wasRecentlyCreated) {
+            WorldUnlockGranted::dispatch((string) $unlock->getKey(), $actorId, $unlockKey);
+        }
+
+        return $unlock;
+    }
+
+    public function revokeUnlock(string $actorId, WorldUnlock|int|string $unlock, ?string $tenantId = null, ?string $teamId = null): WorldUnlock
+    {
+        $record = $unlock instanceof WorldUnlock ? $unlock : WorldUnlock::query()->whereKey($unlock)->firstOrFail();
+        if ($record->actor_id !== $actorId || $record->tenant_id !== $tenantId || (string) $record->team_id !== (string) $teamId) {
+            throw ValidationException::withMessages(['unlock' => 'The unlock is not available in the current context.']);
+        }
+        if ($record->status !== 'granted') {
+            return $record;
+        }
+
+        $record->update(['status' => 'revoked', 'revoked_at' => now()]);
+        $record = $record->refresh();
+        WorldUnlockRevoked::dispatch((string) $record->getKey(), $actorId, $record->unlock_key);
+
+        return $record;
+    }
+
+    public function hasUnlock(string $actorId, string $unlockKey, ?string $tenantId = null, ?string $teamId = null): bool
+    {
+        return WorldUnlock::query()->where('actor_id', $actorId)->where('unlock_key', $unlockKey)->where('status', 'granted')->where(fn ($query) => $query->whereNull('tenant_id')->orWhere('tenant_id', $tenantId))->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->exists();
     }
 
     public function update(WorldEntity $entity, ?string $tenantId, ?string $teamId, string $name, string $slug, string $status, array $attributes = [], ?array $coordinates = null, ?string $unlockKey = null): WorldEntity
