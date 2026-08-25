@@ -53,3 +53,11 @@ it('rejects invalid record kinds and empty names', function (): void {
     expect(fn (): mixed => $manager->record('report', '  '))
         ->toThrow(ValidationException::class);
 });
+
+it('does not replay moderation idempotency keys across tenants', function (): void {
+    $manager = app(ModerationAndAnalyticsManager::class);
+    $manager->record('report', 'Tenant one report', 'moderator-1', tenantId: 'tenant-1', teamId: 'team-1', idempotencyKey: 'scoped-report');
+
+    expect(fn (): mixed => $manager->record('report', 'Tenant two report', 'moderator-1', tenantId: 'tenant-2', teamId: 'team-2', idempotencyKey: 'scoped-report'))
+        ->toThrow(ValidationException::class);
+});

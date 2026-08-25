@@ -203,7 +203,7 @@ final class EconomyManager
 
         return DB::transaction(function () use ($actorId, $currencyCode, $amount, $entryType, $source, $idempotencyKey, $metadata, $tenantId, $teamId): EconomyLedgerEntry {
             if ($idempotencyKey !== null && ($existing = EconomyLedgerEntry::query()->where('idempotency_key', $idempotencyKey)->first()) !== null) {
-                if ($existing->actor_id !== $actorId || $existing->currency_code !== $currencyCode || (int) $existing->amount !== $amount || $existing->entry_type !== $entryType) {
+                if ($existing->actor_id !== $actorId || $existing->currency_code !== $currencyCode || (int) $existing->amount !== $amount || $existing->entry_type !== $entryType || (string) $existing->tenant_id !== (string) $tenantId || (string) $existing->team_id !== (string) $teamId) {
                     throw ValidationException::withMessages(['idempotency_key' => 'The idempotency key belongs to another ledger operation.']);
                 }
 

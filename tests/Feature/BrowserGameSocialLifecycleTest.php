@@ -56,3 +56,11 @@ it('supports explicit friends, social groups, mail, permissions, and activity wo
     expect($manager->report('owner-1', 'different', 'changed', teamId: 'team-1', idempotencyKey: 'report-1')->getKey())->toBe($report->getKey())
         ->and($report->team_id)->toBe('team-1');
 });
+
+it('does not replay social idempotency keys across tenants', function (): void {
+    $manager = app(SocialManager::class);
+    $manager->createGuild('owner-1', 'Tenant one guild', tenantId: 'tenant-1', teamId: 'team-1', idempotencyKey: 'scoped-social');
+
+    expect(fn (): mixed => $manager->createGuild('owner-1', 'Tenant two guild', tenantId: 'tenant-2', teamId: 'team-2', idempotencyKey: 'scoped-social'))
+        ->toThrow(ValidationException::class);
+});
