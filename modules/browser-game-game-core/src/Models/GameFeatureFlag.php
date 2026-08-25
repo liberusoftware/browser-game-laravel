@@ -6,6 +6,7 @@ namespace Liberu\BrowserGame\GameCore\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 final class GameFeatureFlag extends Model
 {
@@ -18,5 +19,10 @@ final class GameFeatureFlag extends Model
     protected function casts(): array
     {
         return ['enabled' => 'boolean', 'rollout_percentage' => 'integer', 'constraints' => 'array'];
+    }
+
+    public function world(): BelongsTo
+    {
+        return $this->belongsTo(GameWorld::class, 'world_id');
     }
 }

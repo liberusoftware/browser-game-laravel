@@ -13,7 +13,7 @@ paths:
       operationId: browser.game.game.core.list
       summary: List authorized game worlds
       security: [{ sanctum: [] }]
-      parameters: [{ name: page[size], in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }]
+      parameters: [{ name: "page[size]", in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }]
       responses:
         '200': { description: Authorized world collection }
         '401': { $ref: '#/components/responses/Unauthorized' }
@@ -77,6 +77,12 @@ paths:
       requestBody: { required: true, content: { application/json: { schema: { type: object, required: [version, content_hash, manifest], properties: { version: { type: integer, minimum: 1 }, content_hash: { type: string }, manifest: { type: object, additionalProperties: true } } } } } }
       responses: { '201': { description: Content version published }, '401': { $ref: '#/components/responses/Unauthorized' }, '422': { $ref: '#/components/responses/ValidationError' } }
   /api/v1/browser-game/game-core/{world}/feature-flags/{key}:
+    get:
+      operationId: browser.game.game.core.feature.flag.evaluate
+      summary: Evaluate a feature flag for the authenticated actor
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/WorldId' }, { name: key, in: path, required: true, schema: { type: string } }, { name: attributes, in: query, schema: { type: object, additionalProperties: true } }]
+      responses: { '200': { description: Feature evaluation }, '401': { $ref: '#/components/responses/Unauthorized' }, '404': { $ref: '#/components/responses/NotFound' }, '422': { $ref: '#/components/responses/ValidationError' } }
     put:
       operationId: browser.game.game.core.feature.flag
       summary: Change a feature flag

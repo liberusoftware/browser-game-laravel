@@ -6,6 +6,7 @@ namespace Liberu\BrowserGame\GameCoreFilament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Liberu\BrowserGame\GameCoreFilament\Resources\GameFeatureFlagResource;
 use Liberu\BrowserGame\GameCoreFilament\Resources\GameWorldResource;
 
 final class GameCoreFilamentPlugin implements Plugin
@@ -22,7 +23,7 @@ final class GameCoreFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([GameWorldResource::class]);
+        $panel->resources([GameWorldResource::class, GameFeatureFlagResource::class]);
     }
 
     public function boot(Panel $panel): void {}

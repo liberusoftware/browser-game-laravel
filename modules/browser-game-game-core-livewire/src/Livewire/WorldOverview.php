@@ -48,6 +48,11 @@ final class WorldOverview extends Component
         $this->message = 'Feature flag updated.';
     }
 
+    public function featureEnabled(string $key, array $attributes = []): bool
+    {
+        return app(OverviewQuery::class)->isEnabled($this->context(), $this->world(), $key, $attributes);
+    }
+
     public function setMaintenance(string $status, ?string $message = null): void
     {
         app(GameCoreManager::class)->setMaintenance($this->context(), $this->world(), $status, $message);

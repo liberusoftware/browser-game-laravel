@@ -2,7 +2,7 @@
 
 `liberusoftware/module-browser-game-game-core` owns the provider-neutral game control plane: worlds and shards, authoritative clocks, versioned rulesets and content, feature flags, and maintenance state.
 
-The package is intentionally independent of HTTP, Filament, Livewire, themes, and application `App\\` classes. Presentation adapters consume its actions, queries, policies, and events. Every mutation is scoped by the caller supplied context, transactional, and safe to retry when an idempotency key is supplied.
+The package is intentionally independent of HTTP, Filament, Livewire, themes, and application `App\\` classes. Presentation adapters consume its actions, queries, policies, and events. Every mutation is scoped by the caller supplied context, transactional, and safe to retry when an idempotency key is supplied. Feature evaluation is deterministic per actor, honors world overrides and constraints, and fails closed for an unavailable world or anonymous context.
 
 ## Installation
 
