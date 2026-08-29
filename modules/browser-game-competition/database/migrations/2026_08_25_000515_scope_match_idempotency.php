@@ -15,4 +15,12 @@ return new class() extends Migration
             $table->unique(['competition_id', 'idempotency_key']);
         });
     }
+
+    public function down(): void
+    {
+        Schema::table('browser_game_competition_matches', function (Blueprint $table): void {
+            $table->dropUnique('browser_game_competition_matches_competition_id_idempotency_key_unique');
+            $table->unique('idempotency_key');
+        });
+    }
 };

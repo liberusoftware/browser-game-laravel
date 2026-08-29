@@ -16,4 +16,14 @@ return new class() extends Migration
             $table->unique(['player_id', 'name', 'tenant_id', 'team_id']);
         });
     }
+
+    public function down(): void
+    {
+        Schema::table('browser_game_characters', function (Blueprint $table): void {
+            $table->dropUnique('browser_game_characters_player_id_name_tenant_id_team_id_unique');
+            $table->dropIndex('browser_game_characters_tenant_id_index');
+            $table->dropColumn('tenant_id');
+            $table->unique(['player_id', 'name']);
+        });
+    }
 };

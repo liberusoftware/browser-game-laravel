@@ -6,6 +6,9 @@ use Liberu\BrowserGame\QuestsApi\Http\Controllers\QuestsController;
 
 Route::prefix('api/v1/browser-game/quests')->middleware(['api', 'auth:sanctum', 'throttle:api'])->group(function (): void {
     Route::get('/', [QuestsController::class, 'index'])->name('browser-game.quests.index');
+    Route::get('/available', [QuestsController::class, 'available'])->name('browser-game.quests.available');
+    Route::get('/active', [QuestsController::class, 'active'])->name('browser-game.quests.active');
+    Route::get('/completed', [QuestsController::class, 'completed'])->name('browser-game.quests.completed');
     Route::post('/{quest}/accept', [QuestsController::class, 'accept'])->name('browser-game.quests.accept');
     Route::post('/{quest}/complete', [QuestsController::class, 'complete'])->name('browser-game.quests.complete');
     Route::post('/{quest}/abandon', [QuestsController::class, 'abandon'])->name('browser-game.quests.abandon');
