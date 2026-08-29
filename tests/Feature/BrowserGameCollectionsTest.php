@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Liberu\BrowserGame\Collections\Models\CollectionProgress;
+use Liberu\BrowserGame\Collections\Queries\CollectionsQuery;
 use Liberu\BrowserGame\Collections\Support\CollectionsManager;
 
 uses(RefreshDatabase::class);
@@ -66,4 +67,21 @@ it('rejects scoped collection progress outside the caller scope', function (): v
 
     expect(fn (): mixed => $manager->record('player-1', $collection, $entry->entry_key, tenantId: 'tenant-1', teamId: 'team-2'))
         ->toThrow(ValidationException::class);
+});
+
+it('provides available and unlocked achievement views', function (): void {
+    $manager = app(CollectionsManager::class);
+    $query = app(CollectionsQuery::class);
+    $available = $manager->defineAchievement('Available achievement');
+    $unlocked = $manager->defineAchievement('Unlocked achievement');
+    $entry = $manager->addEntry($unlocked, 'wins', 'Win once');
+
+    $manager->record('player-3', $unlocked, $entry->entry_key);
+
+    expect($query->availableAchievements(null, null)->pluck('id')->all())
+        ->toContain($available->getKey(), $unlocked->getKey())
+        ->and($query->forActor('player-3', null, null)->pluck('id')->all())
+        ->toBe([$unlocked->getKey()])
+        ->and($query->unlockedForActor('player-3', null, null)->pluck('id')->all())
+        ->toBe([$unlocked->getKey()]);
 });

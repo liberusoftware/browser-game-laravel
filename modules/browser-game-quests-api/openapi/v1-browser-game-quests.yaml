@@ -17,6 +17,33 @@ paths:
         '200': { $ref: '#/components/responses/ResourceCollection' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
+  /api/v1/browser-game/quests/available:
+    get:
+      operationId: browser.game.quests.available
+      summary: List quests available to the authenticated actor
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/PageSize' }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/browser-game/quests/active:
+    get:
+      operationId: browser.game.quests.active
+      summary: List quests currently active for the authenticated actor
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/PageSize' }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/browser-game/quests/completed:
+    get:
+      operationId: browser.game.quests.completed
+      summary: List quests completed by the authenticated actor
+      security: [{ sanctum: [] }]
+      parameters: [{ $ref: '#/components/parameters/PageSize' }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
   /api/v1/browser-game/quests/{id}:
     get:
       operationId: browser.game.quests.get
@@ -67,6 +94,7 @@ components:
   parameters:
     Id: { name: id, in: path, required: true, schema: { type: string, format: uuid } }
     IdempotencyKey: { name: Idempotency-Key, in: header, required: false, schema: { type: string, maxLength: 128 } }
+    PageSize: { name: page[size], in: query, required: false, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
   securitySchemes:
     sanctum: { type: http, scheme: bearer, bearerFormat: Sanctum }
   schemas:

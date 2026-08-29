@@ -19,7 +19,22 @@ final class QuestsController extends Controller
         $team = $request->user()?->currentTeam;
         $items = app(QuestQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $items->through(fn (Quest $item): array => $this->resource($item))]);
+        return response()->json($items->through(fn (Quest $item): array => $this->resource($item)));
+    }
+
+    public function available(Request $request): JsonResponse
+    {
+        return $this->progressList($request, 'availableFor');
+    }
+
+    public function active(Request $request): JsonResponse
+    {
+        return $this->progressList($request, 'activeFor');
+    }
+
+    public function completed(Request $request): JsonResponse
+    {
+        return $this->progressList($request, 'completedFor');
     }
 
     public function show(Request $request, Quest $quest): JsonResponse
@@ -66,6 +81,19 @@ final class QuestsController extends Controller
         $team = $request->user()?->currentTeam;
 
         return app(QuestQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($quest->getKey())->firstOrFail();
+    }
+
+    private function progressList(Request $request, string $method): JsonResponse
+    {
+        $user = $request->user();
+        $team = $user?->currentTeam;
+        $quests = app(QuestQuery::class)->{$method}(
+            (string) $user->getKey(),
+            $team?->getAttribute('tenant_id'),
+            $team?->getKey() === null ? null : (string) $team->getKey(),
+        )->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
+
+        return response()->json($quests->through(fn (Quest $quest): array => $this->resource($quest)));
     }
 
     private function resource(Model $quest): array

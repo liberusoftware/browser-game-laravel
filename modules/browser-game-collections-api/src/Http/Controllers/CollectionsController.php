@@ -20,7 +20,7 @@ final class CollectionsController extends Controller
         $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
         $items = app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate($pageSize);
 
-        return response()->json(['data' => $items->through(fn (CollectionsRecord $item): array => $this->resource($item))]);
+        return response()->json($items->through(fn (CollectionsRecord $item): array => $this->resource($item)));
     }
 
     public function store(Request $request): JsonResponse
@@ -37,6 +37,16 @@ final class CollectionsController extends Controller
         return response()->json(['data' => $this->resource($collection)], 201);
     }
 
+    public function achievements(Request $request): JsonResponse
+    {
+        return $this->achievementList($request, 'availableAchievements');
+    }
+
+    public function unlockedAchievements(Request $request): JsonResponse
+    {
+        return $this->achievementList($request, 'unlockedForActor');
+    }
+
     public function show(Request $request, CollectionsRecord $collections): JsonResponse
     {
         $collections = $this->authorizedCollection($request, $collections);
@@ -47,16 +57,15 @@ final class CollectionsController extends Controller
     public function progress(Request $request): JsonResponse
     {
         $team = $request->user()?->currentTeam;
-        abort_unless($team?->getKey() !== null, 404);
         $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
-        $visibleCollections = app(CollectionsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey());
+        $visibleCollections = app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
         $items = CollectionProgress::query()
             ->where('actor_id', (string) $request->user()->getAuthIdentifier())
             ->whereIn('collection_id', $visibleCollections->select('id'))
             ->latest()
             ->paginate($pageSize);
 
-        return response()->json(['data' => $items->through(fn (CollectionProgress $progress): array => $this->progressResource($progress))]);
+        return response()->json($items->through(fn (CollectionProgress $progress): array => $this->progressResource($progress)));
     }
 
     public function record(Request $request, CollectionsRecord $collections): JsonResponse
@@ -79,11 +88,22 @@ final class CollectionsController extends Controller
         return ['id' => (string) $progress->getKey(), 'type' => 'browser-game-collection-progress', 'attributes' => ['collection_id' => (string) $progress->collection_id, 'entry_key' => $progress->entry_key, 'quantity' => $progress->quantity, 'completion_count' => $progress->completion_count, 'completed_at' => $progress->completed_at?->toISOString(), 'reward_claimed_at' => $progress->reward_claimed_at?->toISOString(), 'data' => $progress->data]];
     }
 
+    private function achievementList(Request $request, string $method): JsonResponse
+    {
+        $team = $request->user()?->currentTeam;
+        $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
+        $query = app(CollectionsQuery::class);
+        $items = $method === 'unlockedForActor'
+            ? $query->{$method}((string) $request->user()->getAuthIdentifier(), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())
+            : $query->{$method}($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+
+        return response()->json($items->with('entries')->latest()->paginate($pageSize)->through(fn (CollectionsRecord $item): array => $this->resource($item)));
+    }
+
     private function authorizedCollection(Request $request, CollectionsRecord $collection): CollectionsRecord
     {
         $team = $request->user()?->currentTeam;
-        abort_unless($team?->getKey() !== null, 404);
 
-        return app(CollectionsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey())->whereKey($collection->getKey())->firstOrFail();
+        return app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($collection->getKey())->firstOrFail();
     }
 }

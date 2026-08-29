@@ -61,6 +61,22 @@ paths:
           $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /api/v1/browser-game/collections/achievements:
+    get:
+      operationId: browser.game.collections.achievements.list
+      summary: List authorized achievements
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/browser-game/collections/achievements/unlocked:
+    get:
+      operationId: browser.game.collections.achievements.unlocked
+      summary: List achievements unlocked by the authenticated actor
+      security: [{ sanctum: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/ResourceCollection' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
   /api/v1/browser-game/collections/{id}:
     get:
       operationId: browser.game.collections.get

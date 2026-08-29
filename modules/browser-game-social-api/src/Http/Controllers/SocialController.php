@@ -20,7 +20,7 @@ final class SocialController extends Controller
         $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
         $items = app(SocialQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate($pageSize);
 
-        return response()->json(['data' => $items->through(fn (SocialRecord $item): array => $this->resource($item))]);
+        return response()->json($items->through(fn (SocialRecord $item): array => $this->resource($item)));
     }
 
     public function store(Request $request): JsonResponse

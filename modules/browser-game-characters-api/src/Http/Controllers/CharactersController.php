@@ -18,7 +18,7 @@ final class CharactersController extends Controller
         $team = $request->user()?->currentTeam;
         $characters = GameCharacter::query()->where('player_id', $playerId)->where('tenant_id', $team?->getAttribute('tenant_id'))->where('team_id', $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $characters->through(fn (GameCharacter $character): array => $this->resource($character))]);
+        return response()->json($characters->through(fn (GameCharacter $character): array => $this->resource($character)));
     }
 
     public function store(Request $request): JsonResponse
