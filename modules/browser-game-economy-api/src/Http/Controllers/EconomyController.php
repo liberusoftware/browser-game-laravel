@@ -22,7 +22,7 @@ final class EconomyController extends Controller
         $team = $request->user()?->currentTeam;
         $items = app(EconomyQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $items->through(fn (EconomyRecord $item): array => $this->resource($item))]);
+        return response()->json($items->through(fn (EconomyRecord $item): array => $this->resource($item)));
     }
 
     public function show(Request $request, EconomyRecord $economy): JsonResponse
