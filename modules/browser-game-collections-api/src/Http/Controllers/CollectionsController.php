@@ -37,6 +37,16 @@ final class CollectionsController extends Controller
         return response()->json(['data' => $this->resource($collection)], 201);
     }
 
+    public function achievements(Request $request): JsonResponse
+    {
+        return $this->achievementList($request, 'availableAchievements');
+    }
+
+    public function unlockedAchievements(Request $request): JsonResponse
+    {
+        return $this->achievementList($request, 'unlockedForActor');
+    }
+
     public function show(Request $request, CollectionsRecord $collections): JsonResponse
     {
         $collections = $this->authorizedCollection($request, $collections);
@@ -77,6 +87,18 @@ final class CollectionsController extends Controller
     private function progressResource(CollectionProgress $progress): array
     {
         return ['id' => (string) $progress->getKey(), 'type' => 'browser-game-collection-progress', 'attributes' => ['collection_id' => (string) $progress->collection_id, 'entry_key' => $progress->entry_key, 'quantity' => $progress->quantity, 'completion_count' => $progress->completion_count, 'completed_at' => $progress->completed_at?->toISOString(), 'reward_claimed_at' => $progress->reward_claimed_at?->toISOString(), 'data' => $progress->data]];
+    }
+
+    private function achievementList(Request $request, string $method): JsonResponse
+    {
+        $team = $request->user()?->currentTeam;
+        $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
+        $query = app(CollectionsQuery::class);
+        $items = $method === 'unlockedForActor'
+            ? $query->{$method}((string) $request->user()->getAuthIdentifier(), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())
+            : $query->{$method}($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
+
+        return response()->json(['data' => $items->with('entries')->latest()->paginate($pageSize)->through(fn (CollectionsRecord $item): array => $this->resource($item))]);
     }
 
     private function authorizedCollection(Request $request, CollectionsRecord $collection): CollectionsRecord
