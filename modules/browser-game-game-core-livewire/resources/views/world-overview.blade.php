@@ -38,6 +38,38 @@
     @if ($overview['maintenance']?->status === 'active')
         <p role="status">{{ $overview['maintenance']->message ?: 'Maintenance is active.' }}</p>
     @endif
-    <button type="button" wire:click="setMaintenance('active', 'Maintenance enabled')" wire:loading.attr="disabled">Enable maintenance</button>
-    <button type="button" wire:click="setMaintenance('resolved')" wire:loading.attr="disabled">Resolve maintenance</button>
+    <form wire:submit="updateClock">
+        <h3>Update game clock</h3>
+        <label>Current time <input type="datetime-local" wire:model="currentAt"></label>
+        <label>Speed <input type="number" min="0" step="0.01" wire:model="clockSpeed"></label>
+        <label><input type="checkbox" wire:model="clockPaused"> Paused</label>
+        <button type="submit" wire:loading.attr="disabled">Save clock</button>
+    </form>
+    <form wire:submit="publishRulesetFromForm">
+        <h3>Publish ruleset</h3>
+        <label>Version <input type="number" min="1" wire:model="rulesetVersion"></label>
+        <label>Rules <textarea wire:model="rulesJson"></textarea></label>
+        <button type="submit" wire:loading.attr="disabled">Publish ruleset</button>
+    </form>
+    <form wire:submit="publishContentFromForm">
+        <h3>Publish content</h3>
+        <label>Version <input type="number" min="1" wire:model="contentVersion"></label>
+        <label>Content hash <input type="text" wire:model="contentHash"></label>
+        <label>Manifest <textarea wire:model="manifestJson"></textarea></label>
+        <button type="submit" wire:loading.attr="disabled">Publish content</button>
+    </form>
+    <form wire:submit="updateFeatureFlagFromForm">
+        <h3>Update feature flag</h3>
+        <label>Key <input type="text" wire:model="featureKey"></label>
+        <label><input type="checkbox" wire:model="featureEnabled"> Enabled</label>
+        <label>Rollout <input type="number" min="0" max="100" wire:model="featureRolloutPercentage"></label>
+        <label>Constraints <textarea wire:model="featureConstraintsJson"></textarea></label>
+        <button type="submit" wire:loading.attr="disabled">Save feature flag</button>
+    </form>
+    <form wire:submit="updateMaintenanceFromForm">
+        <h3>Maintenance</h3>
+        <label>Status <select wire:model="maintenanceStatus"><option value="scheduled">Scheduled</option><option value="active">Active</option><option value="resolved">Resolved</option></select></label>
+        <label>Message <textarea wire:model="maintenanceMessage"></textarea></label>
+        <button type="submit" wire:loading.attr="disabled">Save maintenance</button>
+    </form>
 </section>
