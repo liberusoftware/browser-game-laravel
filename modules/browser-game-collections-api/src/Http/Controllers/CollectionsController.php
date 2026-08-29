@@ -20,7 +20,7 @@ final class CollectionsController extends Controller
         $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
         $items = app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey())->latest()->paginate($pageSize);
 
-        return response()->json(['data' => $items->through(fn (CollectionsRecord $item): array => $this->resource($item))]);
+        return response()->json($items->through(fn (CollectionsRecord $item): array => $this->resource($item)));
     }
 
     public function store(Request $request): JsonResponse
@@ -57,16 +57,15 @@ final class CollectionsController extends Controller
     public function progress(Request $request): JsonResponse
     {
         $team = $request->user()?->currentTeam;
-        abort_unless($team?->getKey() !== null, 404);
         $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
-        $visibleCollections = app(CollectionsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey());
+        $visibleCollections = app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
         $items = CollectionProgress::query()
             ->where('actor_id', (string) $request->user()->getAuthIdentifier())
             ->whereIn('collection_id', $visibleCollections->select('id'))
             ->latest()
             ->paginate($pageSize);
 
-        return response()->json(['data' => $items->through(fn (CollectionProgress $progress): array => $this->progressResource($progress))]);
+        return response()->json($items->through(fn (CollectionProgress $progress): array => $this->progressResource($progress)));
     }
 
     public function record(Request $request, CollectionsRecord $collections): JsonResponse
@@ -98,14 +97,13 @@ final class CollectionsController extends Controller
             ? $query->{$method}((string) $request->user()->getAuthIdentifier(), $team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())
             : $query->{$method}($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey());
 
-        return response()->json(['data' => $items->with('entries')->latest()->paginate($pageSize)->through(fn (CollectionsRecord $item): array => $this->resource($item))]);
+        return response()->json($items->with('entries')->latest()->paginate($pageSize)->through(fn (CollectionsRecord $item): array => $this->resource($item)));
     }
 
     private function authorizedCollection(Request $request, CollectionsRecord $collection): CollectionsRecord
     {
         $team = $request->user()?->currentTeam;
-        abort_unless($team?->getKey() !== null, 404);
 
-        return app(CollectionsQuery::class)->visible($team->getAttribute('tenant_id'), (string) $team->getKey())->whereKey($collection->getKey())->firstOrFail();
+        return app(CollectionsQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey())->whereKey($collection->getKey())->firstOrFail();
     }
 }

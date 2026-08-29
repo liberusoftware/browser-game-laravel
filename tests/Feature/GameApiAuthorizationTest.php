@@ -16,6 +16,7 @@ use Liberu\BrowserGame\Characters\CharactersServiceProvider;
 use Liberu\BrowserGame\Characters\Support\CharactersManager;
 use Liberu\BrowserGame\CharactersApi\CharactersApiServiceProvider;
 use Liberu\BrowserGame\Collections\CollectionsServiceProvider;
+use Liberu\BrowserGame\Collections\Support\CollectionsManager;
 use Liberu\BrowserGame\CollectionsApi\CollectionsApiServiceProvider;
 use Liberu\BrowserGame\Commerce\CommerceServiceProvider;
 use Liberu\BrowserGame\Commerce\Support\CommerceManager;
@@ -188,6 +189,24 @@ class GameApiAuthorizationTest extends TestCase
 
         $this->postJson('/api/v1/browser-game/accounts', ['name' => 'Created account'])->assertCreated()->assertJsonPath('data.attributes.team_id', (string) $team->getKey());
         $this->postJson('/api/v1/browser-game/collections', ['name' => 'First achievement', 'kind' => 'achievement'])->assertCreated()->assertJsonPath('data.attributes.team_id', (string) $team->getKey());
+    }
+
+    public function test_browser_game_collections_api_supports_global_achievements_without_a_current_team(): void
+    {
+        $this->app->register(CollectionsServiceProvider::class);
+        $this->app->register(CollectionsApiServiceProvider::class);
+        $this->artisan('migrate');
+
+        $user = User::factory()->create();
+        $manager = app(CollectionsManager::class);
+        $achievement = $manager->defineAchievement('Global achievement');
+        $entry = $manager->addEntry($achievement, 'wins', 'Win once');
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/v1/browser-game/collections/achievements')->assertOk();
+        $this->getJson('/api/v1/browser-game/collections/'.$achievement->getKey())->assertOk();
+        $this->postJson('/api/v1/browser-game/collections/'.$achievement->getKey().'/progress', ['entry_key' => $entry->entry_key])->assertCreated();
+        $this->getJson('/api/v1/browser-game/collections/achievements/unlocked')->assertOk()->assertJsonPath('data.0.id', (string) $achievement->getKey());
     }
 
     public function test_browser_game_character_and_quest_reads_are_team_scoped(): void
