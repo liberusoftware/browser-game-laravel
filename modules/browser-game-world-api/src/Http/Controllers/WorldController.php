@@ -21,7 +21,7 @@ final class WorldController extends Controller
         $pageSize = min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100);
         $entities = app(WorldQuery::class)->visible($team?->getAttribute('tenant_id'), $team?->getKey() === null ? null : (string) $team->getKey(), $request->string('kind')->toString() ?: null)->latest()->paginate($pageSize);
 
-        return response()->json(['data' => $entities->through(fn (WorldEntity $entity): array => $this->resource($entity))]);
+        return response()->json($entities->through(fn (WorldEntity $entity): array => $this->resource($entity)));
     }
 
     public function store(Request $request): JsonResponse

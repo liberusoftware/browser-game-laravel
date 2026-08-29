@@ -93,7 +93,7 @@ final class QuestsController extends Controller
             $team?->getKey() === null ? null : (string) $team->getKey(),
         )->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $quests->through(fn (Quest $quest): array => $this->resource($quest))]);
+        return response()->json($quests->through(fn (Quest $quest): array => $this->resource($quest)));
     }
 
     private function resource(Model $quest): array

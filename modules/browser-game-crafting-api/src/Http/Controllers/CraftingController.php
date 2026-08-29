@@ -56,7 +56,7 @@ final class CraftingController extends Controller
         $team = $this->team($request);
         $queues = CraftingQueue::query()->with('recipe')->where('actor_id', (string) $request->user()->getAuthIdentifier())->where('tenant_id', $team?->getAttribute('tenant_id'))->where('team_id', $team?->getKey())->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $queues->through(fn (CraftingQueue $queue): array => $this->queueResource($queue))]);
+        return response()->json($queues->through(fn (CraftingQueue $queue): array => $this->queueResource($queue)));
     }
 
     public function complete(Request $request, CraftingQueue $queue): JsonResponse

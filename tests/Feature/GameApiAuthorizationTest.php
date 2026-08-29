@@ -251,7 +251,7 @@ class GameApiAuthorizationTest extends TestCase
 
         $this->getJson('/api/v1/browser-game/commerce/products')
             ->assertOk()
-            ->assertJsonPath('data.data.0.id', (string) $visible->getKey())
+            ->assertJsonPath('data.0.id', (string) $visible->getKey())
             ->assertJsonMissing(['id' => (string) $hidden->getKey()]);
 
         $this->postJson('/api/v1/browser-game/commerce/checkout', ['lines' => [['product_id' => $hidden->getKey(), 'quantity' => 1]]])

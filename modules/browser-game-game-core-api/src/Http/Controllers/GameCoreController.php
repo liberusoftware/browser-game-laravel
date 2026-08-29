@@ -29,7 +29,7 @@ final class GameCoreController extends Controller
             ->latest()
             ->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $worlds->through(fn (GameWorld $world): array => $this->resource($world))]);
+        return response()->json($worlds->through(fn (GameWorld $world): array => $this->resource($world)));
     }
 
     public function show(Request $request, string $world): JsonResponse

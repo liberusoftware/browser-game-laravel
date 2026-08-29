@@ -35,7 +35,7 @@ final class CommerceController extends Controller
             ->latest()
             ->paginate($pageSize);
 
-        return response()->json(['data' => $products->through(fn (CommerceProduct $product): array => $this->productResource($product))]);
+        return response()->json($products->through(fn (CommerceProduct $product): array => $this->productResource($product)));
     }
 
     public function checkout(Request $request): JsonResponse

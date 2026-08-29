@@ -115,7 +115,7 @@ final class EconomyController extends Controller
         $team = $request->user()?->currentTeam;
         $listings = $this->scoped(EconomyListing::query(), $team)->where('status', 'active')->latest()->paginate(min(max($request->integer('page[size]', $request->integer('page_size', 25)), 1), 100));
 
-        return response()->json(['data' => $listings->through(fn (EconomyListing $listing): array => $this->listingResource($listing))]);
+        return response()->json($listings->through(fn (EconomyListing $listing): array => $this->listingResource($listing)));
     }
 
     public function createListing(Request $request): JsonResponse
