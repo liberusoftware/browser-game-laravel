@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use JoelButcher\Socialstream\HasConnectedAccounts;
 use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
@@ -35,6 +36,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @property string|null $theme_preference
  * @property string|null $locale
+ * @property Carbon|null $onboarding_completed_at
  */
 class User extends Authenticatable implements ConnectedAccountOwner, FilamentUser, HasDefaultTenant, HasTenants, ObservabilityActor, OrganizationActor, PrivilegedActor
 {
@@ -74,6 +76,7 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
         'theme_preference',
         'locale',
         'timezone',
+        'onboarding_completed_at',
     ];
 
     /**
@@ -99,7 +102,13 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'onboarding_completed_at' => 'datetime',
     ];
+
+    public function hasCompletedOnboarding(): bool
+    {
+        return $this->onboarding_completed_at !== null;
+    }
 
     /**
      * The accessors to append to the model's array form.
