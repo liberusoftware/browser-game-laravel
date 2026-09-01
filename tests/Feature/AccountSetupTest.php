@@ -38,6 +38,11 @@ it('saves profile and team settings and can issue a one-time api token', functio
         ->call('save')
         ->assertSet('newApiToken', fn (?string $token): bool => filled($token));
 
+    Livewire::test(AccountSetup::class)
+        ->set('newApiToken', 'token-shown-once')
+        ->call('continueToApp')
+        ->assertRedirect();
+
     expect($user->fresh()->name)->toBe('Ari Player')
         ->and($user->fresh()->hasCompletedOnboarding())->toBeTrue()
         ->and($team->fresh()->name)->toBe('Ari Games')
