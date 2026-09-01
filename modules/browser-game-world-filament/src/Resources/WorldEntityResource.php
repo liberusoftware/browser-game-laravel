@@ -26,7 +26,7 @@ final class WorldEntityResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Browser Game';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Operations';
 
     public static function form(Schema $schema): Schema
     {

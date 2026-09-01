@@ -32,8 +32,10 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->colors(app(ThemeColors::class)->forSite())
             ->navigationGroups([
-                NavigationGroup::make('Browser Game')->collapsible(),
-                NavigationGroup::make('Account')->collapsible(),
+                NavigationGroup::make('Play')
+                    ->collapsible(),
+                NavigationGroup::make('Account & workspace')
+                    ->collapsible(),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\Filament\App\Pages')

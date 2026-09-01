@@ -23,7 +23,7 @@ final class CharacterResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Browser Game';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Content';
 
     public static function form(Schema $schema): Schema
     {

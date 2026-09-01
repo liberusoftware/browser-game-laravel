@@ -36,11 +36,24 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors(app(ThemeColors::class)->forSite())
             ->navigationGroups([
-                NavigationGroup::make('Overview')->collapsible(),
-                NavigationGroup::make('Game Management')->collapsible(),
-                NavigationGroup::make('Administration')->collapsible(),
-                NavigationGroup::make('System')->collapsed(),
-                NavigationGroup::make('Settings')->collapsed(),
+                NavigationGroup::make('Overview')
+                    ->collapsible(),
+                NavigationGroup::make('Game Content')
+                    ->collapsible(),
+                NavigationGroup::make('Game Operations')
+                    ->collapsible(),
+                NavigationGroup::make('Live Operations')
+                    ->collapsible(),
+                NavigationGroup::make('Community')
+                    ->collapsible(),
+                NavigationGroup::make('Access & Teams')
+                    ->collapsible(),
+                NavigationGroup::make('Operations')
+                    ->collapsed(),
+                NavigationGroup::make('System Configuration')
+                    ->collapsed(),
+                NavigationGroup::make('Settings')
+                    ->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')

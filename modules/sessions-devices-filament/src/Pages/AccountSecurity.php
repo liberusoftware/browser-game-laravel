@@ -14,7 +14,7 @@ final class AccountSecurity extends Page
 
     protected static ?string $navigationLabel = 'Security & Preferences';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Account';
+    protected static string|\UnitEnum|null $navigationGroup = 'Account & workspace';
 
     public Collection $sessions;
 

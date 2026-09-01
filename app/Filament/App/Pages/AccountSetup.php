@@ -16,7 +16,7 @@ class AccountSetup extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Account';
+    protected static string|\UnitEnum|null $navigationGroup = 'Account & workspace';
 
     protected static ?int $navigationSort = -10;
 
@@ -64,15 +64,16 @@ class AccountSetup extends Page
                         ->schema([
                             TextInput::make('team_name')->label('Team name')->required()->maxLength(255),
                         ]),
-                    Step::make('Connect')
+                    Step::make('Connect your tools')
                         ->icon('heroicon-o-key')
-                        ->description('Optional integrations for your tools and clients.')
+                        ->description('Connect sign-in providers and prepare API access.')
                         ->schema([
                             Checkbox::make('generate_api_token')
-                                ->label('Create an API token for me')
-                                ->helperText('The token is shown once after saving. Store it somewhere secure.'),
+                                ->label('Create a game API token')
+                                ->helperText('Useful for a game client or local integration. It is shown once after saving.'),
                             TextInput::make('api_token_name')
                                 ->label('Token name')
+                                ->placeholder('My game client')
                                 ->required(fn (callable $get): bool => (bool) $get('generate_api_token'))
                                 ->maxLength(80)
                                 ->visible(fn (callable $get): bool => (bool) $get('generate_api_token')),
@@ -108,6 +109,11 @@ class AccountSetup extends Page
         if ($this->newApiToken === null) {
             $this->redirect(filament()->getUrl());
         }
+    }
+
+    public function continueToApp(): void
+    {
+        $this->redirect(filament()->getUrl());
     }
 
     public static function canAccess(): bool

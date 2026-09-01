@@ -7,7 +7,7 @@
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold text-gray-950 dark:text-white">Welcome, {{ auth()->user()->name }}</h2>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">A few quick choices will prepare your workspace.</p>
+                    <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">A few quick choices will prepare your workspace, team context, and optional integrations. You can change these later from your account settings.</p>
                 </div>
             </div>
 
@@ -20,6 +20,11 @@
                     <p class="font-semibold text-success-700 dark:text-success-300">Your API token was created</p>
                     <code class="mt-2 block break-all rounded-lg bg-white/70 p-3 text-xs dark:bg-black/20">{{ $newApiToken }}</code>
                     <p class="mt-2 text-success-700/80 dark:text-success-300/80">Copy it now. For your security, it will not be shown again.</p>
+                    <div class="mt-4">
+                        <x-filament::button wire:click="continueToApp" color="success" size="sm">
+                            Continue to your workspace
+                        </x-filament::button>
+                    </div>
                 </div>
             @endif
         </div>
@@ -51,7 +56,7 @@
                         </div>
                     @endforeach
                 </div>
-                <p class="mt-3 text-xs leading-5 text-gray-500 dark:text-gray-400">OAuth client credentials are configured by your deployment administrator. They are never stored or requested here.</p>
+                <p class="mt-3 text-xs leading-5 text-gray-500 dark:text-gray-400">OAuth client credentials are configured by the deployment administrator. You only approve access with the provider; secrets are never stored or requested here.</p>
             </div>
         </aside>
     </div>

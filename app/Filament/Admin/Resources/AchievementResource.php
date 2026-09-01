@@ -23,7 +23,7 @@ class AchievementResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-trophy';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Content';
 
     protected static ?string $navigationLabel = 'Achievements';
 
