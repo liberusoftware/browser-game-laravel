@@ -48,6 +48,8 @@ class AdminPanelProvider extends PanelProvider
                     ->collapsible(),
                 NavigationGroup::make('Access & Teams')
                     ->collapsible(),
+                NavigationGroup::make('Administration')
+                    ->collapsed(),
                 NavigationGroup::make('Operations')
                     ->collapsed(),
                 NavigationGroup::make('System Configuration')

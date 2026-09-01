@@ -36,6 +36,8 @@ class AppPanelProvider extends PanelProvider
                     ->collapsible(),
                 NavigationGroup::make('Account & workspace')
                     ->collapsible(),
+                NavigationGroup::make('Account')
+                    ->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\Filament\App\Pages')
