@@ -27,7 +27,7 @@ final class GameClockResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Browser Game';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game Operations';
 
     public static function form(Schema $schema): Schema
     {

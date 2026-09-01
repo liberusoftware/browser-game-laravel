@@ -27,7 +27,7 @@ final class ModerationAndAnalyticsResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Browser Game';
+    protected static string|\UnitEnum|null $navigationGroup = 'Community';
 
     public static function form(Schema $schema): Schema
     {

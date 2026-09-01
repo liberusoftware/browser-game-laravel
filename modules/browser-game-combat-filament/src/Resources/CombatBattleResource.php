@@ -25,7 +25,7 @@ final class CombatBattleResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bolt';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Browser Game';
+    protected static string|\UnitEnum|null $navigationGroup = 'Live Operations';
 
     public static function form(Schema $schema): Schema
     {

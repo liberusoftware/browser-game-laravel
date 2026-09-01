@@ -11,12 +11,13 @@ use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Schema as DatabaseSchema;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class AccountSetup extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Account';
+    protected static string|\UnitEnum|null $navigationGroup = 'Account & workspace';
 
     protected static ?int $navigationSort = -10;
 
@@ -36,11 +37,12 @@ class AccountSetup extends Page
 
         /** @var User $user */
         $user = auth()->user();
+        /** @var Team|null $team */
         $team = $user->currentTeam;
 
-        $this->form->fill([
+        $this->setupForm()->fill([
             'name' => $user->name,
-            'team_name' => $team?->name ?? $user->name."'s Team",
+            'team_name' => $team !== null ? $team->getAttribute('name') : $user->name."'s Team",
             'generate_api_token' => false,
             'api_token_name' => 'My browser game client',
         ]);
@@ -64,15 +66,16 @@ class AccountSetup extends Page
                         ->schema([
                             TextInput::make('team_name')->label('Team name')->required()->maxLength(255),
                         ]),
-                    Step::make('Connect')
+                    Step::make('Connect your tools')
                         ->icon('heroicon-o-key')
-                        ->description('Optional integrations for your tools and clients.')
+                        ->description('Connect sign-in providers and prepare API access.')
                         ->schema([
                             Checkbox::make('generate_api_token')
-                                ->label('Create an API token for me')
-                                ->helperText('The token is shown once after saving. Store it somewhere secure.'),
+                                ->label('Create a game API token')
+                                ->helperText('Useful for a game client or local integration. It is shown once after saving.'),
                             TextInput::make('api_token_name')
                                 ->label('Token name')
+                                ->placeholder('My game client')
                                 ->required(fn (callable $get): bool => (bool) $get('generate_api_token'))
                                 ->maxLength(80)
                                 ->visible(fn (callable $get): bool => (bool) $get('generate_api_token')),
@@ -83,9 +86,10 @@ class AccountSetup extends Page
 
     public function save(): void
     {
-        $state = $this->form->getState();
+        $state = $this->setupForm()->getState();
         /** @var User $user */
         $user = auth()->user();
+        /** @var Team|null $team */
         $team = $user->currentTeam;
 
         if ($team === null) {
@@ -97,7 +101,7 @@ class AccountSetup extends Page
             'onboarding_completed_at' => now(),
         ])->save();
 
-        if ((string) $team->user_id === (string) $user->getKey()) {
+        if ((string) $team->getAttribute('user_id') === (string) $user->getKey()) {
             $team->forceFill(['name' => $state['team_name']])->save();
         }
 
@@ -108,6 +112,16 @@ class AccountSetup extends Page
         if ($this->newApiToken === null) {
             $this->redirect(filament()->getUrl());
         }
+    }
+
+    public function continueToApp(): void
+    {
+        $this->redirect(filament()->getUrl());
+    }
+
+    private function setupForm(): Schema
+    {
+        return $this->getSchema('form') ?? throw new \LogicException('Account setup form is not available.');
     }
 
     public static function canAccess(): bool
