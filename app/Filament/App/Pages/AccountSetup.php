@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Schema as DatabaseSchema;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class AccountSetup extends Page
 {
@@ -36,11 +37,12 @@ class AccountSetup extends Page
 
         /** @var User $user */
         $user = auth()->user();
+        /** @var Team|null $team */
         $team = $user->currentTeam;
 
-        $this->form->fill([
+        $this->setupForm()->fill([
             'name' => $user->name,
-            'team_name' => $team?->name ?? $user->name."'s Team",
+            'team_name' => $team !== null ? $team->getAttribute('name') : $user->name."'s Team",
             'generate_api_token' => false,
             'api_token_name' => 'My browser game client',
         ]);
@@ -84,9 +86,10 @@ class AccountSetup extends Page
 
     public function save(): void
     {
-        $state = $this->form->getState();
+        $state = $this->setupForm()->getState();
         /** @var User $user */
         $user = auth()->user();
+        /** @var Team|null $team */
         $team = $user->currentTeam;
 
         if ($team === null) {
@@ -98,7 +101,7 @@ class AccountSetup extends Page
             'onboarding_completed_at' => now(),
         ])->save();
 
-        if ((string) $team->user_id === (string) $user->getKey()) {
+        if ((string) $team->getAttribute('user_id') === (string) $user->getKey()) {
             $team->forceFill(['name' => $state['team_name']])->save();
         }
 
@@ -114,6 +117,11 @@ class AccountSetup extends Page
     public function continueToApp(): void
     {
         $this->redirect(filament()->getUrl());
+    }
+
+    private function setupForm(): Schema
+    {
+        return $this->getSchema('form') ?? throw new \LogicException('Account setup form is not available.');
     }
 
     public static function canAccess(): bool
