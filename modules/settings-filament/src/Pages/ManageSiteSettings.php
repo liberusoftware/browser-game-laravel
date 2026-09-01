@@ -23,8 +23,6 @@ class ManageSiteSettings extends SettingsPage
 
     protected static ?string $navigationLabel = 'Site Settings';
 
-    protected static ?int $navigationSort = 1;
-
     public function form(Schema $schema): Schema
     {
         return $schema
