@@ -32,11 +32,11 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->colors(app(ThemeColors::class)->forSite())
             ->navigationGroups([
-                NavigationGroup::make('Play')
+                NavigationGroup::make('Play & progress')
                     ->collapsible(),
-                NavigationGroup::make('Account & workspace')
+                NavigationGroup::make('Team & collaboration')
                     ->collapsible(),
-                NavigationGroup::make('Account')
+                NavigationGroup::make('Account & security')
                     ->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')

@@ -27,6 +27,8 @@ class AchievementResource extends Resource
 
     protected static ?string $navigationLabel = 'Achievements';
 
+    protected static ?int $navigationSort = 7;
+
     public static function form(Schema $schema): Schema
     {
         return $schema
