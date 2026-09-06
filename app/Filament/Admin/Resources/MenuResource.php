@@ -37,6 +37,8 @@ class MenuResource extends Resource
 
     protected static ?string $navigationLabel = 'Menus';
 
+    protected static ?int $navigationSort = 2;
+
     public static function form(Schema $schema): Schema
     {
         return $schema

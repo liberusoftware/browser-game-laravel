@@ -25,7 +25,7 @@ final class GameMaintenanceStateResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Browser Game';
+    protected static string|\UnitEnum|null $navigationGroup = 'Game World';
 
     public static function form(Schema $schema): Schema
     {

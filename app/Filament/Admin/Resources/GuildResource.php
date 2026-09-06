@@ -26,11 +26,11 @@ class GuildResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Game Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Players & Community';
 
     protected static ?string $navigationLabel = 'Guilds';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'name';
 
