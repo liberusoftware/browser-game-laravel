@@ -23,6 +23,11 @@
                     <p class="font-semibold text-success-700 dark:text-success-300">Your API token was created</p>
                     <code class="mt-2 block break-all rounded-lg bg-white/70 p-3 text-xs dark:bg-black/20">{{ $newApiToken }}</code>
                     <p class="mt-2 text-success-700/80 dark:text-success-300/80">Copy it now. For your security, it will not be shown again.</p>
+                    <div class="mt-4">
+                        <x-filament::button wire:click="continueToApp" color="success" size="sm">
+                            Continue to your workspace
+                        </x-filament::button>
+                    </div>
                 </div>
             @endif
         </div>

@@ -33,7 +33,7 @@ class MenuResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-3';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'System';
+    protected static string|\UnitEnum|null $navigationGroup = 'System Configuration';
 
     protected static ?string $navigationLabel = 'Menus';
 
