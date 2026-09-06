@@ -17,13 +17,13 @@ class AccountSetup extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Account & workspace';
+    protected static string|\UnitEnum|null $navigationGroup = 'Team & collaboration';
 
     protected static ?int $navigationSort = -10;
 
-    protected static ?string $navigationLabel = 'Get Started';
+    protected static ?string $navigationLabel = 'Finish setup';
 
-    protected static ?string $title = 'Set up your account';
+    protected static ?string $title = 'Set up your workspace';
 
     protected string $view = 'filament.app.pages.account-setup';
 
@@ -56,13 +56,13 @@ class AccountSetup extends Page
                 Wizard::make([
                     Step::make('Your profile')
                         ->icon('heroicon-o-user-circle')
-                        ->description('Make your account yours.')
+                        ->description('Tell us how to address you.')
                         ->schema([
                             TextInput::make('name')->label('Display name')->required()->maxLength(255),
                         ]),
                     Step::make('Your team')
                         ->icon('heroicon-o-user-group')
-                        ->description('Name the workspace you will manage.')
+                        ->description('Give your workspace a name.')
                         ->schema([
                             TextInput::make('team_name')->label('Team name')->required()->maxLength(255),
                         ]),
@@ -71,8 +71,8 @@ class AccountSetup extends Page
                         ->description('Connect sign-in providers and prepare API access.')
                         ->schema([
                             Checkbox::make('generate_api_token')
-                                ->label('Create a game API token')
-                                ->helperText('Useful for a game client or local integration. It is shown once after saving.'),
+                                ->label('Create an API token for this account')
+                                ->helperText('Use this for the game client or a local integration. The token is shown once after saving.'),
                             TextInput::make('api_token_name')
                                 ->label('Token name')
                                 ->placeholder('My game client')

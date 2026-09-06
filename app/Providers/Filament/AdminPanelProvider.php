@@ -38,21 +38,19 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Overview')
                     ->collapsible(),
+                NavigationGroup::make('Game World')
+                    ->collapsible(),
                 NavigationGroup::make('Game Content')
                     ->collapsible(),
-                NavigationGroup::make('Game Operations')
+                NavigationGroup::make('Players & Community')
                     ->collapsible(),
                 NavigationGroup::make('Live Operations')
                     ->collapsible(),
-                NavigationGroup::make('Community')
-                    ->collapsible(),
                 NavigationGroup::make('Access & Teams')
                     ->collapsible(),
-                NavigationGroup::make('Administration')
-                    ->collapsed(),
                 NavigationGroup::make('Operations')
                     ->collapsed(),
-                NavigationGroup::make('System Configuration')
+                NavigationGroup::make('System')
                     ->collapsed(),
                 NavigationGroup::make('Settings')
                     ->collapsed(),
