@@ -207,195 +207,703 @@
         {
             "type": "path",
             "url": "modules/browser-game-game-core",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-game-core-api",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-game-core-filament",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-game-core-livewire",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-characters",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-characters-api",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-characters-filament",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-characters-livewire",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-world",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-world-api",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-world-filament",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-world-livewire",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-combat",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-combat-api",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-combat-filament",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-combat-livewire",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-quests",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-quests-api",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-quests-filament",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-quests-livewire",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-accounts",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-items",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-crafting",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-economy",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-competition",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-collections",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-social",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-live-ops",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-commerce",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-moderation-and-analytics",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-accounts-api",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-accounts-filament",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
             "url": "modules/browser-game-accounts-livewire",
-            "options": {"symlink": false}
+            "options": {
+                "symlink": false
+            }
         },
-        {"type":"path","url":"modules/browser-game-collections-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-collections-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-collections-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-commerce-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-commerce-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-commerce-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-competition-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-competition-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-competition-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-crafting-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-crafting-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-crafting-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-economy-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-economy-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-economy-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-items-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-items-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-items-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-live-ops-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-live-ops-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-live-ops-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-moderation-and-analytics-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-moderation-and-analytics-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-moderation-and-analytics-livewire","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-social-api","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-social-filament","options":{"symlink":false}},
-        {"type":"path","url":"modules/browser-game-social-livewire","options":{"symlink":false}}
+        {
+            "type": "path",
+            "url": "modules/browser-game-collections-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-collections-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-collections-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-commerce-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-commerce-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-commerce-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-competition-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-competition-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-competition-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-crafting-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-crafting-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-crafting-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-economy-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-economy-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-economy-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-items-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-items-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-items-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-live-ops-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-live-ops-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-live-ops-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-moderation-and-analytics-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-moderation-and-analytics-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-moderation-and-analytics-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-social-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-social-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/browser-game-social-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/activity-comments",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-core",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-google",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-meta",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/api-access",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/application",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/audit",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/currency-context",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/developer-experience",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/feature-flags",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/files-media",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/identity-core-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/identity-core",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/identity-socialstream",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/import-export",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/integrations",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/jetstream-bridge",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-core-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-core",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-mymemory",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-manager-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-manager",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/notifications",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/observability",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/organizations-teams-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/organizations-teams",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/profiles",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/roles-permissions-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/roles-permissions",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/scheduler-queues",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/search-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/search",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/sessions-devices-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/sessions-devices",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/settings-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/settings",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/theme-support-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/theme-support",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/two-factor-authentication",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/webhooks",
+            "options": {
+                "symlink": true
+            }
+        }
     ],
     "require": {
         "php": "^8.5",
@@ -547,8 +1055,8 @@
     },
     "autoload": {
         "psr-4": {
-        "App\\": "app/",
-        "Database\\Factories\\": "database/factories/",
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
         "classmap": [
