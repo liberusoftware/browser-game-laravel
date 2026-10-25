@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a9b3a5f427a08fbbc813eb1b56f3177",
+    "content-hash": "18d156ac76a5707e645eac03ec4130ef",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -956,6 +956,151 @@
             "time": "2025-01-03T16:18:33+00:00"
         },
         {
+            "name": "composer/class-map-generator",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/class-map-generator.git",
+                "reference": "c0efbeb2f3fd7e23c7f180a59765c0b48a31fbc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/class-map-generator/zipball/c0efbeb2f3fd7e23c7f180a59765c0b48a31fbc4",
+                "reference": "c0efbeb2f3fd7e23c7f180a59765c0b48a31fbc4",
+                "shasum": ""
+            },
+            "require": {
+                "composer/pcre": "^2.1 || ^3.1",
+                "php": "^7.2 || ^8.0",
+                "symfony/finder": "^4.4 || ^5.3 || ^6 || ^7 || ^8"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.12 || ^2",
+                "phpstan/phpstan-deprecation-rules": "^1 || ^2",
+                "phpstan/phpstan-phpunit": "^1 || ^2",
+                "phpstan/phpstan-strict-rules": "^1.1 || ^2",
+                "phpunit/phpunit": "^8",
+                "symfony/filesystem": "^5.4 || ^6 || ^7 || ^8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\ClassMapGenerator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+                }
+            ],
+            "description": "Utilities to scan PHP code and generate class maps.",
+            "keywords": [
+                "classmap"
+            ],
+            "support": {
+                "issues": "https://github.com/composer/class-map-generator/issues",
+                "source": "https://github.com/composer/class-map-generator/tree/1.8.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-09-25T15:24:19+00:00"
+        },
+        {
+            "name": "composer/pcre",
+            "version": "3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/pcre.git",
+                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/d5a341b3fb61f3001970940afb1d332968a183ed",
+                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "conflict": {
+                "phpstan/phpstan": "<2.2.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2",
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Pcre\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "PCRE wrapping library that offers type-safe preg_* replacements.",
+            "keywords": [
+                "PCRE",
+                "preg",
+                "regex",
+                "regular expression"
+            ],
+            "support": {
+                "issues": "https://github.com/composer/pcre/issues",
+                "source": "https://github.com/composer/pcre/tree/3.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-06-07T11:47:49+00:00"
+        },
+        {
             "name": "composer/semver",
             "version": "3.4.4",
             "source": {
@@ -1712,16 +1857,16 @@
         },
         {
             "name": "filament/actions",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/actions.git",
-                "reference": "da3ed6cc03bd604b8b875ea03d4e9ef02c279eb2"
+                "reference": "99f2f89311d34fe0f3d54ef01ff7dd86e996a318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/actions/zipball/da3ed6cc03bd604b8b875ea03d4e9ef02c279eb2",
-                "reference": "da3ed6cc03bd604b8b875ea03d4e9ef02c279eb2",
+                "url": "https://api.github.com/repos/filamentphp/actions/zipball/99f2f89311d34fe0f3d54ef01ff7dd86e996a318",
+                "reference": "99f2f89311d34fe0f3d54ef01ff7dd86e996a318",
                 "shasum": ""
             },
             "require": {
@@ -1757,24 +1902,25 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:45:04+00:00"
+            "time": "2026-10-20T18:26:39+00:00"
         },
         {
             "name": "filament/filament",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/panels.git",
-                "reference": "7e75d8da9b907ead7d618ce8237228316d08ae43"
+                "reference": "4869a1592c0ef037abc429cb9d1db62059e2d455"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/panels/zipball/7e75d8da9b907ead7d618ce8237228316d08ae43",
-                "reference": "7e75d8da9b907ead7d618ce8237228316d08ae43",
+                "url": "https://api.github.com/repos/filamentphp/panels/zipball/4869a1592c0ef037abc429cb9d1db62059e2d455",
+                "reference": "4869a1592c0ef037abc429cb9d1db62059e2d455",
                 "shasum": ""
             },
             "require": {
                 "chillerlan/php-qrcode": "^5.0",
+                "composer-runtime-api": "^2.1",
                 "filament/actions": "self.version",
                 "filament/forms": "self.version",
                 "filament/infolists": "self.version",
@@ -1814,20 +1960,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:52:57+00:00"
+            "time": "2026-10-20T18:30:51+00:00"
         },
         {
             "name": "filament/forms",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/forms.git",
-                "reference": "3295b3acfe81dc75faa3a6dbbfea551e4df10887"
+                "reference": "7a36480602b26ee950ea8f0ce7e844aa076a7a73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/forms/zipball/3295b3acfe81dc75faa3a6dbbfea551e4df10887",
-                "reference": "3295b3acfe81dc75faa3a6dbbfea551e4df10887",
+                "url": "https://api.github.com/repos/filamentphp/forms/zipball/7a36480602b26ee950ea8f0ce7e844aa076a7a73",
+                "reference": "7a36480602b26ee950ea8f0ce7e844aa076a7a73",
                 "shasum": ""
             },
             "require": {
@@ -1837,6 +1983,9 @@
                 "filament/support": "self.version",
                 "php": "^8.2",
                 "ueberdosis/tiptap-php": "^2.0"
+            },
+            "suggest": {
+                "fakerphp/faker": "Required to generate fake rich content and Markdown."
             },
             "type": "library",
             "extra": {
@@ -1864,20 +2013,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:51:04+00:00"
+            "time": "2026-10-20T18:31:40+00:00"
         },
         {
             "name": "filament/infolists",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/infolists.git",
-                "reference": "dca2f115006b716f2293e29042f9c9b410fc3548"
+                "reference": "9a506030fa0f80e09e9de43ae099137cee741d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/infolists/zipball/dca2f115006b716f2293e29042f9c9b410fc3548",
-                "reference": "dca2f115006b716f2293e29042f9c9b410fc3548",
+                "url": "https://api.github.com/repos/filamentphp/infolists/zipball/9a506030fa0f80e09e9de43ae099137cee741d66",
+                "reference": "9a506030fa0f80e09e9de43ae099137cee741d66",
                 "shasum": ""
             },
             "require": {
@@ -1909,20 +2058,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:44:03+00:00"
+            "time": "2026-10-20T18:27:56+00:00"
         },
         {
             "name": "filament/notifications",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/notifications.git",
-                "reference": "f188823f2e681883e1fa419af7e2f2a17d4c63c5"
+                "reference": "940afa444265f99ecee0d54acef0cf22076f25f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/notifications/zipball/f188823f2e681883e1fa419af7e2f2a17d4c63c5",
-                "reference": "f188823f2e681883e1fa419af7e2f2a17d4c63c5",
+                "url": "https://api.github.com/repos/filamentphp/notifications/zipball/940afa444265f99ecee0d54acef0cf22076f25f3",
+                "reference": "940afa444265f99ecee0d54acef0cf22076f25f3",
                 "shasum": ""
             },
             "require": {
@@ -1956,20 +2105,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:49:13+00:00"
+            "time": "2026-10-20T18:26:24+00:00"
         },
         {
             "name": "filament/query-builder",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/query-builder.git",
-                "reference": "d658205b135ef364c992f5d5d518e9463099aab4"
+                "reference": "f6b34ae663109a01198f316971ac20102b5762f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/query-builder/zipball/d658205b135ef364c992f5d5d518e9463099aab4",
-                "reference": "d658205b135ef364c992f5d5d518e9463099aab4",
+                "url": "https://api.github.com/repos/filamentphp/query-builder/zipball/f6b34ae663109a01198f316971ac20102b5762f5",
+                "reference": "f6b34ae663109a01198f316971ac20102b5762f5",
                 "shasum": ""
             },
             "require": {
@@ -2002,20 +2151,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:44:12+00:00"
+            "time": "2026-10-20T18:27:08+00:00"
         },
         {
             "name": "filament/schemas",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/schemas.git",
-                "reference": "3e191f49090645685a34560f5a3e1ba28ed3e7bc"
+                "reference": "957caf8f0e373566046aff90249c6d8e3fe7e4d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/schemas/zipball/3e191f49090645685a34560f5a3e1ba28ed3e7bc",
-                "reference": "3e191f49090645685a34560f5a3e1ba28ed3e7bc",
+                "url": "https://api.github.com/repos/filamentphp/schemas/zipball/957caf8f0e373566046aff90249c6d8e3fe7e4d2",
+                "reference": "957caf8f0e373566046aff90249c6d8e3fe7e4d2",
                 "shasum": ""
             },
             "require": {
@@ -2047,20 +2196,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:51:01+00:00"
+            "time": "2026-10-20T18:28:40+00:00"
         },
         {
             "name": "filament/spatie-laravel-settings-plugin",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/spatie-laravel-settings-plugin.git",
-                "reference": "82ffb2fdc26747ca103e789e3d56252612ffad6a"
+                "reference": "16a4441ba4b4a57fda7ea446ad4bdda6d30b2c60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-settings-plugin/zipball/82ffb2fdc26747ca103e789e3d56252612ffad6a",
-                "reference": "82ffb2fdc26747ca103e789e3d56252612ffad6a",
+                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-settings-plugin/zipball/16a4441ba4b4a57fda7ea446ad4bdda6d30b2c60",
+                "reference": "16a4441ba4b4a57fda7ea446ad4bdda6d30b2c60",
                 "shasum": ""
             },
             "require": {
@@ -2091,30 +2240,32 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:48:23+00:00"
+            "time": "2026-09-07T18:43:45+00:00"
         },
         {
             "name": "filament/support",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/support.git",
-                "reference": "b6a33dd2af46160abe73226d671b1bc490a84a27"
+                "reference": "ac059bb5443d923702c93e360f2114387ebc0813"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/support/zipball/b6a33dd2af46160abe73226d671b1bc490a84a27",
-                "reference": "b6a33dd2af46160abe73226d671b1bc490a84a27",
+                "url": "https://api.github.com/repos/filamentphp/support/zipball/ac059bb5443d923702c93e360f2114387ebc0813",
+                "reference": "ac059bb5443d923702c93e360f2114387ebc0813",
                 "shasum": ""
             },
             "require": {
                 "blade-ui-kit/blade-heroicons": "^2.5",
+                "composer-runtime-api": "^2.1",
+                "composer/class-map-generator": "^1.6",
                 "danharrin/livewire-rate-limiting": "^2.0",
                 "ext-intl": "*",
                 "illuminate/contracts": "^11.28|^12.0|^13.0",
                 "kirschbaum-development/eloquent-power-joins": "^4.0",
                 "league/uri-components": "^7.0",
-                "livewire/livewire": "^4.1",
+                "livewire/livewire": "^4.4.7",
                 "nette/php-generator": "^4.0",
                 "php": "^8.2",
                 "ryangjchandler/blade-capture-directive": "^1.0",
@@ -2149,20 +2300,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:51:57+00:00"
+            "time": "2026-10-20T18:30:41+00:00"
         },
         {
             "name": "filament/tables",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/tables.git",
-                "reference": "be471ed4a9f2e7dcbbb134db622a03d4e89f7a21"
+                "reference": "229f4ab851519ee22a964ab9ebfda892709750f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/tables/zipball/be471ed4a9f2e7dcbbb134db622a03d4e89f7a21",
-                "reference": "be471ed4a9f2e7dcbbb134db622a03d4e89f7a21",
+                "url": "https://api.github.com/repos/filamentphp/tables/zipball/229f4ab851519ee22a964ab9ebfda892709750f2",
+                "reference": "229f4ab851519ee22a964ab9ebfda892709750f2",
                 "shasum": ""
             },
             "require": {
@@ -2195,20 +2346,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:51:25+00:00"
+            "time": "2026-10-20T18:25:22+00:00"
         },
         {
             "name": "filament/widgets",
-            "version": "v5.7.6",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/widgets.git",
-                "reference": "e500c98debe26112008398933fcf3ed50ee103f7"
+                "reference": "4abd9b613824311496d86709a257747a30c30fd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/widgets/zipball/e500c98debe26112008398933fcf3ed50ee103f7",
-                "reference": "e500c98debe26112008398933fcf3ed50ee103f7",
+                "url": "https://api.github.com/repos/filamentphp/widgets/zipball/4abd9b613824311496d86709a257747a30c30fd0",
+                "reference": "4abd9b613824311496d86709a257747a30c30fd0",
                 "shasum": ""
             },
             "require": {
@@ -2239,7 +2390,7 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2026-08-05T20:49:46+00:00"
+            "time": "2026-10-20T18:33:06+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -3118,20 +3269,20 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v13.27.0",
+            "version": "v13.38.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f3fa8f3591fa2e8f0b7dedfffc3fc324d2aad31b"
+                "reference": "c42f9abd4a3d2f9a3cd6be109255ddce8092ceb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f3fa8f3591fa2e8f0b7dedfffc3fc324d2aad31b",
-                "reference": "f3fa8f3591fa2e8f0b7dedfffc3fc324d2aad31b",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/c42f9abd4a3d2f9a3cd6be109255ddce8092ceb8",
+                "reference": "c42f9abd4a3d2f9a3cd6be109255ddce8092ceb8",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.14.2 || ^0.15 || ^0.16 || ^0.17 || ^0.18 || ^0.19",
+                "brick/math": "^0.14.2 || ^0.15 || ^0.16 || ^0.17 || ^0.18 || ^0.19 || ^0.20 || ^1.0",
                 "composer-runtime-api": "^2.2",
                 "doctrine/inflector": "^2.0.5",
                 "dragonmantank/cron-expression": "^3.4",
@@ -3148,7 +3299,7 @@
                 "guzzlehttp/promises": "^2.0.3 || ^3.0",
                 "guzzlehttp/psr7": "^2.9 || ^3.0",
                 "guzzlehttp/uri-template": "^1.0 || ^2.0",
-                "laravel/prompts": "^0.3.11",
+                "laravel/prompts": "^0.3.25",
                 "laravel/serializable-closure": "^2.0.10",
                 "league/commonmark": "^2.8.1",
                 "league/flysystem": "^3.25.1",
@@ -3234,7 +3385,7 @@
                 "aws/aws-sdk-php": "^3.322.9",
                 "ext-gmp": "*",
                 "fakerphp/faker": "^1.24",
-                "intervention/image": "^4.0",
+                "intervention/image": "^4.2",
                 "laravel/pint": "^1.18",
                 "league/flysystem-aws-s3-v3": "^3.25.1",
                 "league/flysystem-ftp": "^3.25.1",
@@ -3243,18 +3394,20 @@
                 "league/flysystem-sftp-v3": "^3.25.1",
                 "mockery/mockery": "^1.6.10",
                 "opis/json-schema": "^2.4.1",
-                "orchestra/testbench-core": "^11.0.0",
+                "orchestra/testbench-core": "^11.6.0",
                 "pda/pheanstalk": "^7.0.0 || ^8.0.0",
                 "php-http/discovery": "^1.15",
-                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan": "2.3.1",
                 "phpunit/phpunit": "^11.5.50 || ^12.5.8 || ^13.0.3",
                 "predis/predis": "^2.3 || ^3.0",
                 "rector/rector": "2.6.3",
                 "resend/resend-php": "^1.0",
                 "symfony/cache": "^7.4.0 || ^8.0.0",
                 "symfony/http-client": "^7.4.0 || ^8.0.0",
+                "symfony/mercure": "^0.8.0",
                 "symfony/psr-http-message-bridge": "^7.4.0 || ^8.0.0",
-                "symfony/translation": "^7.4.0 || ^8.0.0"
+                "symfony/translation": "^7.4.0 || ^8.0.0",
+                "web-token/jwt-library": "^4.1"
             },
             "suggest": {
                 "ably/ably-php": "Required to use the Ably broadcast driver (^1.0).",
@@ -3271,7 +3424,7 @@
                 "ext-redis": "Required to use the Redis cache and queue drivers (^4.0 || ^5.0 || ^6.0).",
                 "fakerphp/faker": "Required to generate fake data using the fake() helper (^1.23).",
                 "filp/whoops": "Required for friendly error pages in development (^2.14.3).",
-                "intervention/image": "Required to use the image processing features (^4.0).",
+                "intervention/image": "Required to use the image processing features (^4.2).",
                 "laravel/tinker": "Required to use the tinker console command (^2.0).",
                 "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (^3.25.1).",
                 "league/flysystem-ftp": "Required to use the Flysystem FTP driver (^3.25.1).",
@@ -3290,8 +3443,10 @@
                 "symfony/filesystem": "Required to enable support for relative symbolic links (^7.4 || ^8.0).",
                 "symfony/http-client": "Required to enable support for the Symfony API mail transports (^7.4 || ^8.0).",
                 "symfony/mailgun-mailer": "Required to enable support for the Mailgun mail transport (^7.4 || ^8.0).",
+                "symfony/mercure": "Required to use the Mercure broadcast driver (^0.8).",
                 "symfony/postmark-mailer": "Required to enable support for the Postmark mail transport (^7.4 || ^8.0).",
-                "symfony/psr-http-message-bridge": "Required to use PSR-7 bridging features (^7.4 || ^8.0)."
+                "symfony/psr-http-message-bridge": "Required to use PSR-7 bridging features (^7.4 || ^8.0).",
+                "web-token/jwt-library": "Required to sign Mercure JWTs and use end-to-end encrypted channels (^4.1)."
             },
             "type": "library",
             "extra": {
@@ -3341,7 +3496,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-08-25T14:16:00+00:00"
+            "time": "2026-10-20T10:45:58+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -3648,16 +3803,16 @@
         },
         {
             "name": "laravel/prompts",
-            "version": "v0.3.24",
+            "version": "v0.3.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/prompts.git",
-                "reference": "5d3cdef29e93ca3b62b1871359db3078cd99908b"
+                "reference": "2d1e9bf6bab8d3f383c254db7f2b4ea8816d55e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/prompts/zipball/5d3cdef29e93ca3b62b1871359db3078cd99908b",
-                "reference": "5d3cdef29e93ca3b62b1871359db3078cd99908b",
+                "url": "https://api.github.com/repos/laravel/prompts/zipball/2d1e9bf6bab8d3f383c254db7f2b4ea8816d55e0",
+                "reference": "2d1e9bf6bab8d3f383c254db7f2b4ea8816d55e0",
                 "shasum": ""
             },
             "require": {
@@ -3700,10 +3855,9 @@
             ],
             "description": "Add beautiful and user-friendly forms to your command-line applications.",
             "support": {
-                "issues": "https://github.com/laravel/prompts/issues",
-                "source": "https://github.com/laravel/prompts/tree/v0.3.24"
+                "source": "https://github.com/laravel/prompts/tree/v0.3.26"
             },
-            "time": "2026-08-20T12:55:36+00:00"
+            "time": "2026-10-09T14:45:13+00:00"
         },
         {
             "name": "laravel/pulse",
@@ -4265,16 +4419,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.10.0",
+            "version": "2.10.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "d2d1aa8b35e072966c89bc0c66cf926e56767dc4"
+                "reference": "40821b7606d8d946bac57dbd2290076c722e3a65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/d2d1aa8b35e072966c89bc0c66cf926e56767dc4",
-                "reference": "d2d1aa8b35e072966c89bc0c66cf926e56767dc4",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/40821b7606d8d946bac57dbd2290076c722e3a65",
+                "reference": "40821b7606d8d946bac57dbd2290076c722e3a65",
                 "shasum": ""
             },
             "require": {
@@ -4368,7 +4522,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-11T16:06:25+00:00"
+            "time": "2026-10-17T19:59:50+00:00"
         },
         {
             "name": "league/config",
@@ -6302,7 +6456,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-accounts",
-                "reference": "d1db39669d85346f1034ff567495fc89d7b7eb09"
+                "reference": "0b6610c3fbc2b889df448ec87f50f9b34cdfb17d"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6321,7 +6475,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Accounts\\": "src/"
                 }
             },
@@ -6334,6 +6488,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Accounts capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-accounts",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-accounts",
+                "issues": "https://github.com/liberusoftware/module-browser-game-accounts/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6345,7 +6504,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-accounts-api",
-                "reference": "299202355120c2b3c165c293dc8eb0dc0698c1a4"
+                "reference": "96bcb74b6a8b8498bcba0d1ec2402c13590f901b"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6377,6 +6536,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Accounts.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-accounts-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-accounts-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-accounts-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6388,7 +6552,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-accounts-filament",
-                "reference": "7168890ed7260fbc45b4d59e9d44aff8ca2318ec"
+                "reference": "50adb22fdb323150e76f7e8c125c3fdf0e760d00"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -6419,6 +6583,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Accounts.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-accounts-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-accounts-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-accounts-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6430,7 +6599,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-accounts-livewire",
-                "reference": "89f1432cc0ab5952060f4887043085b6850cc0e8"
+                "reference": "8f07497e389b1dd5f8c049932b22977673c9c46e"
             },
             "require": {
                 "liberusoftware/module-browser-game-accounts": "^1.0",
@@ -6461,6 +6630,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Accounts.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-accounts-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-accounts-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-accounts-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6472,7 +6646,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-characters",
-                "reference": "4c6efa42837964cdd4c238fceb543b8d4e35cc67"
+                "reference": "c07f65176a2b874bdf64fd6e61f21e4ec272b81c"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6509,6 +6683,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game character creation, progression, skills, health, and respec.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-characters",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-characters",
+                "issues": "https://github.com/liberusoftware/module-browser-game-characters/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6520,7 +6699,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-characters-api",
-                "reference": "5c6f48e9f6c0c19b0c6229558731377e075369c7"
+                "reference": "572d71a3f54cd699218ee35bc73d68edf9137e31"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6557,6 +6736,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Characters.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-characters-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-characters-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-characters-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6568,7 +6752,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-characters-filament",
-                "reference": "73b7c50721b48c2650c37c5ac38ba77ea7adace4"
+                "reference": "e6a88b9ce280d682d3f186660830025b9e092ed3"
             },
             "require": {
                 "filament/filament": "^5.1",
@@ -6604,6 +6788,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Characters.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-characters-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-characters-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-characters-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6615,7 +6804,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-characters-livewire",
-                "reference": "116c566bd41c8bd74cc91b8d6db15c71f5957e43"
+                "reference": "30c0108fe411b85c6a1aa8355419f6bb6c3f037c"
             },
             "require": {
                 "liberusoftware/module-browser-game-characters": "^1.0",
@@ -6651,6 +6840,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Characters.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-characters-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-characters-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-characters-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6662,7 +6856,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-collections",
-                "reference": "ee51caae153aaaba40f29ce26ce5ebff28069477"
+                "reference": "23b0be20827e82cf67c765a0a52fc37dc035d311"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6681,7 +6875,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Collections\\": "src/"
                 }
             },
@@ -6694,6 +6888,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Collections capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-collections",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-collections",
+                "issues": "https://github.com/liberusoftware/module-browser-game-collections/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6705,7 +6904,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-collections-api",
-                "reference": "b5e91c38c235faebf58b83b7cb487aedf13cf2f8"
+                "reference": "44277c069615025aabf22467abc07a3bcc3aa1db"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6737,6 +6936,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Collections.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-collections-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-collections-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-collections-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6748,7 +6952,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-collections-filament",
-                "reference": "1fd7f4c62263a9e5453ec4fc09e610d49a789d77"
+                "reference": "752e4b710d9ac99f12be4298bac0bb95a379fae8"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -6779,6 +6983,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Collections.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-collections-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-collections-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-collections-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6790,7 +6999,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-collections-livewire",
-                "reference": "ac78b90440157ce96f03f6e32a304c5426428306"
+                "reference": "445dfe33b9188ee072701c7f15c5552f62ba165e"
             },
             "require": {
                 "liberusoftware/module-browser-game-collections": "^1.0",
@@ -6821,6 +7030,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Collections.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-collections-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-collections-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-collections-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6832,7 +7046,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-combat",
-                "reference": "78017c9acf5efee1b30b0418296c6be5c7adee61"
+                "reference": "8093b9ac66e3e2c14fc6066a07259fdbd8b728fa"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6869,6 +7083,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game combat turns, abilities, effects, cooldowns, enemies, loot, logs, and simulation.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-combat",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-combat",
+                "issues": "https://github.com/liberusoftware/module-browser-game-combat/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6880,7 +7099,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-combat-api",
-                "reference": "ef9aa52e76957d1b0034696f5ce8046f88a52e78"
+                "reference": "3418bd04a36f13cf0bc2d9def736efb9aae87678"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6912,6 +7131,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Combat.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-combat-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-combat-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-combat-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6923,7 +7147,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-combat-filament",
-                "reference": "48830115f5585a7f0e7251b19865cbc58ad238e6"
+                "reference": "3e097fc2d6d022d95348395e98dfc91932191874"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -6954,6 +7178,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Combat.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-combat-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-combat-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-combat-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6965,7 +7194,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-combat-livewire",
-                "reference": "93903c74ffcb156a96a5c4e0be647d5d1a5d0f07"
+                "reference": "ce94a21e00d4dcb8ebaafca5b78d8d062a4908c2"
             },
             "require": {
                 "liberusoftware/module-browser-game-combat": "^1.0",
@@ -6996,6 +7225,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Combat.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-combat-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-combat-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-combat-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7007,7 +7241,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-commerce",
-                "reference": "aeccf6bdab1857cc3e9de8704b5a4bfe0505292e"
+                "reference": "de0c5ae6c49de2918918d2d2be97428cf49faa6d"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7026,7 +7260,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Commerce\\": "src/"
                 }
             },
@@ -7039,6 +7273,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Commerce capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-commerce",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-commerce",
+                "issues": "https://github.com/liberusoftware/module-browser-game-commerce/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7050,7 +7289,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-commerce-api",
-                "reference": "0da9ba978bfe00686719f8df5114421b58821fd5"
+                "reference": "2c31d892d561604e4b83f53b0e131984ad21c1c9"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -7082,6 +7321,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Commerce.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-commerce-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-commerce-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-commerce-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7093,7 +7337,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-commerce-filament",
-                "reference": "13346217463f3342b4e081e52a903eb062c7824a"
+                "reference": "b9676665364c79f91986b3725bd3439abed1d1e8"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -7124,6 +7368,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Commerce.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-commerce-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-commerce-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-commerce-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7135,7 +7384,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-commerce-livewire",
-                "reference": "0cde1277beb630bd091d9ade45008c1b7ad9cc4b"
+                "reference": "59d120f560c6745ce34bb0f280e863af66f84381"
             },
             "require": {
                 "liberusoftware/module-browser-game-commerce": "^1.0",
@@ -7166,6 +7415,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Commerce.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-commerce-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-commerce-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-commerce-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7177,7 +7431,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-competition",
-                "reference": "b4125a40be105753eef76ef0ccd49fabb16e7d09"
+                "reference": "2b55e2a2496828ce9af39fd7e8a5a2c1fe16338d"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7196,7 +7450,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Competition\\": "src/"
                 }
             },
@@ -7209,6 +7463,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Competition capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-competition",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-competition",
+                "issues": "https://github.com/liberusoftware/module-browser-game-competition/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7220,7 +7479,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-competition-api",
-                "reference": "04c169d1b5488ae40fada1d07560bdf7763f4d7e"
+                "reference": "0d466285927e9931ebc2c50132d93738099d08ca"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -7252,6 +7511,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Competition.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-competition-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-competition-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-competition-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7263,7 +7527,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-competition-filament",
-                "reference": "7256080d2e737be2a984987b092c4910ff07ec7f"
+                "reference": "84ab87b1543944da1f6d8c4da559b709b581736d"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -7294,6 +7558,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Competition.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-competition-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-competition-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-competition-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7305,7 +7574,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-competition-livewire",
-                "reference": "fd15c04134c0734cbf1506b2dbf3d24a22374f8a"
+                "reference": "65068d2797b6024f20e5d68b1ff5017a5112342b"
             },
             "require": {
                 "liberusoftware/module-browser-game-competition": "^1.0",
@@ -7336,6 +7605,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Competition.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-competition-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-competition-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-competition-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7347,7 +7621,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-crafting",
-                "reference": "85268e1c8783e4e931f5770236d816a3e0cbd062"
+                "reference": "782b5550994e5074fc898d431b50f81be5a6701d"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7366,7 +7640,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Crafting\\": "src/"
                 }
             },
@@ -7379,6 +7653,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Crafting capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-crafting",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-crafting",
+                "issues": "https://github.com/liberusoftware/module-browser-game-crafting/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7390,7 +7669,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-crafting-api",
-                "reference": "ba960086e480680d794686e5ed44272c9bd80009"
+                "reference": "a74c777139a9c77d8af04ba559912e040c9eb37a"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -7422,6 +7701,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Crafting.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-crafting-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-crafting-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-crafting-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7433,7 +7717,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-crafting-filament",
-                "reference": "c4d8517e0a051a60f8c91d1aaaa5573629507224"
+                "reference": "ad76c9276282f2263090359d68582a535b2bdee9"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -7464,6 +7748,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Crafting.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-crafting-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-crafting-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-crafting-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7475,7 +7764,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-crafting-livewire",
-                "reference": "e6c8fb53d1a1cd5c2cb398397cbfbcac0860b4c3"
+                "reference": "c4fd83c38dd169b2d0cdbd8ce87e1f5517f724b3"
             },
             "require": {
                 "liberusoftware/module-browser-game-crafting": "^1.0",
@@ -7506,6 +7795,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Crafting.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-crafting-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-crafting-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-crafting-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7517,7 +7811,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-economy",
-                "reference": "939b22a66ff0e458a69c95d473de6007b1821ee0"
+                "reference": "8a1c9fb937e9937075e8f203d4a48a0c9363c611"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7536,7 +7830,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Economy\\": "src/"
                 }
             },
@@ -7549,6 +7843,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Economy capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-economy",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-economy",
+                "issues": "https://github.com/liberusoftware/module-browser-game-economy/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7560,7 +7859,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-economy-api",
-                "reference": "32f931b956c1f40472d579c24b9daa01fc5b4762"
+                "reference": "a5088b0421c76de47708450d566576dd5d96dcd4"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -7592,6 +7891,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Economy.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-economy-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-economy-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-economy-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7603,7 +7907,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-economy-filament",
-                "reference": "81cbc999d459c3bc41ae543147a46def4b5a5ef4"
+                "reference": "4185fc5fc96951717ebd722ee3fd28ceb7f70bbb"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -7634,6 +7938,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Economy.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-economy-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-economy-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-economy-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7645,7 +7954,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-economy-livewire",
-                "reference": "5aedddb04db2e096a40f2d634f864374e9c7e661"
+                "reference": "3e38cf088eae6a78ec67e6c00d47d166f2e1dfcf"
             },
             "require": {
                 "liberusoftware/module-browser-game-economy": "^1.0",
@@ -7676,6 +7985,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Economy.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-economy-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-economy-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-economy-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7687,7 +8001,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-game-core",
-                "reference": "32285d9e07fde7c444d8562a0c968a8408905a28"
+                "reference": "7f54f34d2728bf3aeb91d2b58ae53704efead4d6"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7724,6 +8038,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game worlds, clocks, rulesets, content versions, feature flags, and maintenance state.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-game-core",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-game-core",
+                "issues": "https://github.com/liberusoftware/module-browser-game-game-core/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7735,7 +8054,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-game-core-api",
-                "reference": "c6bae44b75940d2f58159a3c5b641b9ca93982e8"
+                "reference": "afc53bd381783d459824d0872add49c5b3e6c7cb"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -7773,6 +8092,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Game Core.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-game-core-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-game-core-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-game-core-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7784,7 +8108,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-game-core-filament",
-                "reference": "d388f214846e52d85507dc6aea6ef69bdbbe0fd7"
+                "reference": "c0cf3f8555429c27e36b1388da6a9ed64b15c0c9"
             },
             "require": {
                 "filament/filament": "^5.1",
@@ -7820,6 +8144,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Game Core.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-game-core-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-game-core-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-game-core-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7831,7 +8160,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-game-core-livewire",
-                "reference": "39296e3e5035e18e7f845323dfb616e934110fae"
+                "reference": "75f7450d2fcdc952cb6278a17fa56bd3c17ff8df"
             },
             "require": {
                 "liberusoftware/module-browser-game-game-core": "^1.0",
@@ -7867,6 +8196,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Game Core.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-game-core-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-game-core-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-game-core-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7878,7 +8212,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-items",
-                "reference": "7f9b52e34515b664ef52f8a0c3af916dd7ada44f"
+                "reference": "ad030cd06c48b78a2b33ac0b3d3684081b76a63b"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7897,7 +8231,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Items\\": "src/"
                 }
             },
@@ -7910,6 +8244,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Items capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-items",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-items",
+                "issues": "https://github.com/liberusoftware/module-browser-game-items/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7921,7 +8260,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-items-api",
-                "reference": "04f0c8d2f5c754c1dd92344f9efd4df93bca1adc"
+                "reference": "bec0c8c793442f2001baeb7b79c39f576675fcca"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -7953,6 +8292,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Items.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-items-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-items-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-items-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7964,7 +8308,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-items-filament",
-                "reference": "0aa6f0b2058f5e1380ba2d46c5991ac132f757f0"
+                "reference": "c62b9d5426d2d8d1e40af42729b4b935c43759cd"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -7995,6 +8339,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Items.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-items-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-items-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-items-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8006,7 +8355,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-items-livewire",
-                "reference": "6bfedb23cb009d5db8a76018e7c35a23425e83b8"
+                "reference": "2c2851fcd0d4617164efda33a30a23a614d4c2b5"
             },
             "require": {
                 "liberusoftware/module-browser-game-items": "^1.0",
@@ -8037,6 +8386,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Items.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-items-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-items-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-items-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8048,7 +8402,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-live-ops",
-                "reference": "8f5f7e0de00387f8261d0201f98ac7984b5cc818"
+                "reference": "f7adae95cdeea05174a855ed625bb94ccf462f77"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8067,7 +8421,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\LiveOps\\": "src/"
                 }
             },
@@ -8080,6 +8434,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game LiveOps capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-live-ops",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-live-ops",
+                "issues": "https://github.com/liberusoftware/module-browser-game-live-ops/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8091,7 +8450,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-live-ops-api",
-                "reference": "e63604d57bccbaf3da35a763ff48d93c0e9fa44d"
+                "reference": "14df1e4886a1ce376bab49401d672ef2044eef9b"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -8123,6 +8482,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game LiveOps.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-live-ops-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-live-ops-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-live-ops-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8134,7 +8498,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-live-ops-filament",
-                "reference": "84af1785ee925b3c4ca358a51406df13b484b9b8"
+                "reference": "969234e00354b0c6ccd69c77ba457e9f5139052b"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -8165,6 +8529,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game LiveOps.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-live-ops-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-live-ops-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-live-ops-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8176,7 +8545,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-live-ops-livewire",
-                "reference": "a79c11da6e3bcbddfe48b288c5f2dc420fc32508"
+                "reference": "5906675c9e645de1ebdb3f63e3c17eea74c30062"
             },
             "require": {
                 "liberusoftware/module-browser-game-live-ops": "^1.0",
@@ -8207,6 +8576,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game LiveOps.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-live-ops-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-live-ops-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-live-ops-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8218,7 +8592,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-moderation-and-analytics",
-                "reference": "eb1f05794d566ac135396b5ef13146762e2b0861"
+                "reference": "4beeb2d1632978b91d14181ee4e6ea495d86812e"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8237,7 +8611,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\ModerationAndAnalytics\\": "src/"
                 }
             },
@@ -8250,6 +8624,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game ModerationAndAnalytics capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics",
+                "issues": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8261,7 +8640,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-moderation-and-analytics-api",
-                "reference": "d8c86fb92d34a324089fd266a59489d9c7d1f45b"
+                "reference": "2d473523e3510378f721b0c760b6cb65e6f4ecac"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -8293,6 +8672,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game ModerationAndAnalytics.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8304,7 +8688,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-moderation-and-analytics-filament",
-                "reference": "8bb27b01cb714e7d7fa60c7c280af0c885d6fe56"
+                "reference": "d2eda37bac4ba65c9873a77c1410770de174e905"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -8335,6 +8719,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game ModerationAndAnalytics.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8346,7 +8735,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-moderation-and-analytics-livewire",
-                "reference": "a6fc2f1b9a47f3e3ac1bb4ded413d5f46b590341"
+                "reference": "259e49398d8cd5c5b29d90c3a32c0ae3dbb51dc1"
             },
             "require": {
                 "liberusoftware/module-browser-game-moderation-and-analytics": "^1.0",
@@ -8377,6 +8766,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game ModerationAndAnalytics.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-moderation-and-analytics-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8388,7 +8782,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-quests",
-                "reference": "c4cbfc4a37c1a8f21e1d97b25e884af3d1f77fdc"
+                "reference": "7f0f719d3890fd7703741cb7d3bc83f0b7e9e27b"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8420,6 +8814,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game quest storylines and progress.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-quests",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-quests",
+                "issues": "https://github.com/liberusoftware/module-browser-game-quests/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8431,7 +8830,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-quests-api",
-                "reference": "c9382433105a6f1e025da299b2147ed5d6401a1a"
+                "reference": "5691fee5d740d0e35de548843cd7d962a855d583"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -8463,6 +8862,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Quests.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-quests-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-quests-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-quests-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8474,7 +8878,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-quests-filament",
-                "reference": "da078970a940ce78763a88bceb4bfe3f02510789"
+                "reference": "e264f3a5780253ff85aca1164c1d2ab39ac894b1"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -8505,6 +8909,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Quests.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-quests-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-quests-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-quests-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8516,7 +8925,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-quests-livewire",
-                "reference": "5bf87914b2697c21ab11b46077330adb5c036206"
+                "reference": "dbb2fb87799de83d89c08d7c127c86d39b8203d6"
             },
             "require": {
                 "liberusoftware/module-browser-game-quests": "^1.0",
@@ -8547,6 +8956,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Quests.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-quests-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-quests-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-quests-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8558,7 +8972,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-social",
-                "reference": "9068cb5acdfad079c8d6ece5b58c656af4d9e07e"
+                "reference": "2671fe7b85e79227804090ac93cd18f177220360"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8577,7 +8991,7 @@
                 }
             },
             "autoload": {
-                "psr4": {
+                "psr-4": {
                     "Liberu\\BrowserGame\\Social\\": "src/"
                 }
             },
@@ -8590,6 +9004,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game Social capability.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-social",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-social",
+                "issues": "https://github.com/liberusoftware/module-browser-game-social/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8601,7 +9020,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-social-api",
-                "reference": "219ce8985fbedc22ba86fd217efe670e6e8f7254"
+                "reference": "d5fff6dfa5dd38a22969cc597133357fd5874a5d"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -8633,6 +9052,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game Social.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-social-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-social-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-social-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8644,7 +9068,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-social-filament",
-                "reference": "8432666fddaab0d9503f8791169674bbf249c07a"
+                "reference": "1066b564080ef4ec21520fb3f48be08b0aa28096"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -8675,6 +9099,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game Social.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-social-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-social-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-social-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8686,7 +9115,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-social-livewire",
-                "reference": "8495ff340135152a1e527d31e067fc98fd23227d"
+                "reference": "8ec78db2cbfea6f19445af4cd347587a4f17e7fb"
             },
             "require": {
                 "liberusoftware/module-browser-game-social": "^1.0",
@@ -8717,6 +9146,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game Social.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-social-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-social-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-social-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8728,7 +9162,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-world",
-                "reference": "7863221b4c7da38d34498e49dd3b75d8cc02d9ec"
+                "reference": "c6fcaae97cbe7afe9edd766b467f02e7f156bc7d"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8765,6 +9199,11 @@
                 "MIT"
             ],
             "description": "Provider-neutral Browser Game world catalog, travel, weather, encounters, resources, NPCs, and unlocks.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-world",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-world",
+                "issues": "https://github.com/liberusoftware/module-browser-game-world/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8776,7 +9215,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-world-api",
-                "reference": "3bd275ea925271df48c7211f2338353541c8d925"
+                "reference": "0e9c9d0478d2d3a269e26fc6ef93a2a1eb69e44b"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -8813,6 +9252,11 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Browser Game World.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-world-api",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-world-api",
+                "issues": "https://github.com/liberusoftware/module-browser-game-world-api/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8824,7 +9268,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-world-filament",
-                "reference": "93dea9616a17f3d998f0c5713673882da5cac601"
+                "reference": "e5227022b0de18cb4624fd7709041509755ff04d"
             },
             "require": {
                 "filament/filament": "^5.1",
@@ -8855,6 +9299,11 @@
                 "MIT"
             ],
             "description": "Filament 5 adapter for Browser Game World.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-world-filament",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-world-filament",
+                "issues": "https://github.com/liberusoftware/module-browser-game-world-filament/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8866,7 +9315,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/browser-game-world-livewire",
-                "reference": "c57338c7d26537e9eccc301da9725fc191ff95fe"
+                "reference": "7b993a492af6cf4298f52ae37bfa298ff2c06136"
             },
             "require": {
                 "liberusoftware/module-browser-game-world": "^1.0",
@@ -8897,6 +9346,11 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Browser Game World.",
+            "homepage": "https://github.com/liberusoftware/module-browser-game-world-livewire",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-browser-game-world-livewire",
+                "issues": "https://github.com/liberusoftware/module-browser-game-world-livewire/issues"
+            },
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -10230,16 +10684,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v4.4.1",
+            "version": "v4.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "0c925c55b4a5c134f2fb147efa4b9f53a837d866"
+                "reference": "8d7f8fc6138274a2f3384c9db354ca012215a259"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/0c925c55b4a5c134f2fb147efa4b9f53a837d866",
-                "reference": "0c925c55b4a5c134f2fb147efa4b9f53a837d866",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/8d7f8fc6138274a2f3384c9db354ca012215a259",
+                "reference": "8d7f8fc6138274a2f3384c9db354ca012215a259",
                 "shasum": ""
             },
             "require": {
@@ -10294,7 +10748,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v4.4.1"
+                "source": "https://github.com/livewire/livewire/tree/v4.4.8"
             },
             "funding": [
                 {
@@ -10302,7 +10756,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-18T11:39:06+00:00"
+            "time": "2026-10-21T12:53:46+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -11417,16 +11871,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.56",
+            "version": "3.0.57",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "7adbbe38cde25e2df2116dbf2673c407e24fa305"
+                "reference": "d17e0ddaeaf6f22f7e007cbb437d78792fe2a0e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/7adbbe38cde25e2df2116dbf2673c407e24fa305",
-                "reference": "7adbbe38cde25e2df2116dbf2673c407e24fa305",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d17e0ddaeaf6f22f7e007cbb437d78792fe2a0e4",
+                "reference": "d17e0ddaeaf6f22f7e007cbb437d78792fe2a0e4",
                 "shasum": ""
             },
             "require": {
@@ -11507,7 +11961,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.56"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.57"
             },
             "funding": [
                 {
@@ -11523,7 +11977,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-03T04:36:50+00:00"
+            "time": "2026-08-26T12:13:21+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -15986,16 +16440,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v8.1.5",
+            "version": "v8.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "ee16f97e95cfa011a742714d7c8c8f70fe7423f4"
+                "reference": "7850897fb8659f98491b03be79ac48600bdaf9ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/ee16f97e95cfa011a742714d7c8c8f70fe7423f4",
-                "reference": "ee16f97e95cfa011a742714d7c8c8f70fe7423f4",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/7850897fb8659f98491b03be79ac48600bdaf9ab",
+                "reference": "7850897fb8659f98491b03be79ac48600bdaf9ab",
                 "shasum": ""
             },
             "require": {
@@ -16043,7 +16497,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v8.1.5"
+                "source": "https://github.com/symfony/http-foundation/tree/v8.1.9"
             },
             "funding": [
                 {
@@ -16063,7 +16517,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-20T09:59:12+00:00"
+            "time": "2026-10-08T16:57:43+00:00"
         },
         {
             "name": "symfony/http-kernel",
@@ -18349,16 +18803,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v8.1.5",
+            "version": "v8.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "b3fc9e8888eeb9daddc33bfbd15d282a61f543cd"
+                "reference": "6107ee26a25215c3df3af0a3315e56bb4fd0b7db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/b3fc9e8888eeb9daddc33bfbd15d282a61f543cd",
-                "reference": "b3fc9e8888eeb9daddc33bfbd15d282a61f543cd",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/6107ee26a25215c3df3af0a3315e56bb4fd0b7db",
+                "reference": "6107ee26a25215c3df3af0a3315e56bb4fd0b7db",
                 "shasum": ""
             },
             "require": {
@@ -18401,7 +18855,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v8.1.5"
+                "source": "https://github.com/symfony/yaml/tree/v8.1.9"
             },
             "funding": [
                 {
@@ -18421,7 +18875,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T12:16:08+00:00"
+            "time": "2026-10-12T12:37:13+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -18552,12 +19006,12 @@
             "version": "v5.7.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vlucas/phpdotenv.git",
+                "url": "https://github.com/phpdotenv/phpdotenv.git",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40",
                 "shasum": ""
             },
