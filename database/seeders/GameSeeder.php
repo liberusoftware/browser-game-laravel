@@ -21,6 +21,10 @@ class GameSeeder extends Seeder
      */
     public function run(): void
     {
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         // Create Items first (needed for quest rewards)
         $this->createItems();
 
