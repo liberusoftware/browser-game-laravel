@@ -18,6 +18,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy composer files
 COPY composer.json composer.lock ./
+
+# Composer path repositories must exist in the dependency build stage.
+COPY themes ./themes
 # Path repositories are part of the application composition and must be present
 # while Composer resolves the dependency graph in this build stage.
 COPY modules ./modules
