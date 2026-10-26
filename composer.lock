@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb0c2ceb0b89f91497490bcf2e87d1d9",
+    "content-hash": "cbf60cd0cd242485ab58bf4cc839d7c2",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -10055,11 +10055,11 @@
         },
         {
             "name": "liberusoftware/search",
-            "version": "1.5.1",
+            "version": "1.5.3",
             "dist": {
                 "type": "path",
                 "url": "modules/search",
-                "reference": "accb28589a3de7210b9820246eb728f09844975c"
+                "reference": "532b8e2e244101e0caa3e3231d3cf7323fd3d6d5"
             },
             "require": {
                 "illuminate/database": "^13.38.0",
