@@ -24,6 +24,7 @@ COPY themes ./themes
 # Path repositories are part of the application composition and must be present
 # while Composer resolves the dependency graph in this build stage.
 COPY modules ./modules
+COPY themes ./themes
 
 # Install composer dependencies (no autoloader yet, will optimize in final stage)
 RUN composer install \
