@@ -13,6 +13,10 @@ class PlayerRankingSeeder extends Seeder
      */
     public function run(): void
     {
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         // Create sample players with varying levels and experience
         $players = [
             ['username' => 'DragonSlayer', 'email' => 'dragon@example.com', 'level' => 50, 'experience' => 25000],
