@@ -1,0 +1,527 @@
+{
+  "module-activity-comments": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-analytics-core": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-analytics-google": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-analytics-meta": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-api-access": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-application": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-audit": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-accounts": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-accounts-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-accounts-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-accounts-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-characters": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-characters-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-characters-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-characters-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-collections": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-collections-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-collections-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-collections-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-combat": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-combat-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-combat-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-combat-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-commerce": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-commerce-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-commerce-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-commerce-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-competition": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-competition-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-competition-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-competition-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-crafting": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-crafting-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-crafting-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-crafting-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-economy": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-economy-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-economy-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-economy-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-game-core": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-game-core-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-game-core-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-game-core-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-items": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-items-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-items-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-items-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-live-ops": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-live-ops-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-live-ops-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-live-ops-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-moderation-and-analytics": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-moderation-and-analytics-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-moderation-and-analytics-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-moderation-and-analytics-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-quests": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-quests-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-quests-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-quests-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-social": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-social-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-social-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-social-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-world": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-world-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-world-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-browser-game-world-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-currency-context": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-developer-experience": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-feature-flags": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-files-media": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-identity-core": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-identity-core-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-identity-socialstream": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-import-export": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-integrations": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-jetstream-bridge": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-localization-core": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-localization-core-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-localization-mymemory": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-module-manager": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-module-manager-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-notifications": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-observability": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-organizations-teams": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-organizations-teams-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-profiles": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-roles-permissions": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-roles-permissions-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-scheduler-queues": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-search": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-search-api": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-sessions-devices": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-sessions-devices-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-settings": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-settings-filament": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-theme-support": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-theme-support-livewire": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-two-factor-authentication": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-users-roles": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "module-webhooks": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "theme-base": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "theme-clear-signal": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "theme-dark": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  },
+  "theme-default": {
+    "archived": false,
+    "default_branch": "main",
+    "private": false
+  }
+}
