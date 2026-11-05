@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\App\Pages\Dashboard;
 use App\Filament\ModulePlugins;
 use App\Support\ThemeColors;
 use Filament\Http\Middleware\Authenticate;
@@ -9,11 +10,9 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -31,6 +30,7 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->colors(app(ThemeColors::class)->forSite())
+            ->viteTheme('resources/css/filament/game.css')
             ->navigationGroups([
                 NavigationGroup::make('Play & progress')
                     ->collapsible(),
@@ -49,7 +49,6 @@ class AppPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

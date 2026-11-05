@@ -8,6 +8,7 @@ use App\Models\Quest;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class QuestService
 {
@@ -42,8 +43,13 @@ class QuestService
      *
      * @throws Exception
      */
-    public function completeQuest(Player $player, Quest $quest): array
+    public function completeQuest(Player $player, Quest $quest, ?string $choice = null): array
     {
+        $chapter = config('starter-adventure.quests')[$quest->starter_key] ?? null;
+        if ($chapter && ($choice !== $chapter['answer'] || ! app(StarterAdventureService::class)->prerequisiteCompleted($player, $quest))) {
+            throw ValidationException::withMessages(['adventure' => 'Complete the starter chapter in the quest journal to earn its reward.']);
+        }
+
         DB::beginTransaction();
 
         try {
@@ -86,8 +92,9 @@ class QuestService
 
             // Level up if enough experience (simple formula: 100 XP per level)
             $requiredXpForNextLevel = $player->level * 100;
-            if ($player->experience >= $requiredXpForNextLevel) {
+            while ($player->experience >= $requiredXpForNextLevel) {
                 $player->level++;
+                $requiredXpForNextLevel = $player->level * 100;
                 $rewards['level_up'] = true;
             }
 
@@ -97,13 +104,9 @@ class QuestService
 
         // Award item
         if ($quest->item_reward_id) {
-            // Add item to player's inventory
-            DB::table('player__items')->insert([
-                'player_id' => $player->id,
-                'item_id' => $quest->item_reward_id,
-                'quantity' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+            $existingItem = $player->items()->whereKey($quest->item_reward_id)->first();
+            $player->items()->syncWithoutDetaching([
+                $quest->item_reward_id => ['quantity' => ($existingItem?->pivot->quantity ?? 0) + 1],
             ]);
 
             $rewards['item'] = $quest->itemReward;

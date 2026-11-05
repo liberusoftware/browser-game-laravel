@@ -1,5 +1,6 @@
 <?php
 
+use App\Settings\GameSettings;
 use Liberu\Foundation\Settings\Settings\SiteSettings;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
@@ -15,6 +16,7 @@ return [
      * put them (manually) here.
      */
     'settings' => [
+        GameSettings::class,
         SiteSettings::class,
     ],
 

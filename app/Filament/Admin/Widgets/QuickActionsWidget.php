@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Filament\Admin\Pages\GameSetup;
 use Filament\Facades\Filament;
 use Filament\Widgets\Widget;
 
@@ -18,7 +19,7 @@ class QuickActionsWidget extends Widget
     {
         $tenant = Filament::getTenant();
 
-        return [
+        return array_values(array_filter([
             [
                 'label' => 'Create New Quest',
                 'icon' => 'heroicon-o-map',
@@ -37,12 +38,12 @@ class QuickActionsWidget extends Widget
                 'url' => $tenant ? route('filament.admin.resources.players.index', ['tenant' => $tenant]) : '#',
                 'color' => 'info',
             ],
-            [
-                'label' => 'Game Settings',
+            auth()->user()?->isSuperAdmin() ? [
+                'label' => 'Game Setup Wizard',
                 'icon' => 'heroicon-o-cog-8-tooth',
-                'url' => $tenant ? route('filament.admin.pages.manage-game-settings', ['tenant' => $tenant]) : '#',
+                'url' => $tenant ? GameSetup::getUrl(panel: 'admin') : '#',
                 'color' => 'warning',
-            ],
-        ];
+            ] : null,
+        ]));
     }
 }

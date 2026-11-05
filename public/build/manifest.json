@@ -60,12 +60,21 @@
     "src": "_inter-700-normal-Yt3aPRUw.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-D2bHWkLR.css",
+    "file": "assets/app-BGX7phEL.css",
     "name": "app",
     "names": [
       "app.css"
     ],
     "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/filament/game.css": {
+    "file": "assets/game-CzNA9jHs.css",
+    "name": "game",
+    "names": [
+      "game.css"
+    ],
+    "src": "resources/css/filament/game.css",
     "isEntry": true
   },
   "resources/js/app.js": {

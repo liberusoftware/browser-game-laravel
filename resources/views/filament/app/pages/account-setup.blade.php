@@ -9,7 +9,7 @@
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wider text-primary-700 dark:text-primary-300">Three quick steps</p>
                         <h2 class="mt-1 text-xl font-semibold text-gray-950 dark:text-white">Welcome, {{ auth()->user()->name }}</h2>
-                        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">Set your profile, name your team, and choose the connections your game client needs. You can update everything later.</p>
+                        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600 dark:text-gray-400">Choose your display name and team. API access is optional. When registration is open, we will prepare your character and take you to a short adventure guide.</p>
                     </div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                     <p class="mt-2 text-success-700/80 dark:text-success-300/80">Copy it now. For your security, it will not be shown again.</p>
                     <div class="mt-4">
                         <x-filament::button wire:click="continueToApp" color="success" size="sm">
-                            Continue to your workspace
+                            Continue to your adventure guide
                         </x-filament::button>
                     </div>
                 </div>
@@ -39,8 +39,8 @@
             </div>
             <div class="mt-4 grid gap-4 text-sm">
                 @foreach ([['Profile', 'Your name and account identity'], ['Team', 'A workspace for members and permissions'], ['OAuth', 'Optional sign-in connections'], ['API access', 'Optional Sanctum token for the game API']] as [$label, $description])
-                    <div class="flex gap-3">
-                        <x-filament::icon icon="heroicon-m-check-circle" class="mt-0.5 h-5 w-5 shrink-0 text-success-500" />
+                    <div wire:key="setup-{{ $loop->index }}" class="flex gap-3">
+                        <x-filament::icon icon="heroicon-o-chevron-right" class="mt-0.5 h-5 w-5 shrink-0 text-primary-500" />
                         <div><p class="font-medium text-gray-900 dark:text-white">{{ $label }}</p><p class="mt-0.5 text-xs leading-5 text-gray-500 dark:text-gray-400">{{ $description }}</p></div>
                     </div>
                 @endforeach
@@ -50,7 +50,7 @@
                 <div class="mt-3 grid gap-2">
                     @foreach (['github' => 'GitHub', 'google' => 'Google', 'facebook' => 'Facebook', 'twitter-oauth-2' => 'X / Twitter'] as $provider => $label)
                         @php($configured = filled(config("services.{$provider}.client_id")) && filled(config("services.{$provider}.client_secret")))
-                        <div class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 text-xs dark:bg-white/5">
+                        <div wire:key="provider-{{ $provider }}" class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 text-xs dark:bg-white/5">
                             <span class="text-gray-700 dark:text-gray-300">{{ $label }}</span>
                             @if (auth()->user()->hasTokenFor($provider))
                                 <span class="font-medium text-success-600 dark:text-success-400">Connected</span>

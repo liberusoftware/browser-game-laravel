@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors(app(ThemeColors::class)->forSite())
+            ->viteTheme('resources/css/filament/game.css')
             ->navigationGroups([
                 NavigationGroup::make('Overview')
                     ->collapsible(),

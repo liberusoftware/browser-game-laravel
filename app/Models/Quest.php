@@ -13,6 +13,7 @@ class Quest extends Model
 
     protected $fillable = [
         'name',
+        'starter_key',
         'description',
         'experience_reward',
         'item_reward_id',

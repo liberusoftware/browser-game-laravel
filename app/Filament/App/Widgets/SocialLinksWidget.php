@@ -35,19 +35,6 @@ class SocialLinksWidget extends Widget
             $links['YouTube'] = $settings->youtube_url;
         }
 
-        // Keep the Facebook Groups as fallback
-        if (empty($links)) {
-            $links = [
-                'GitHub' => 'https://www.github.com/liberu-genealogy',
-                'Facebook Page' => 'https://www.facebook.com/familytree365',
-                'Facebook Groups' => [
-                    'Family Tree 365' => 'https://www.facebook.com/groups/familytree365',
-                    'Genealogy Chat' => 'https://www.facebook.com/groups/genealogychat',
-                    'DNA 365' => 'https://www.facebook.com/groups/dna365',
-                ],
-            ];
-        }
-
         return view($this->view, [
             'links' => $links,
         ]);
