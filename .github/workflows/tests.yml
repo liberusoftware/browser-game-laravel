@@ -71,8 +71,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
-          # Codecov retains the project’s pre-rename registration and upload token.
-          slug: liberusoftware/browser-game-laravel
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           disable_search: true
