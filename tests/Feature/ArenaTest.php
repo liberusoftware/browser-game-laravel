@@ -280,3 +280,33 @@ it('uses low health recovery and each NPC tactical pattern', function (): void {
     $battle = $service->act($player, $battle->id, 'guard', 0);
     expect($battle->battle_log[1]['action'])->toBe('mend')->and($battle->arena_state['defender']['hp'])->toBeGreaterThan(20);
 });
+
+it('withdraws an unanswered challenge without penalties and retains the NPC battle relationship', function (): void {
+    $service = app(ArenaService::class);
+    $attacker = arenaTestPlayer();
+    $defender = arenaTestPlayer();
+    $challenge = $service->challenge($attacker, $defender->id);
+    $service->forfeit($attacker, $challenge->id);
+    expect($challenge->fresh()->arena_status)->toBe('declined')
+        ->and($attacker->fresh()->arena_rating)->toBe(1000)->and($defender->fresh()->arena_rating)->toBe(1000);
+    $npc = Npc::where('slug', 'practice-sentinel')->first();
+    $battle = $service->startNpc($attacker, $npc->id);
+    expect($battle->npc->id)->toBe($npc->id);
+});
+
+it('does not settle an expired battle twice when another worker finishes it before the lock', function (): void {
+    $service = app(ArenaService::class);
+    $player = arenaTestPlayer();
+    $battle = $service->startNpc($player, Npc::where('slug', 'practice-sentinel')->value('id'));
+    $this->travel(11)->minutes();
+    $settledByAnotherWorker = false;
+    Battle::retrieved(function (Battle $record) use ($battle, &$settledByAnotherWorker): void {
+        if ($record->id === $battle->id && ! $settledByAnotherWorker) {
+            $settledByAnotherWorker = true;
+            Battle::whereKey($record->id)->update(['arena_status' => 'completed', 'outcome' => 'defender_won', 'turn_player_id' => null, 'completed_at' => now()]);
+        }
+    });
+    $service->expireFor($player);
+    expect($settledByAnotherWorker)->toBeTrue()->and($battle->fresh()->arena_status)->toBe('completed')
+        ->and($player->fresh()->experience)->toBe(0)->and($player->fresh()->last_battle_at)->toBeNull();
+});

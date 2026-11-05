@@ -183,3 +183,14 @@ it('adds the expanded content to an original catalog while preserving character 
         ->and((int) $player->items()->whereKey($medal->id)->first()->pivot->quantity)->toBe(2)
         ->and(app(StarterAdventureService::class)->prerequisiteCompleted($player, Quest::where('starter_key', 'chapel-bells')->firstOrFail()))->toBeTrue();
 });
+
+it('rejects an imported active chapter whose prerequisite has not been completed', function (): void {
+    $this->seed(StarterAdventureSeeder::class);
+    $user = User::factory()->create();
+    $player = Player::factory()->create(['email' => $user->email, 'experience' => 0]);
+    $quest = Quest::where('starter_key', 'silverleaf-trail')->firstOrFail();
+    $player->quests()->attach($quest, ['status' => 'in-progress']);
+    $this->actingAs($user);
+    Livewire::test(QuestJournal::class)->call('completeAdventure', $quest->id, 'stream')->assertHasErrors(['adventure']);
+    expect($player->fresh()->experience)->toBe(0)->and($player->completedQuests()->count())->toBe(0);
+});
