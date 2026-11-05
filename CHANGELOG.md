@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quest item rewards stack correctly and cumulative XP can advance multiple levels.
 - Hunting board pagination supports the larger NPC catalog.
 
+### Security
+- Update seven Symfony components to v8.1.11 to resolve dependency audit advisories.
+
 ### Upgrade
 - Run database migrations and rebuild frontend assets before using the new panels.
 - Run `php artisan db:seed --class=NpcSeeder` to install the example world.
