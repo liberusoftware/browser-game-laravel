@@ -50,7 +50,7 @@ class AccountSetup extends Page
 
         $this->setupForm()->fill([
             'name' => $user->name,
-            'character_class' => $user->player?->character_class ?? 'warrior',
+            'character_class' => $user->player->character_class ?? 'warrior',
             'team_name' => $team !== null ? $team->getAttribute('name') : $user->name."'s Team",
             'generate_api_token' => false,
             'api_token_name' => 'My browser game client',

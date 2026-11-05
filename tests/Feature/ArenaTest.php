@@ -232,3 +232,51 @@ it('settles a timed out player turn as a loss instead of allowing rating avoidan
     $service->expireFor($a);
     expect($a->fresh()->arena_rating)->toBe(988);
 });
+
+it('handles player opt in, challenge acceptance, surrender and shrine recovery through the panel', function (): void {
+    $aUser = User::factory()->create();
+    $dUser = User::factory()->create();
+    $a = arenaTestPlayer(['email' => $aUser->email, 'arena_opt_in' => false, 'agility' => 30, 'health' => 50]);
+    $d = arenaTestPlayer(['email' => $dUser->email, 'arena_opt_in' => false, 'agility' => 5]);
+    $this->actingAs($aUser);
+    $attackerPanel = Livewire::test(BattleArena::class)->call('toggleOptIn')->assertHasNoErrors();
+    $this->actingAs($dUser);
+    Livewire::test(BattleArena::class)->call('toggleOptIn')->assertHasNoErrors();
+    $this->actingAs($aUser);
+    $attackerPanel->call('challenge', $d->id)->assertHasNoErrors()->assertSee('Withdraw challenge');
+    $battleId = $attackerPanel->get('battleId');
+    $this->actingAs($dUser);
+    Livewire::test(BattleArena::class)->call('respond', $battleId, true)->assertSee('Waiting for your opponent')
+        ->call('forfeit')->assertHasNoErrors()->assertSee('Defeat');
+    $this->actingAs($aUser);
+    $attackerPanel->call('showBattle', $battleId)->assertSee('Victory! Well fought.')
+        ->call('rest')->assertHasNoErrors();
+    expect($a->fresh()->health)->toBe(100)->and($d->fresh()->arena_rating)->toBe(988);
+});
+
+it('uses low health recovery and each NPC tactical pattern', function (): void {
+    $service = app(ArenaService::class);
+    foreach (['aggressive', 'defensive', 'balanced'] as $behavior) {
+        $player = arenaTestPlayer();
+        $npc = Npc::where('slug', 'practice-sentinel')->first();
+        $npc->update(['behavior' => $behavior, 'stats' => array_merge($npc->stats, ['health' => 1000])]);
+        $battle = $service->startNpc($player, $npc->id);
+        $battle = $service->act($player, $battle->id, 'guard', 0);
+        $expected = ['aggressive' => 'heavy', 'defensive' => 'guard', 'balanced' => 'strike'][$behavior];
+        expect($battle->battle_log[1]['action'])->toBe($expected);
+        if ($behavior === 'balanced') {
+            $service->act($player, $battle->id, 'guard', 1);
+            $battle = $service->act($player, $battle->id, 'guard', 2);
+            expect($battle->battle_log[5]['action'])->toBe('heavy');
+        }
+    }
+    $player = arenaTestPlayer(['strength' => 1, 'agility' => 1]);
+    $npc = Npc::where('slug', 'practice-sentinel')->first();
+    $npc->update(['behavior' => 'mystic', 'stats' => ['health' => 100, 'mana' => 50, 'strength' => 5, 'defense' => 100, 'agility' => 1, 'intelligence' => 8]]);
+    $battle = $service->startNpc($player, $npc->id);
+    $state = $battle->arena_state;
+    $state['defender']['hp'] = 20;
+    $battle->update(['arena_state' => $state]);
+    $battle = $service->act($player, $battle->id, 'guard', 0);
+    expect($battle->battle_log[1]['action'])->toBe('mend')->and($battle->arena_state['defender']['hp'])->toBeGreaterThan(20);
+});

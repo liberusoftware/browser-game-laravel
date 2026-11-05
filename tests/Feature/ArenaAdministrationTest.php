@@ -1,7 +1,9 @@
 <?php
 
 use App\Filament\Admin\Resources\NpcResource;
+use App\Filament\Admin\Resources\NpcResource\Pages\CreateNpc;
 use App\Filament\Admin\Resources\NpcResource\Pages\EditNpc;
+use App\Filament\Admin\Resources\NpcResource\Pages\ListNpcs;
 use App\Models\Npc;
 use App\Models\User;
 use Database\Seeders\NpcSeeder;
@@ -31,6 +33,15 @@ it('lets a super administrator tune stats and deactivate an encounter without de
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     Filament::setTenant($team);
     $npc = Npc::first();
+    Livewire::test(ListNpcs::class)->assertSee('Practice Sentinel');
+    Livewire::test(CreateNpc::class)->fillForm([
+        'name' => 'Custom Arena Instructor', 'slug' => 'custom-arena-instructor',
+        'description' => 'A custom opponent for the village arena.', 'region' => 'Dawnvale',
+        'difficulty' => 'Training', 'behavior' => 'defensive', 'level' => 1, 'is_active' => true,
+        'stats' => $npc->stats, 'experience_reward' => 15, 'gold_reward' => 10,
+        'loot_item_id' => $npc->loot_item_id,
+    ])->call('create')->assertHasNoFormErrors();
+    expect(Npc::where('slug', 'custom-arena-instructor')->exists())->toBeTrue();
     Livewire::test(EditNpc::class, ['record' => $npc->id])
         ->fillForm(['name' => 'Village Sparring Master', 'stats' => array_merge($npc->stats, ['health' => 80]), 'is_active' => false])
         ->call('save')->assertHasNoFormErrors();

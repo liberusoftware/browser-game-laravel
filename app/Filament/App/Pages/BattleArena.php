@@ -62,7 +62,7 @@ class BattleArena extends Page
 
     public function act(string $action, int $expectedTurn): void
     {
-        abort_unless($this->battleId, 404);
+        abort_unless($this->battleId !== null, 404);
         $battle = app(ArenaService::class)->act($this->player(), $this->battleId, $action, $expectedTurn);
         $this->resetErrorBag();
         if ($battle->arena_status === 'completed') {
@@ -72,7 +72,7 @@ class BattleArena extends Page
 
     public function forfeit(): void
     {
-        abort_unless($this->battleId, 404);
+        abort_unless($this->battleId !== null, 404);
         app(ArenaService::class)->forfeit($this->player(), $this->battleId);
     }
 
@@ -134,6 +134,7 @@ class BattleArena extends Page
         return Player::where('email', auth()->user()->email)->firstOrFail();
     }
 
+    /** @return Builder<Battle> */
     private function ownBattles(Player $player): Builder
     {
         return Battle::whereNotNull('arena_status')->where(fn ($query) => $query->where('attacker_id', $player->id)->orWhere('defender_id', $player->id));

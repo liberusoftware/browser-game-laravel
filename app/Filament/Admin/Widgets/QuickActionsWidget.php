@@ -19,7 +19,7 @@ class QuickActionsWidget extends Widget
     {
         $tenant = Filament::getTenant();
 
-        return array_values(array_filter([
+        return array_filter([
             [
                 'label' => 'Create New Quest',
                 'icon' => 'heroicon-o-map',
@@ -44,6 +44,6 @@ class QuickActionsWidget extends Widget
                 'url' => $tenant ? GameSetup::getUrl(panel: 'admin') : '#',
                 'color' => 'warning',
             ] : null,
-        ]));
+        ]);
     }
 }

@@ -121,7 +121,7 @@ class ArenaService
 
         return DB::transaction(function () use ($actor, $battleId, $action, $expectedTurn): Battle {
             $battle = Battle::findOrFail($battleId);
-            abort_unless(in_array($actor->id, [$battle->attacker_id, $battle->defender_id], true), 403);
+            abort_unless($battle->attacker_id === $actor->id || ($battle->defender_id !== null && $battle->defender_id === $actor->id), 403);
             $players = $this->lockPlayers(array_filter([$battle->attacker_id, $battle->defender_id]));
             $battle = Battle::lockForUpdate()->findOrFail($battleId);
             $this->ensure($battle->arena_status === 'active' && $battle->expires_at->isFuture(), 'This battle has ended or expired.');
@@ -155,7 +155,7 @@ class ArenaService
     {
         DB::transaction(function () use ($actor, $battleId): void {
             $battle = Battle::findOrFail($battleId);
-            abort_unless(in_array($actor->id, [$battle->attacker_id, $battle->defender_id], true), 403);
+            abort_unless($battle->attacker_id === $actor->id || ($battle->defender_id !== null && $battle->defender_id === $actor->id), 403);
             $players = $this->lockPlayers(array_filter([$battle->attacker_id, $battle->defender_id]));
             $battle = Battle::lockForUpdate()->findOrFail($battleId);
             $this->ensure(in_array($battle->arena_status, ['pending', 'active'], true) && $battle->expires_at->isFuture(), 'This battle is no longer active.');

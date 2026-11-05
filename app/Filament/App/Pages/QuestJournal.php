@@ -31,7 +31,7 @@ class QuestJournal extends Page
         $quest = Quest::findOrFail($questId);
         $accepted = DB::transaction(function () use ($quest): bool {
             $player = Player::where('email', auth()->user()->email)->lockForUpdate()->first();
-            abort_unless($player, 403);
+            abort_unless($player !== null, 403);
 
             if (! app(StarterAdventureService::class)->prerequisiteCompleted($player, $quest)) {
                 throw ValidationException::withMessages(['adventure' => 'Complete the previous chapter before accepting this quest.']);
@@ -57,7 +57,7 @@ class QuestJournal extends Page
     {
         abort_unless(auth()->check(), 403);
         $player = auth()->user()->player;
-        abort_unless($player, 403);
+        abort_unless($player !== null, 403);
         $quest = Quest::findOrFail($questId);
         $rewards = app(StarterAdventureService::class)->complete($player, $quest, $choice);
         $this->resetErrorBag('adventure');
