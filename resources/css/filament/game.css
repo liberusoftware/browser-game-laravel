@@ -1,0 +1,53 @@
+@import '../../../vendor/filament/filament/resources/css/theme.css';
+@source '../../../app/Filament';
+@source '../../../resources/views/filament';
+
+.adventure-hero { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr) auto; padding: clamp(1.5rem, 4vw, 3rem); border-radius: 1.25rem; color: #f8fafc; background: radial-gradient(ellipse at top right, #0e7490 0, transparent 60%), linear-gradient(125deg, #0f172a, #164e63); overflow: hidden; }
+.adventure-hero-copy { max-width: 42rem; }
+.adventure-eyebrow { color: #a5f3fc; font-size: .75rem; text-transform: uppercase; letter-spacing: .16em; font-weight: 700; }
+.adventure-hero h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); line-height: 1.15; font-weight: 700; margin-block: .75rem 1rem; text-wrap: balance; overflow-wrap: anywhere; }
+.adventure-hero-copy > p:last-of-type { color: #cffafe; line-height: 1.7; }
+.adventure-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+.adventure-level { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; min-width: 12rem; border: 1px solid #ffffff30; background: #ffffff0d; border-radius: 1rem; padding: 1.5rem; }
+.adventure-level strong { font-size: 1.5rem; }
+.adventure-level span { font-size: .8rem; color: #cffafe; }
+.adventure-level progress { width: 100%; height: .5rem; accent-color: #fbbf24; }
+.adventure-paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; }
+.adventure-path { display: flex; flex-direction: column; align-items: flex-start; gap: .75rem; padding: 1.5rem; border: 1px solid var(--gray-200); background: white; border-radius: 1rem; overflow-wrap: anywhere; }
+.dark .adventure-path { background: var(--gray-900); border-color: #ffffff1a; }
+a.adventure-path { transition: border-color .15s, box-shadow .15s; }
+a.adventure-path:hover { border-color: var(--primary-500); box-shadow: 0 4px 20px #0891b21a; }
+.adventure-path h2, .adventure-path h3 { font-weight: 650; font-size: 1.1rem; }
+.adventure-path p { font-size: .875rem; line-height: 1.7; color: var(--gray-600); }
+.dark .adventure-path p { color: var(--gray-400); }
+a.adventure-path > span:last-child { color: var(--primary-600); font-weight: 600; font-size: .875rem; margin-top: auto; }
+.dark a.adventure-path > span:last-child { color: var(--primary-400); }
+.adventure-step { font-size: 1.5rem; font-weight: 700; color: var(--primary-500); }
+@media (max-width: 640px) { .adventure-hero { grid-template-columns: 1fr; } .adventure-level { align-items: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .adventure-path { transition: none; } }
+
+.arena-fighters { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+.arena-fighter { border:1px solid var(--gray-200); background:var(--gray-50); padding:1.25rem; border-radius:1rem; }
+.dark .arena-fighter { background:var(--gray-950); border-color:var(--gray-700); }
+.arena-fighter h3 { font-size:1.25rem; font-weight:700; margin-block:.4rem 1rem; overflow-wrap:anywhere; }
+.arena-eyebrow { font-size:.7rem; text-transform:uppercase; letter-spacing:.12em; color:var(--primary-500); font-weight:700; }
+.arena-meter-label { display:flex; justify-content:space-between; gap:.5rem; font-size:.8rem; margin-block:.6rem .25rem; }
+.arena-fighter progress { display:block; width:100%; height:.7rem; border-radius:1rem; overflow:hidden; }
+.arena-health { accent-color:#10b981; }.arena-mana { accent-color:#38bdf8; }
+.arena-action-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr)); gap:.75rem; margin-top:1.25rem; }
+.arena-action { display:flex; flex-direction:column; gap:.5rem; padding:1rem; border:1px solid var(--gray-300); border-radius:.8rem; text-align:start; background:var(--gray-50); cursor:pointer; }
+.dark .arena-action { background:var(--gray-800); border-color:var(--gray-600); }
+.arena-action:hover:not(:disabled),.arena-report:hover { border-color:var(--primary-500); }
+.arena-action strong { font-size:.9rem; }.arena-action span { font-size:.75rem; line-height:1.6; color:var(--gray-600); }
+.dark .arena-action span { color:var(--gray-300); }.arena-action:disabled { opacity:.45; cursor:not-allowed; }
+.arena-action:focus-visible,.arena-report:focus-visible { outline:3px solid var(--primary-500); outline-offset:3px; }
+.arena-result { margin-top:1rem; padding:1.25rem; border:1px solid var(--primary-400); border-radius:1rem; }
+.arena-result h3 { font-weight:700; font-size:1.25rem; }.arena-result p { font-size:.85rem; line-height:1.7; margin-top:.5rem; }
+.arena-feedback { padding:1rem; border:1px solid #f59e0b; border-radius:.8rem; font-size:.9rem; }
+.arena-log { max-height:22rem; overflow-y:auto; display:grid; gap:.6rem; margin-top:1rem; }
+.arena-log li { display:flex; gap:.75rem; align-items:baseline; font-size:.85rem; line-height:1.6; padding:.65rem; background:var(--gray-50); border-radius:.5rem; }
+.dark .arena-log li { background:var(--gray-800); }.arena-log-turn { font-weight:700; color:var(--primary-500); }
+.arena-reports { display:grid; gap:.75rem; }.arena-report { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem; text-align:start; border:1px solid var(--gray-300); border-radius:.75rem; padding:1rem; cursor:pointer; font-size:.85rem; }
+.dark .arena-report { border-color:var(--gray-700); }.arena-report span { color:var(--gray-500); }
+.adventure-path .fi-btn { max-width:100%; white-space:normal; }
+@media(max-width:640px) { .arena-fighters { grid-template-columns:1fr; } }

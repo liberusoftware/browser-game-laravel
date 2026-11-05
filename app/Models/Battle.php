@@ -10,7 +10,17 @@ class Battle extends Model
 {
     use HasFactory;
 
+    protected $attributes = ['arena_turn' => 0, 'rating_change' => 0];
+
     protected $fillable = [
+        'npc_id',
+        'arena_status',
+        'arena_state',
+        'arena_turn',
+        'turn_player_id',
+        'expires_at',
+        'outcome',
+        'rating_change',
         'attacker_id',
         'defender_id',
         'battle_type',
@@ -25,10 +35,18 @@ class Battle extends Model
     ];
 
     protected $casts = [
+        'arena_state' => 'array',
+        'arena_turn' => 'integer',
+        'expires_at' => 'datetime',
         'battle_log' => 'array',
         'items_gained' => 'array',
         'completed_at' => 'datetime',
     ];
+
+    public function npc(): BelongsTo
+    {
+        return $this->belongsTo(Npc::class);
+    }
 
     /** @return BelongsTo<Player, $this> */
     public function attacker(): BelongsTo

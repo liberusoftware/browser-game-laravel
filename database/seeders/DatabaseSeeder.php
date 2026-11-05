@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             TeamSeeder::class,
             RolesSeeder::class,
             UserSeeder::class,
+            StarterAdventureSeeder::class,
+            NpcSeeder::class,
         ]);
 
     }

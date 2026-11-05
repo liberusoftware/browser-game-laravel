@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property string|null $starter_key
+ */
 class Quest extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
+        'starter_key',
         'description',
         'experience_reward',
         'item_reward_id',

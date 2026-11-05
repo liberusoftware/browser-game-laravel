@@ -102,6 +102,7 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
     protected $casts = [
         'email_verified_at' => 'datetime',
         'onboarding_completed_at' => 'datetime',
+        'game_guide_completed_at' => 'datetime',
     ];
 
     public function hasCompletedOnboarding(): bool

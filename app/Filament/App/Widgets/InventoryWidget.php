@@ -3,6 +3,7 @@
 namespace App\Filament\App\Widgets;
 
 use App\Models\Player_Item;
+use App\Settings\GameSettings;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +24,7 @@ class InventoryWidget extends Widget
         if (! $player) {
             return [
                 'items' => collect(),
-                'maxSlots' => 20,
+                'maxSlots' => app(GameSettings::class)->max_inventory_size,
             ];
         }
 
@@ -33,7 +34,7 @@ class InventoryWidget extends Widget
 
         return [
             'items' => $items,
-            'maxSlots' => 20, // Default inventory size
+            'maxSlots' => app(GameSettings::class)->max_inventory_size,
         ];
     }
 }

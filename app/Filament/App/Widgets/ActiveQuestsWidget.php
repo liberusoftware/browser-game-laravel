@@ -2,13 +2,13 @@
 
 namespace App\Filament\App\Widgets;
 
+use App\Filament\App\Pages\QuestJournal;
 use App\Models\Quest;
 use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
 
 class ActiveQuestsWidget extends BaseWidget
 {
@@ -18,77 +18,26 @@ class ActiveQuestsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
+        $playerId = auth()->user()?->player?->getKey();
+
         return $table
-            ->query(
-                Quest::query()
-                    ->whereHas('players', function (Builder $query) {
-                        $user = Auth::user();
-                        $player = $user?->player;
-
-                        if ($player) {
-                            $query->whereKey($player->id);
-                        }
-                    })
-                    ->limit(5)
-            )
+            ->query(Quest::query()->whereHas('players', function (Builder $query) use ($playerId): void {
+                $query->whereKey($playerId)->where('player__quests.status', 'in-progress');
+            })->with('itemReward'))
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Quest')
-                    ->searchable()
-                    ->sortable()
-                    ->weight('semibold')
-                    ->extraAttributes([
-                        'class' => 'quest-title',
-                    ]),
-
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Description')
-                    ->limit(50)
-                    ->extraAttributes([
-                        'class' => 'quest-description',
-                    ])
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                Tables\Columns\TextColumn::make('difficulty')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'easy' => 'success',
-                        'medium' => 'warning',
-                        'hard' => 'danger',
-                        default => 'gray',
-                    })
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('reward_gold')
-                    ->label('Reward')
-                    ->numeric()
-                    ->suffix(' gold')
-                    ->icon('heroicon-m-currency-dollar')
-                    ->color('warning')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('status')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'completed' => 'success',
-                        'in_progress' => 'info',
-                        'failed' => 'danger',
-                        default => 'gray',
-                    }),
+                Tables\Columns\TextColumn::make('name')->label('Quest')->searchable()->weight('semibold'),
+                Tables\Columns\TextColumn::make('description')->limit(80)->wrap(),
+                Tables\Columns\TextColumn::make('experience_reward')->label('Experience')->numeric()->suffix(' XP')->color('warning'),
+                Tables\Columns\TextColumn::make('itemReward.name')->label('Item reward')->placeholder('No item reward'),
             ])
-            ->actions([
-                Action::make('view')
-                    ->icon('heroicon-m-eye')
-                    ->url(fn (Quest $record): string => route('filament.app.resources.quests.view', $record))
-                    ->openUrlInNewTab(),
+            ->headerActions([
+                Action::make('explore')->label('Explore quests')->icon('heroicon-o-map')->url(QuestJournal::getUrl(panel: 'app')),
             ])
-            ->heading('Active Quests')
-            ->description('Track your ongoing adventures')
-            ->emptyStateHeading('No active quests')
-            ->emptyStateDescription('Visit the quest board to start new adventures!')
+            ->heading('Your active adventures')
+            ->description('A clear objective for your next session')
+            ->emptyStateHeading('Your next chapter is waiting')
+            ->emptyStateDescription('Explore the quest journal to find your first adventure and preview its rewards.')
             ->emptyStateIcon('heroicon-o-map')
-            ->defaultPaginationPageOption(5)
-            ->extremePaginationLinks()
-            ->striped();
+            ->defaultPaginationPageOption(5);
     }
 }

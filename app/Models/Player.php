@@ -22,7 +22,11 @@ class Player extends Authenticatable
     use Notifiable;
 
     protected $fillable = [
+        'arena_opt_in',
+        'arena_rating',
         'username',
+        'character_class',
+        'starter_kit_granted_at',
         'email',
         'password',
         'level',
@@ -43,13 +47,18 @@ class Player extends Authenticatable
         'last_action_at',
     ];
 
+    protected $attributes = ['arena_opt_in' => false, 'arena_rating' => 1000];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     protected $casts = [
+        'arena_opt_in' => 'boolean',
+        'arena_rating' => 'integer',
         'email_verified_at' => 'datetime',
+        'starter_kit_granted_at' => 'datetime',
         'last_rank_update' => 'datetime',
         'last_battle_at' => 'datetime',
         'last_action_at' => 'datetime',

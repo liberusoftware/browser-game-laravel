@@ -41,6 +41,7 @@ use App\Services\InventoryService;
 use App\Services\MarketplaceService;
 use App\Services\MenuService;
 use App\Services\NotificationService;
+use App\Settings\GameSettings;
 use Filament\Schemas\Schema;
 use Filament\Support\Contracts\TranslatableContentDriver;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -135,7 +136,7 @@ it('executes representative Filament table and widget branches', function (): vo
     invokeReleaseScopeMethod($stats, 'getStats');
 
     $inventory = app(InventoryWidget::class);
-    expect($inventory->getViewData()['maxSlots'])->toBe(20);
+    expect($inventory->getViewData()['maxSlots'])->toBe(app(GameSettings::class)->max_inventory_size);
     $activeQuests = app(ActiveQuestsWidget::class)->table(Table::make(new ReleaseScopeBranchTableHarness()));
     foreach ($activeQuests->getColumns() as $column) {
         $column->getColor('easy');

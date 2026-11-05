@@ -10,6 +10,10 @@
 
 Liberu Browser Game is the deployable host for a persistent browser-based game. It combines the Liberu Composer ecosystem with game-domain systems for players, quests, combat, crafting, inventory, guilds, marketplace trading, achievements, rewards, notifications, and leaderboards.
 
+## v8.0.0 gameplay release
+
+The player panel includes guided setup, eight character classes, 39 story quests, 97 example items, and a tactical arena with 60 NPCs and opt-in PvP duels. Read the [release and upgrade notes](docs/releases/v8.0.0.md), [gameplay guide](docs/game-experience.md), and [arena guide](docs/arena.md).
+
 ## Key features
 
 - Jetstream authentication, profiles, sessions, two-factor authentication, passkeys, and social login
